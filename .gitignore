@@ -1,0 +1,12 @@
+/bin/
+/.settings/
+/.dbeaver/
+/Scripts/
+
+
+.project
+.classpath
+*.uxf
+module-info.java
+/target/
+*MyClass.java
