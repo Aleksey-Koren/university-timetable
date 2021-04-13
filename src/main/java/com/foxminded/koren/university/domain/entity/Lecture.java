@@ -10,19 +10,22 @@ public class Lecture implements TimetableEvent {
     private Teacher teacher;
     private Course course;
     private List<Group> groups;
+    private List<Student> students;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     
     public Lecture(Audience audience,
                    Teacher teacher, 
                    Course course, 
-                   List<Group> groups, 
+                   List<Group> groups,
+                   List<Student> students,
                    LocalDateTime startTime,
                    LocalDateTime endTime) {
         this.audience = audience;
         this.teacher = teacher;
         this.course = course;
         this.groups = groups;
+        this.students = students;
         this.startTime = startTime;
         this.endTime = endTime;
     }
@@ -53,7 +56,14 @@ public class Lecture implements TimetableEvent {
     }
     public List<Group> getGroups() {
         return groups;
+    } 
+    public List<Student> getStudents() {
+        return students;
     }
+    public void setStudents(List<Student> students) {
+        this.students = students;
+    }
+
     public void setGroups(List<Group> groups) {
         this.groups = groups;
     }
