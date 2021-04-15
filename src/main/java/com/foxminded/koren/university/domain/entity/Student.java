@@ -8,7 +8,6 @@ public class Student implements TimetablePerson {
     private Year year;
     
     public Student(Group group, String firstName, String lastName, Year year) {
-        super();
         this.group = group;
         this.firstName = firstName;
         this.lastName = lastName;
