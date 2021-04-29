@@ -38,23 +38,22 @@ class CourseDaoTest {
     }
     
     @AfterAll
-    void closeContext() {
-        
+    void closeContext() {    
         context.close();
     }
 
     
     @Test
     void getById_shouldWorkCorrectly() throws IOException {
-//          System.out.println(tablesCreation);
+        System.out.println(tablesCreation);
         tablesCreation.createTables();
         
-//        String sql = "INSERT INTO course\r\n"
-//                   + "(id, name, description)\r\n"
-//                   + "VALUES\r\n"
-//                   + "(5, 'name', 'description');";
+        String sql = "INSERT INTO course\r\n"
+                   + "(id, name, description)\r\n"
+                   + "VALUES\r\n"
+                   + "(5, 'name', 'description');";
         
-//        jdbcTemplate.update(sql);
+        jdbcTemplate.update(sql);
         
         
         Course expected = new Course("name", "description");
@@ -63,17 +62,4 @@ class CourseDaoTest {
         expected.setId(expectedId);
         assertEquals(expected, courseDao.getById(expectedId).get());
     }
-    
-//    private void createTables() throws IOException {
-//        try(Stream<String> lines = Files.lines(Path.of(tablesCreationUrl))) {
-//            lines.forEach(System.out::println);
-//        }
-//    }
-//    
-//    private Path getPathFromProperties(String propName) {
-//        Path path = Path.of("src\\test\\resources\\TablesCreation.sql");
-//        Path path = Path.of(tablesCreationUrl);
-//        return path;
-//    }
-
 }

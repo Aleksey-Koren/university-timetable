@@ -59,16 +59,5 @@ public class StudentDao implements Dao<Integer, Student> {
         return null;
     }
     
-    public static void main(String[] args) {
-        ApplicationContext x = new ClassPathXmlApplicationContext("ApplicationContext.xml");
-        StudentDao studentDao = x.getBean("studentDao", StudentDao.class);
-        Course course = new Course("course1", "desc");
-        Group group = new Group("group1", Arrays.asList(course));
-        group.setId(1);
-        Student student = new Student(group, "Ivan", "Ivanov", Year.FIRST);
-        studentDao.save(student);
-        studentDao.save(student);
-        studentDao.save(student);
-//        System.out.println(Year.FIFTH.toString());
-    }
+
 }
