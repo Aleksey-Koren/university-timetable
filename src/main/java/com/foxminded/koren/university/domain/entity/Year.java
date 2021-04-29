@@ -10,10 +10,10 @@ public enum Year {
     
     private int yearNumber;
     
-    Year(int yearNumber) {
-       this.yearNumber = yearNumber;
+    private Year(int yearNumber) {
+        this.yearNumber = yearNumber;
     }
-    
+ 
     public int getYear() {
         return yearNumber;
     }
