@@ -45,21 +45,18 @@ class CourseDaoTest {
     
     @Test
     void getById_shouldWorkCorrectly() throws IOException {
-        System.out.println(tablesCreation);
-        tablesCreation.createTables();
         
+        tablesCreation.createTables();
         String sql = "INSERT INTO course\r\n"
                    + "(id, name, description)\r\n"
                    + "VALUES\r\n"
                    + "(5, 'name', 'description');";
-        
         jdbcTemplate.update(sql);
         
-        
         Course expected = new Course("name", "description");
-        courseDao.save(expected);
-        int expectedId = 1;
+        int expectedId = 5;
         expected.setId(expectedId);
+        
         assertEquals(expected, courseDao.getById(expectedId).get());
     }
 }

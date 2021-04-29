@@ -65,6 +65,4 @@ public class CourseDao implements Dao<Integer, Course> {
 //    public Course getById(Integer id) {
 //        return jdbcTemplate.queryForObject(GET, new CourseMapper(), id);
 //    }
-       
-
 }
