@@ -3,6 +3,7 @@ package com.foxminded.koren.university.dao;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import com.foxminded.koren.university.domain.entity.Course;
@@ -56,7 +57,12 @@ public class CourseDao implements Dao<Integer, Course> {
     }
     
 //    @Override
-//    public Course getById(Integer id) {
-//        return jdbcTemplate.queryForObject(GET, new CourseMapper(), id);
-//    }
+//    public Optional<Course> getById(Integer id) {
+//        try {
+//            Course course = jdbcTemplate.queryForObject(GET_BY_ID, new CourseMapper(), id);
+//            return Optional.of(course);
+//        }catch(EmptyResultDataAccessException e) {
+//            return Optional.empty();
+//        }
+//    }  
 }
