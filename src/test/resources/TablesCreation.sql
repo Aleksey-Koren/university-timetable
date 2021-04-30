@@ -1,3 +1,12 @@
+DROP TABLE IF EXISTS group_course;
+DROP TABLE IF EXISTS lecture_group;
+DROP TABLE IF EXISTS student;
+DROP TABLE IF EXISTS lecture;
+DROP TABLE IF EXISTS teacher;
+DROP TABLE IF EXISTS course;
+DROP TABLE IF EXISTS group_table;
+DROP TABLE IF EXISTS audience;
+
 CREATE TABLE audience
 (
     id SERIAL PRIMARY KEY,

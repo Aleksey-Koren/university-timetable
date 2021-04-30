@@ -29,15 +29,7 @@ public class TablesCreation {
     
     private String retriveSql() throws IOException {
         try(Stream<String> stream = Files.lines(Path.of(tablesCreationUrl))){
-            String s = stream.peek(System.out::println).reduce("", (a,b) -> a + b);
-            return s;
+            return stream.reduce("", (a,b) -> a + b);
         }
-    }
-    
-    public static void main(String[] args) throws DataAccessException, IOException {
-        ClassPathXmlApplicationContext con = 
-                new ClassPathXmlApplicationContext("ApplicationContext.xml");
-        TablesCreation c = con.getBean("tablesCreation", TablesCreation.class);
-        c.createTables();
     }
 }
