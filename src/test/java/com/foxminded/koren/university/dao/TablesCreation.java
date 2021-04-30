@@ -4,11 +4,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +20,7 @@ public class TablesCreation {
     @Qualifier("jdbcTemplate")
     private JdbcTemplate jdbcTemplate;
     
-    public void createTables() throws DataAccessException, IOException {
+    public void createTables() throws IOException {
         jdbcTemplate.execute(retriveSql());
     }
     

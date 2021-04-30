@@ -1,16 +1,10 @@
 package com.foxminded.koren.university.dao;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-
 import com.foxminded.koren.university.domain.entity.Course;
 
 @Component
@@ -33,8 +27,8 @@ public class CourseDao implements Dao<Integer, Course> {
                                        + "WHERE id = ?;";
     
     private static final String GET_BY_ID = "SELECT id, name, description\r\n"
-                                    + "FROM course\r\n"
-                                    + "WHERE id = ?;";
+                                          + "FROM course\r\n"
+                                          + "WHERE id = ?;";
     
 
     @Override

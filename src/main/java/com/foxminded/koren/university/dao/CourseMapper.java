@@ -17,5 +17,4 @@ public class CourseMapper implements RowMapper<Course> {
         course.setDescrption(rs.getString("description"));
         return course;
     }
-
 }
