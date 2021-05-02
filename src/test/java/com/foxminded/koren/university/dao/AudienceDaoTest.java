@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.IOException;
 
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,10 +16,10 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.foxminded.koren.university.SpringConfigT;
-import com.foxminded.koren.university.domain.entity.Course;
+import com.foxminded.koren.university.domain.entity.Audience;
 
 @TestInstance(Lifecycle.PER_CLASS)
-class CourseDaoTest {
+class AudienceDaoTest {
     
     AnnotationConfigApplicationContext context;
     
@@ -28,14 +27,14 @@ class CourseDaoTest {
     
     private JdbcTemplate jdbcTemplate;
     
-    private CourseDao courseDao;
+    private AudienceDao audienceDao;
     
     @BeforeAll
     void contextInit() {
         context = new AnnotationConfigApplicationContext(SpringConfigT.class);
         jdbcTemplate = context.getBean("jdbcTemplate", JdbcTemplate.class);
         tablesCreation = context.getBean("tablesCreation", TablesCreation.class);
-        courseDao = context.getBean("courseDao", CourseDao.class);
+        audienceDao = context.getBean("audienceDao", AudienceDao.class);
     }
     
     @AfterAll
@@ -47,50 +46,48 @@ class CourseDaoTest {
     void createTables() throws DataAccessException, IOException {
         tablesCreation.createTables();
     }
-
+    
     @Test
     void getById_shouldWorkCorrectly() {
-        String sql = "INSERT INTO course\r\n"
-                   + "(id, name, description)\r\n"
-                   + "VALUES\r\n"
-                   + "(5, 'name', 'description');";
+        String sql = "INSERT INTO audience (id, room_number, capacity)\r\n"
+                   + "VALUES (5, 113, 30);";
         
         jdbcTemplate.update(sql);  
-        Course expected = new Course("name", "description");
+        Audience expected = new Audience(113, 30);
         int expectedId = 5;
         expected.setId(expectedId);
-        assertEquals(expected, courseDao.getById(expectedId).get());
+        assertEquals(expected, audienceDao.getById(expectedId).get());
     }
     
     @Test
     void save_shouldWorkCorrectly() {
         int expectedId = 1;
-        Course expected = new Course("name", "description");  
-        courseDao.save(expected);
+        Audience expected = new Audience(113, 30);  
+        audienceDao.save(expected);
         expected.setId(expectedId);
-        assertEquals(expected, courseDao.getById(expectedId).get());
+        assertEquals(expected, audienceDao.getById(expectedId).get());
     }
     
     @Test
     void update_shouldWorkCorrectly() {
         int expectedId = 1;
-        Course expected = new Course("name", "description");
-        courseDao.save(expected);
+        Audience expected = new Audience(113, 30);  
+        audienceDao.save(expected);
         expected.setId(expectedId);
-        assertEquals(expected, courseDao.getById(expectedId).get());
-        expected.setName("updated name");
-        courseDao.update(expected);
-        assertEquals(expected, courseDao.getById(expectedId).get());
+        assertEquals(expected, audienceDao.getById(expectedId).get());
+        expected.setNumber(35);
+        audienceDao.update(expected);
+        assertEquals(expected, audienceDao.getById(expectedId).get());
     }
     
     @Test
     void deleteById_shouldWorkCorrectly() {
         int expectedId = 1;
-        Course expected = new Course("name", "description");
-        courseDao.save(expected);
+        Audience expected = new Audience(113, 30);  
+        audienceDao.save(expected);
         expected.setId(expectedId);
-        assertEquals(expected, courseDao.getById(expectedId).get());
-        courseDao.deleteById(expectedId);
-        assertFalse(courseDao.getById(expectedId).isPresent());
-    }
+        assertEquals(expected, audienceDao.getById(expectedId).get());
+        audienceDao.deleteById(expectedId);
+        assertFalse(audienceDao.getById(expectedId).isPresent());
+    }    
 }

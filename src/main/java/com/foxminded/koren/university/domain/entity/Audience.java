@@ -11,6 +11,10 @@ public class Audience {
         this.capacity = capacity;
     }
 
+    public Audience() {
+
+    }
+
     public int getId() {
         return id;
     }

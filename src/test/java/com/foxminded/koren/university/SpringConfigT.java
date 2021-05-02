@@ -14,7 +14,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 @Configuration
 @ComponentScan("com.foxminded.koren.university")
 @PropertySource("classpath:application.properties")
-public class SpringConfig {
+public class SpringConfigT{
     
     @Autowired
     Environment env;

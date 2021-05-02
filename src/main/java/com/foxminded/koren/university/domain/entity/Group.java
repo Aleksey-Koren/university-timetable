@@ -13,6 +13,14 @@ public class Group {
         this.courses = courses;
     }
 
+    public Group() {
+        
+    }
+
+    public Group(String name) {
+        this.name = name;
+    }
+
     public int getId() {
         return id;
     }
