@@ -6,6 +6,10 @@ public class Teacher implements TimetablePerson {
     private String firstName;
     private String lastName;
     
+    public Teacher() {
+        
+    }
+    
     public Teacher(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;

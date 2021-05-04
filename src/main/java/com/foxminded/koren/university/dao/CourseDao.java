@@ -27,7 +27,7 @@ public class CourseDao implements Dao<Integer, Course> {
     private static final String UPDATE = 
             "UPDATE course\r\n"
           + "SET name = ?,\r\n"
-          + "description = ?\r\n"
+          + "    description = ?\r\n"
           + "WHERE id = ?;";
     
     private static final String DELETE = 
@@ -71,6 +71,7 @@ public class CourseDao implements Dao<Integer, Course> {
         return jdbcTemplate.update(DELETE, id) > 0;
     }
 
+    @Override
     public Optional<Course> getById(Integer id) {
         List<Course> result = jdbcTemplate.query(GET_BY_ID, new CourseMapper(), id);
         if(result.isEmpty()) {
@@ -94,15 +95,3 @@ public class CourseDao implements Dao<Integer, Course> {
             return jdbcTemplate.query(GET_BY_GROUP_ID, new CourseMapper(), group.getId());  
         }
 }
-
-
-
-
-
-
-
-
-
-
-
-

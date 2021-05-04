@@ -22,8 +22,7 @@ import com.foxminded.koren.university.domain.entity.Group;
 
 @TestInstance(Lifecycle.PER_CLASS)
 class GroupDaoTest {
-    
-    
+       
     AnnotationConfigApplicationContext context;
     
     private JdbcTemplate jdbcTemplate;

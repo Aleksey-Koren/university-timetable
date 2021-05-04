@@ -35,5 +35,12 @@ public class TestData {
                             + "(2, 2),\n"
                             + "(2, 4)";      
         jdbcTemplate.update(addCoursesToGroup);
+        
+        String insertTeachers = 
+                "INSERT INTO teacher (first_name, last_name)\r\n"
+              + "VALUES\n"
+              + "('first name1', 'last name1'),\n"
+              + "('first name2', 'last name2');";
+        jdbcTemplate.update(insertTeachers);
     }
 }
