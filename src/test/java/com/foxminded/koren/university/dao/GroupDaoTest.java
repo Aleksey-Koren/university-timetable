@@ -26,11 +26,13 @@ class GroupDaoTest {
     
     AnnotationConfigApplicationContext context;
     
-    private TablesCreation tablesCreation;
-    
     private JdbcTemplate jdbcTemplate;
     
+    private TablesCreation tablesCreation;
+    
     private GroupDao groupDao;
+    
+    private TestData testData;
     
     @BeforeAll
     void contextInit() {
@@ -38,6 +40,8 @@ class GroupDaoTest {
         jdbcTemplate = context.getBean("jdbcTemplate", JdbcTemplate.class);
         tablesCreation = context.getBean("tablesCreation", TablesCreation.class);
         groupDao = context.getBean("groupDao", GroupDao.class);
+        testData = context.getBean("testData", TestData.class); 
+        
     }
     
     @AfterAll
@@ -48,85 +52,80 @@ class GroupDaoTest {
     @BeforeEach
     void createTables() throws DataAccessException, IOException {
         tablesCreation.createTables();
+        testData.prepareTestData();
     }
     
     @Test
     void getById_shouldWorkCorrectly() {
-        prepareTestData();
-        
-        Course course1 = new Course("name1", "desc1");
-        course1.setId(1);
-        Course course2 = new Course("name2", "desc2");
-        course2.setId(2);
-        
         int expectedId = 1;
-        Group expected = new Group("group name1", List.of(course1, course2));
+        Group expected = new Group("group name1");
         expected.setId(expectedId);
-                
         assertEquals(expected, groupDao.getById(1).get());        
     }
     
     @Test
-    void save_shouldWorkCorrectly() {
-        prepareTestData();
-        
+    void save_shouldWorkCorrectly() {        
         int expectedId = 3;
-        Group expected = new Group("test");
-        Course course1 = new Course("name1", "desc1");
-        course1.setId(1);
-        Course course2 = new Course("name2", "desc2");
-        course2.setId(2);
-        expected.setCourses(List.of(course1, course2));
-        
+        Group expected = new Group("test!!!");    
         groupDao.save(expected);
-        expected.setId(expectedId);
         assertEquals(expected, groupDao.getById(expectedId).get());
     }
     
     @Test
     void update_shouldWorkCorrectly() {
-        prepareTestData();
         int expectedId = 1;
         Group expected = groupDao.getById(expectedId).get();
         expected.setName("changed name");
-        expected.getCourses().remove(0);
         groupDao.update(expected);
         assertEquals(expected, groupDao.getById(expectedId).get());
     }
     
     @Test
     void deleteById_shouldWorkCorrectly() {
-        prepareTestData();
         int expectedId = 1;
         assertTrue(groupDao.getById(expectedId).isPresent());
         groupDao.deleteById(expectedId);
         assertFalse(groupDao.getById(expectedId).isPresent());
     }
     
-    private void prepareTestData() {
-        String insertCourses = 
-                "INSERT INTO course (name, description)\n"
-              + "VALUES\n"
-              + "('name1', 'desc1'),\n"
-              + "('name2', 'desc2'),\n"
-              + "('name3', 'desc3'),\n"
-              + "('name4', 'desc4');";
-        jdbcTemplate.update(insertCourses);
-   
-        String insertGroups = 
-                "INSERT INTO group_table (name)\n"
-              + "VALUES\n"
-              + "('group name1'),\n"
-              + "('group name2');";    
-        jdbcTemplate.update(insertGroups);
-   
-        String addCoursesToGroup = "INSERT INTO group_course (group_id, course_id)\r\n"
-                            + "VALUES\n"
-                            + "(1, 1),\n"
-                            + "(1, 2),\n"
-                            + "(2, 1),\n"
-                            + "(2, 2),\n"
-                            + "(2, 4)";      
-        jdbcTemplate.update(addCoursesToGroup);
+    @Test
+    void addCourse_shouldWorkCorrectly() {
+        Group group = new Group("group name1");
+        group.setId(1);
+        Course course = new Course("name3", "desc3");
+        course.setId(3);
+        String sql = 
+                "SELECT c.id, c.name, c.description\r\n"
+              + "FROM group_course gc \r\n"
+              + "    JOIN course c ON gc.course_id = c.id \r\n"
+              + "WHERE gc.group_id = 1\r\n"
+              + "AND gc.course_id = 3;";
+        
+        List<Course> courses = jdbcTemplate.query(sql, new CourseMapper());
+        assertTrue(courses.isEmpty());
+
+        groupDao.addCourse(group, course);
+        courses = jdbcTemplate.query(sql, new CourseMapper());
+        assertFalse(courses.isEmpty());
+        assertEquals(course, courses.get(0));
+    }
+    
+    @Test
+    void removeCourse_shouldWorkCorrectly() {
+        Group group = new Group("group name1");
+        group.setId(1);
+        Course course = new Course("name3", "desc3");
+        course.setId(2);
+        String sql = 
+                "SELECT c.id, c.name, c.description\r\n"
+              + "FROM group_course gc \r\n"
+              + "    JOIN course c ON gc.course_id = c.id \r\n"
+              + "WHERE gc.group_id = 1\r\n"
+              + "AND gc.course_id = 2;";
+        List<Course> courses = jdbcTemplate.query(sql, new CourseMapper());
+        assertFalse(courses.isEmpty());
+        groupDao.removeCourse(group, course);
+        courses = jdbcTemplate.query(sql, new CourseMapper());
+        assertTrue(courses.isEmpty());
     }
 }

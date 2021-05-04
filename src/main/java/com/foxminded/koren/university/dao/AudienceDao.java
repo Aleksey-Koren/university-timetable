@@ -1,10 +1,13 @@
 package com.foxminded.koren.university.dao;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import com.foxminded.koren.university.domain.entity.Audience;
@@ -32,8 +35,17 @@ public class AudienceDao implements Dao<Integer, Audience> {
                                           + "WHERE id = ?;";
 
     @Override
-    public void save(Audience entity) {
-        jdbcTemplate.update(SAVE, entity.getNumber(), entity.getCapacity());
+    public Audience save(Audience entity) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement statement = connection.prepareStatement(SAVE, new String[] {"id"});
+            statement.setInt(1, entity.getNumber());
+            statement.setInt(2,  entity.getCapacity());
+            return statement;
+            }, keyHolder);
+        
+        entity.setId(keyHolder.getKeyAs(Integer.class));
+        return entity;
     }
 
     @Override

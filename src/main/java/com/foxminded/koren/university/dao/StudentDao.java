@@ -34,11 +34,12 @@ public class StudentDao implements Dao<Integer, Student> {
     }
 
     @Override
-    public void save(Student entity) {
+    public Student save(Student entity) {
         jdbcTemplate.update(SAVE, entity.getGroup().getId(),
                                   entity.getFirstName(),
                                   entity.getLastName(),
                                   entity.getYear().toString());
+        return entity;
     }
 
     @Override

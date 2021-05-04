@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public interface Dao <I, E> {
     
-    void save(E entity);
+    E save(E entity);
     
     void update (E entity);
     
