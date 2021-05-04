@@ -27,13 +27,14 @@ public class TestData {
               + "('group name2');";    
         jdbcTemplate.update(insertGroups);
    
-        String addCoursesToGroup = "INSERT INTO group_course (group_id, course_id)\r\n"
-                            + "VALUES\n"
-                            + "(1, 1),\n"
-                            + "(1, 2),\n"
-                            + "(2, 1),\n"
-                            + "(2, 2),\n"
-                            + "(2, 4)";      
+        String addCoursesToGroup = 
+                "INSERT INTO group_course (group_id, course_id)\r\n"
+              + "VALUES\n"
+              + "(1, 1),\n"
+              + "(1, 2),\n"
+              + "(2, 1),\n"
+              + "(2, 2),\n"
+              + "(2, 4)";      
         jdbcTemplate.update(addCoursesToGroup);
         
         String insertTeachers = 
@@ -42,5 +43,14 @@ public class TestData {
               + "('first name1', 'last name1'),\n"
               + "('first name2', 'last name2');";
         jdbcTemplate.update(insertTeachers);
+        
+        String insertStudents =
+                "INSERT INTO student (id, group_id, first_name, last_name, student_year)\n"
+              + "VALUES\n"
+              + "(1, 1, 'first name1', 'last name1', 'SECOND'),\n"
+              + "(2, 2, 'first name2', 'last name2', 'FIRST'),\n"
+              + "(3, 2, 'first name3', 'last name3', 'FIRST'),\n"
+              + "(4, NULL, 'first name4', 'last name4', 'SECOND');";
+        jdbcTemplate.update(insertStudents);
     }
 }

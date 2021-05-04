@@ -1,0 +1,127 @@
+package com.foxminded.koren.university.dao;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
+import java.io.IOException;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import com.foxminded.koren.university.SpringConfigT;
+import com.foxminded.koren.university.domain.entity.Group;
+import com.foxminded.koren.university.domain.entity.Student;
+import com.foxminded.koren.university.domain.entity.Year;
+
+@TestInstance(Lifecycle.PER_CLASS)
+class StudentDaoTest {
+    
+    AnnotationConfigApplicationContext context;
+    
+    private TablesCreation tablesCreation;
+    
+    private JdbcTemplate jdbcTemplate;
+    
+    private StudentDao studentDao;
+    
+    private TestData testData;
+    
+    @BeforeAll
+    void contextInit() {
+        context = new AnnotationConfigApplicationContext(SpringConfigT.class);
+        jdbcTemplate = context.getBean("jdbcTemplate", JdbcTemplate.class);
+        tablesCreation = context.getBean("tablesCreation", TablesCreation.class);
+        studentDao = context.getBean("studentDao", StudentDao.class);
+        testData = context.getBean("testData", TestData.class);
+    }
+    
+    @AfterAll
+    void closeContext() {    
+        context.close();
+    }
+    
+    @BeforeEach
+    void createTables() throws DataAccessException, IOException {
+        tablesCreation.createTables();
+        testData.prepareTestData();
+    }
+    
+    @Test
+    void getById_shouldWorkCorrectly() {
+        int expectedId = 1;
+        Group group = new Group("group name1");
+        group.setId(1);
+        Student expected = new Student(group, "first name1", "last name1", Year.SECOND);
+        expected.setId(expectedId);
+        assertEquals(expected, studentDao.getById(expectedId).get());
+    }
+    
+    @Test
+    void getById_shouldWorkCorrectly_ifGroupIdIsNull() {
+        int expectedId = 4;
+        Group group = null;
+        Student expected = new Student(group, "first name4", "last name4", Year.SECOND);
+        expected.setId(expectedId);
+        assertEquals(expected, studentDao.getById(expectedId).get());
+    }
+    
+    @Test
+    void save_shouldWorkCorrectly() {        
+        int expectedId = 5;
+        Group group = new Group("group name1");
+        group.setId(1);
+        Student expected = new Student(group, "test!!!", "test", Year.SIXTH);    
+        studentDao.save(expected);
+        assertEquals(expected, studentDao.getById(expectedId).get());
+    }
+    
+    @Test
+    void save_shouldWorkCorrectly_ifGroupIdIsNull() {        
+        int expectedId = 5;
+        Group group = null;
+        Student expected = new Student(group, "test!!!", "test", Year.SIXTH);    
+        studentDao.save(expected);
+        assertEquals(expected, studentDao.getById(expectedId).get());
+    }
+    
+    @Test
+    void update_shouldWorkCorrectly() {
+        Group group = new Group("group name2");
+        group.setId(2);
+        int expectedId = 1;
+        Student expected = studentDao.getById(expectedId).get();
+        expected.setFirstName("changed name");
+        expected.setLastName("changed name");
+        expected.setGroup(group);
+        expected.setYear(Year.FIRST);
+        studentDao.update(expected);
+        assertEquals(expected, studentDao.getById(expectedId).get());
+    }
+    
+    @Test
+    void update_shouldWorkCorrectly_ifGroupIdIsNull() {
+        int expectedId = 1;
+        Student expected = studentDao.getById(expectedId).get();
+        expected.setFirstName("changed name");
+        expected.setLastName("changed name");
+        expected.setGroup(null);
+        expected.setYear(Year.FIRST);
+        studentDao.update(expected);
+        assertEquals(expected, studentDao.getById(expectedId).get());
+    }
+    
+    @Test
+    void deleteById_shouldWorkCorrectly() {
+        int expectedId = 1;
+        Student toDelete = studentDao.getById(expectedId).get();
+        studentDao.deleteById(toDelete.getId());
+        assertFalse(studentDao.getById(expectedId).isPresent());  
+    }
+}

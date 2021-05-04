@@ -7,6 +7,10 @@ public class Student implements TimetablePerson {
     private String lastName;
     private Year year;
     
+    public Student() {
+        
+    }
+    
     public Student(Group group, String firstName, String lastName, Year year) {
         this.group = group;
         this.firstName = firstName;
