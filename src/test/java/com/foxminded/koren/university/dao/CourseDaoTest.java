@@ -1,51 +1,37 @@
 package com.foxminded.koren.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.IOException;
 import java.util.List;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.foxminded.koren.university.SpringConfigT;
 import com.foxminded.koren.university.domain.entity.Course;
 import com.foxminded.koren.university.domain.entity.Group;
 
-@TestInstance(Lifecycle.PER_CLASS)
+@SpringJUnitConfig
+@ContextConfiguration(classes = {SpringConfigT.class})
 class CourseDaoTest {
     
-    AnnotationConfigApplicationContext context;
-    
+    @Autowired
     private TablesCreation tablesCreation;
-    
+    @Autowired
     private JdbcTemplate jdbcTemplate;
-    
+    @Autowired
     private CourseDao courseDao;
-    
+    @Autowired
     private TestData testData;
     
-    @BeforeAll
-    void contextInit() {
-        context = new AnnotationConfigApplicationContext(SpringConfigT.class);
-        jdbcTemplate = context.getBean("jdbcTemplate", JdbcTemplate.class);
-        tablesCreation = context.getBean("tablesCreation", TablesCreation.class);
-        courseDao = context.getBean("courseDao", CourseDao.class);
-        testData = context.getBean("testData", TestData.class);
-    }
-    
-    @AfterAll
-    void closeContext() {    
-        context.close();
-    }
     
     @BeforeEach
     void createTables() throws DataAccessException, IOException {

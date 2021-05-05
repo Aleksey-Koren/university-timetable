@@ -5,46 +5,27 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.IOException;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.foxminded.koren.university.SpringConfigT;
 import com.foxminded.koren.university.domain.entity.Teacher;
 
-@TestInstance(Lifecycle.PER_CLASS)
+@SpringJUnitConfig
+@ContextConfiguration(classes = {SpringConfigT.class})
 class TeacherDaoTest {
     
-    AnnotationConfigApplicationContext context;
-    
-    private JdbcTemplate jdbcTemplate;
-    
+    @Autowired
     private TablesCreation tablesCreation;
-    
+    @Autowired
     private TeacherDao teacherDao;
-    
+    @Autowired
     private TestData testData;
-    
-    @BeforeAll
-    void contextInit() {
-        context = new AnnotationConfigApplicationContext(SpringConfigT.class);
-        jdbcTemplate = context.getBean("jdbcTemplate", JdbcTemplate.class);
-        tablesCreation = context.getBean("tablesCreation", TablesCreation.class);
-        teacherDao = context.getBean("teacherDao", TeacherDao.class);
-        testData = context.getBean("testData", TestData.class); 
-    }
-    
-    @AfterAll
-    void closeContext() {    
-        context.close();
-    }
-    
+
     @BeforeEach
     void createTables() throws DataAccessException, IOException {
         tablesCreation.createTables();
