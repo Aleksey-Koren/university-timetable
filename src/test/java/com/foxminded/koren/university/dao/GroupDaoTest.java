@@ -2,6 +2,7 @@ package com.foxminded.koren.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -16,6 +17,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.foxminded.koren.university.SpringConfigT;
+import com.foxminded.koren.university.dao.exceptions.DAOException;
+import com.foxminded.koren.university.dao.mappers.CourseMapper;
+import com.foxminded.koren.university.dao.test_data.TablesCreation;
+import com.foxminded.koren.university.dao.test_data.TestData;
 import com.foxminded.koren.university.domain.entity.Course;
 import com.foxminded.koren.university.domain.entity.Group;
 
@@ -46,7 +51,7 @@ class GroupDaoTest {
         int expectedId = 1;
         Group expected = new Group("group name1");
         expected.setId(expectedId);
-        assertEquals(expected, groupDao.getById(1).get());        
+        assertEquals(expected, groupDao.getById(1));        
     }
     
     @Test
@@ -54,24 +59,24 @@ class GroupDaoTest {
         int expectedId = 3;
         Group expected = new Group("test!!!");    
         groupDao.save(expected);
-        assertEquals(expected, groupDao.getById(expectedId).get());
+        assertEquals(expected, groupDao.getById(expectedId));
     }
     
     @Test
     void update_shouldWorkCorrectly() {
         int expectedId = 1;
-        Group expected = groupDao.getById(expectedId).get();
+        Group expected = groupDao.getById(expectedId);
         expected.setName("changed name");
         groupDao.update(expected);
-        assertEquals(expected, groupDao.getById(expectedId).get());
+        assertEquals(expected, groupDao.getById(expectedId));
     }
     
     @Test
     void deleteById_shouldWorkCorrectly() {
         int expectedId = 1;
-        assertTrue(groupDao.getById(expectedId).isPresent());
-        groupDao.deleteById(expectedId);
-        assertFalse(groupDao.getById(expectedId).isPresent());
+        Group group = groupDao.getById(expectedId);
+        groupDao.deleteById(group.getId());
+        assertThrows(DAOException.class, () -> groupDao.getById(group.getId()), "No such id in database");
     }
     
     @Test

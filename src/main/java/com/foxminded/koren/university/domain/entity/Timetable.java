@@ -2,6 +2,9 @@ package com.foxminded.koren.university.domain.entity;
 
 import java.util.List;
 
+import com.foxminded.koren.university.domain.entity.interfaces.TimetableEvent;
+import com.foxminded.koren.university.domain.entity.interfaces.TimetablePerson;
+
 public class Timetable {
     
     private TimetablePerson person;

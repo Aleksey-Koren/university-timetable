@@ -1,15 +1,9 @@
 package com.foxminded.koren.university.domain.entity;
 
-import java.util.List;
-
 public class Group {
     
     private int id;
     private String name;
-    
-    public Group(String name, List<Course> courses) {
-        this.name = name;
-    }
 
     public Group() {
         

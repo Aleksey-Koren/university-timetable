@@ -46,10 +46,12 @@ CREATE TABLE teacher
 CREATE TABLE lecture
 (
     id SERIAL PRIMARY KEY,
-    teacher_id INT REFERENCES teacher(id) ON DELETE CASCADE,
-    audience_id INT REFERENCES audience(id) ON DELETE CASCADE,
+    course_id INT REFERENCES course(id),
+    teacher_id INT REFERENCES teacher(id) ON DELETE SET NULL,
+    audience_id INT REFERENCES audience(id) ON DELETE SET NULL,
     start_time TIMESTAMP NOT NULL,
-    end_time TIMESTAMP NOT NULL
+    end_time TIMESTAMP NOT NULL,
+    CHECK (start_time < end_time)
 );
 
 CREATE TABLE lecture_group

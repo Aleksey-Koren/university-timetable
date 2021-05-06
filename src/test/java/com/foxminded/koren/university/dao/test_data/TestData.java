@@ -1,4 +1,4 @@
-package com.foxminded.koren.university.dao;
+package com.foxminded.koren.university.dao.test_data;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -52,5 +52,29 @@ public class TestData {
               + "(3, 2, 'first name3', 'last name3', 'FIRST'),\n"
               + "(4, NULL, 'first name4', 'last name4', 'SECOND');";
         jdbcTemplate.update(insertStudents);
+        
+        String insertAudience =
+                "INSERT INTO audience \r\n"
+                + "(id, room_number, capacity)\r\n"
+                + "VALUES\r\n"
+                + "(1, 4, 30),\r\n"
+                + "(2, 34, 30),\r\n"
+                + "(3, 37, 150)";
+        jdbcTemplate.update(insertAudience);
+        
+        String insertLecture =
+                  "INSERT INTO lecture \r\n"
+                + "(id, course_id, teacher_id, audience_id, start_time , end_time)\r\n"
+                + "VALUES\r\n"
+                + "(1 , 1, 1, 1, '2021-05-02 16:02:00', '2021-05-02 17:02:00'),\r\n"
+                + "(2 , 2, 1, 2, '2021-06-02 16:00:00', '2021-06-02 17:00:00'),\r\n"
+                + "(3 , 1, 1, 1, '2021-06-02 18:00:00', '2021-06-02 19:00:00'),\r\n"
+                + "(4 , 2, 1, 3, '2021-06-02 19:00:00', '2021-06-02 20:00:00'),\r\n"
+                + "(5 , 1, 1, 2, '2021-06-02 21:00:00', '2021-06-02 22:00:00'),\r\n"
+                + "(6 , 2, 1, 1, '2021-06-02 07:00:00', '2021-06-02 08:00:00'),\r\n"
+                + "(7 , 1, 1, 2, '2021-06-02 18:00:00', '2021-06-02 19:00:00'),\r\n"
+                + "(8 , 1, NULL, NULL, '2021-06-02 18:00:00', '2021-06-02 19:00:00'),\r\n"
+                + "(9 , 1, NULL, 2, '2021-06-02 18:00:00', '2021-06-02 19:00:00');";
+        jdbcTemplate.update(insertLecture);
     }
 }

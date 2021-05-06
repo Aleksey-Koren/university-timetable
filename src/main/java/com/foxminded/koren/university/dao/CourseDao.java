@@ -9,6 +9,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+
+import com.foxminded.koren.university.dao.exceptions.DAOException;
+import com.foxminded.koren.university.dao.interfaces.Dao;
+import com.foxminded.koren.university.dao.mappers.CourseMapper;
 import com.foxminded.koren.university.domain.entity.Course;
 import com.foxminded.koren.university.domain.entity.Group;
 
@@ -16,7 +20,7 @@ import com.foxminded.koren.university.domain.entity.Group;
 public class CourseDao implements Dao<Integer, Course> {
     
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
     
     private static final String SAVE = 
             "INSERT INTO course\r\n"
@@ -71,25 +75,24 @@ public class CourseDao implements Dao<Integer, Course> {
         return jdbcTemplate.update(DELETE, id) > 0;
     }
 
-    @Override
-    public Optional<Course> getById(Integer id) {
-        List<Course> result = jdbcTemplate.query(GET_BY_ID, new CourseMapper(), id);
-        if(result.isEmpty()) {
-            return Optional.empty();
-        }else {
-            return Optional.of(result.get(0));     
-        }
-    }
-    
 //    @Override
 //    public Optional<Course> getById(Integer id) {
-//        try {
-//            Course course = jdbcTemplate.queryForObject(GET_BY_ID, new CourseMapper(), id);
-//            return Optional.of(course);
-//        }catch(EmptyResultDataAccessException e) {
+//        List<Course> result = jdbcTemplate.query(GET_BY_ID, new CourseMapper(), id);
+//        if(result.isEmpty()) {
 //            return Optional.empty();
+//        }else {
+//            return Optional.of(result.get(0));     
 //        }
 //    }
+    
+    @Override
+    public Course getById(Integer id) {
+        try {
+            return jdbcTemplate.queryForObject(GET_BY_ID, new CourseMapper(), id);
+        }catch(EmptyResultDataAccessException e) {
+            throw new DAOException("No such id in database", e);
+        }
+    }
     
         public List<Course> getByGroup(Group group) {
             return jdbcTemplate.query(GET_BY_GROUP_ID, new CourseMapper(), group.getId());  

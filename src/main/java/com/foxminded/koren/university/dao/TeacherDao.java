@@ -5,19 +5,23 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
+import com.foxminded.koren.university.dao.exceptions.DAOException;
+import com.foxminded.koren.university.dao.interfaces.Dao;
+import com.foxminded.koren.university.dao.mappers.CourseMapper;
 import com.foxminded.koren.university.domain.entity.Teacher;
 
 @Component
 public class TeacherDao implements Dao<Integer, Teacher> {
     
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
     
     private static final String SAVE = 
             "INSERT INTO teacher (first_name, last_name)\r\n"
@@ -63,13 +67,11 @@ public class TeacherDao implements Dao<Integer, Teacher> {
     }
 
     @Override
-    public Optional<Teacher> getById(Integer id) {
-        List<Teacher> teachers = 
-                jdbcTemplate.query(GET_BY_ID, new BeanPropertyRowMapper<Teacher>(Teacher.class), id);
-        if(teachers.isEmpty()) {
-            return Optional.empty();
-        }else {
-            return Optional.of(teachers.get(0));
+    public Teacher getById(Integer id) {
+        try {
+            return jdbcTemplate.queryForObject(GET_BY_ID, new BeanPropertyRowMapper<>(Teacher.class), id);
+        }catch(EmptyResultDataAccessException e) {
+            throw new DAOException("No such id in database", e);
         }
     }
 }

@@ -17,7 +17,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 public class SpringConfigT{
     
     @Autowired
-    Environment env;
+    private Environment env;
     
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();

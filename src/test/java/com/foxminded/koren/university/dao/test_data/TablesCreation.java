@@ -1,4 +1,4 @@
-package com.foxminded.koren.university.dao;
+package com.foxminded.koren.university.dao.test_data;
 
 import java.io.IOException;
 import java.nio.file.Files;

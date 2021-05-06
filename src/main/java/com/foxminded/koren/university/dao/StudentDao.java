@@ -1,12 +1,14 @@
 package com.foxminded.koren.university.dao;
 
+import com.foxminded.koren.university.dao.exceptions.DAOException;
+import com.foxminded.koren.university.dao.interfaces.Dao;
+import com.foxminded.koren.university.dao.mappers.StudentMapper;
 import com.foxminded.koren.university.domain.entity.Student;
 
 import java.sql.PreparedStatement;
-import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -16,38 +18,39 @@ import org.springframework.stereotype.Component;
 public class StudentDao implements Dao<Integer, Student> {
     
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
     
-    @Autowired
-    GroupDao groupDao;
+//    @Autowired
+//    GroupDao groupDao;
     
-    private static final String SAVE = "INSERT INTO student\r\n"
-                                     + "(group_id, first_name, last_name, student_year)\r\n"
-                                     + "VALUES\r\n"
-                                     + "(?, ?, ?, ?);";
+    private static final String SAVE = 
+            "INSERT INTO student\r\n"
+          + "(group_id, first_name, last_name, student_year)\r\n"
+          + "VALUES\r\n"
+          + "(?, ?, ?, ?);";
     
     private static final String GET_BY_ID = 
-                "SELECT s.id,\r\n"
-              + "       s.first_name,\r\n"
-              + "       s.last_name,\r\n"
-              + "       s.student_year,\r\n"
-              + "       gt.id group_id,\r\n"
-              + "       gt.name group_name\r\n"
-              + "FROM student s\r\n"
-              + "    LEFT JOIN group_table gt ON s.group_id = gt.id\r\n"
-              + "WHERE s.id = ?;";
+            "SELECT s.id,\r\n"
+          + "       s.first_name,\r\n"
+          + "       s.last_name,\r\n"
+          + "       s.student_year,\r\n"
+          + "       gt.id group_id,\r\n"
+          + "       gt.name group_name\r\n"
+          + "FROM student s\r\n"
+          + "    LEFT JOIN group_table gt ON s.group_id = gt.id\r\n"
+          + "WHERE s.id = ?;";
     
     private static final String UPDATE = 
             "UPDATE student \r\n"
-            + "SET group_id = ?,\r\n"
-            + "    first_name = ?,\r\n"
-            + "    last_name = ?,\r\n"
-            + "    student_year = ?\r\n"
-            + "WHERE id = ?;";
+          + "SET group_id = ?,\r\n"
+          + "    first_name = ?,\r\n"
+          + "    last_name = ?,\r\n"
+          + "    student_year = ?\r\n"
+          + "WHERE id = ?;";
     
     private static final String DELETE_BY_ID =
             "DELETE FROM student\r\n"
-            + "WHERE id = ?;";
+          + "WHERE id = ?;";
     
 
     
@@ -88,12 +91,11 @@ public class StudentDao implements Dao<Integer, Student> {
     }
 
     @Override
-    public Optional<Student> getById(Integer id) {
-        List<Student> student = jdbcTemplate.query(GET_BY_ID, new StudentMapper(), id);
-        if(student.isEmpty()) {
-            return Optional.empty();
-        }else {
-            return Optional.of(student.get(0));
+    public Student getById(Integer id) {
+        try {
+            return jdbcTemplate.queryForObject(GET_BY_ID, new StudentMapper(), id);
+        }catch(EmptyResultDataAccessException e) {
+            throw new DAOException("No such id in database", e);
         }
     }
 }

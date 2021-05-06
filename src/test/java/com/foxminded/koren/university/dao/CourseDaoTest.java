@@ -2,7 +2,7 @@ package com.foxminded.koren.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.util.List;
@@ -11,11 +11,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.foxminded.koren.university.SpringConfigT;
+import com.foxminded.koren.university.dao.exceptions.DAOException;
+import com.foxminded.koren.university.dao.test_data.TablesCreation;
+import com.foxminded.koren.university.dao.test_data.TestData;
 import com.foxminded.koren.university.domain.entity.Course;
 import com.foxminded.koren.university.domain.entity.Group;
 
@@ -25,8 +27,6 @@ class CourseDaoTest {
     
     @Autowired
     private TablesCreation tablesCreation;
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
     @Autowired
     private CourseDao courseDao;
     @Autowired
@@ -44,7 +44,7 @@ class CourseDaoTest {
         Course expected = new Course("name4", "desc4");
         int expectedId = 4;
         expected.setId(expectedId);
-        assertEquals(expected, courseDao.getById(expectedId).get());
+        assertEquals(expected, courseDao.getById(expectedId));
     }
     
     @Test
@@ -53,25 +53,25 @@ class CourseDaoTest {
         Course expected = new Course("name", "description");  
         courseDao.save(expected);
         expected.setId(expectedId);
-        assertEquals(expected, courseDao.getById(expectedId).get());
+        assertEquals(expected, courseDao.getById(expectedId));
     }
     
     @Test
     void update_shouldWorkCorrectly() {
         int expectedId = 1;
-        Course expected = courseDao.getById(expectedId).get();
+        Course expected = courseDao.getById(expectedId);
         expected.setName("changed");
         expected.setDescrption("changed");
         courseDao.update(expected);
-        assertEquals(expected, courseDao.getById(expectedId).get());
+        assertEquals(expected, courseDao.getById(expectedId));
     }
     
     @Test
     void deleteById_shouldWorkCorrectly() {
         int expectedId = 1;
-        Course toDelete = courseDao.getById(expectedId).get();
-        courseDao.deleteById(toDelete.getId());
-        assertFalse(courseDao.getById(expectedId).isPresent());  
+        Course course = courseDao.getById(expectedId);
+        courseDao.deleteById(course.getId());
+        assertThrows(DAOException.class, () -> courseDao.getById(course.getId()), "No such id in database");
     }
     
     @Test 

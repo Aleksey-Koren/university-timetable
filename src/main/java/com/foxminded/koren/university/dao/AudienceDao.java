@@ -5,18 +5,23 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
+import com.foxminded.koren.university.dao.exceptions.DAOException;
+import com.foxminded.koren.university.dao.interfaces.Dao;
+import com.foxminded.koren.university.dao.mappers.AudienceMapper;
+import com.foxminded.koren.university.dao.mappers.CourseMapper;
 import com.foxminded.koren.university.domain.entity.Audience;
 
 @Component
 public class AudienceDao implements Dao<Integer, Audience> {
     
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
     
     private static final String SAVE = "INSERT INTO audience\r\n"
                                      + "(room_number, capacity)\r\n"
@@ -59,12 +64,11 @@ public class AudienceDao implements Dao<Integer, Audience> {
     }
 
     @Override
-    public Optional<Audience> getById(Integer id) {
-        List<Audience> result = jdbcTemplate.query(GET_BY_ID, new AudienceMapper(), id);
-        if(result.isEmpty()) {
-            return Optional.empty();
-        }else {
-            return Optional.of(result.get(0));     
+    public Audience getById(Integer id) {
+        try {
+            return jdbcTemplate.queryForObject(GET_BY_ID, new AudienceMapper(), id);
+        }catch(EmptyResultDataAccessException e) {
+            throw new DAOException("No such id in database", e);
         }
     }
 

@@ -2,22 +2,26 @@ package com.foxminded.koren.university.dao;
 
 import java.sql.PreparedStatement;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
+import com.foxminded.koren.university.dao.exceptions.DAOException;
+import com.foxminded.koren.university.dao.interfaces.Dao;
+import com.foxminded.koren.university.dao.mappers.GroupMapper;
 import com.foxminded.koren.university.domain.entity.Course;
 import com.foxminded.koren.university.domain.entity.Group;
+import com.foxminded.koren.university.domain.entity.Lecture;
 
 @Component
 public class GroupDao implements Dao<Integer, Group> {
     
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
     
     private static final String SAVE = 
               "INSERT INTO group_table\r\n"
@@ -26,26 +30,26 @@ public class GroupDao implements Dao<Integer, Group> {
             + "(?);";
 
     private static final String UPDATE = "UPDATE group_table\r\n"
-              + "SET name = ?\r\n"
-              + "WHERE id = ?;";
+            + "SET name = ?\r\n"
+            + "WHERE id = ?;";
 
     private static final String DELETE = 
-                "DELETE FROM group_table\r\n"
-              + "WHERE id = ?;";
+              "DELETE FROM group_table\r\n"
+            + "WHERE id = ?;";
 
     private static final String GET_GROUP_BY_ID = 
-                   "SELECT id, name\r\n"
-                 + "FROM group_table\r\n"
-                 + "WHERE id = ?;";
+              "SELECT id, name\r\n"
+            + "FROM group_table\r\n"
+            + "WHERE id = ?;";
         
     private static final String ADD_COURSE = 
-            "INSERT INTO group_course (group_id, course_id)\r\n"
-          + "VALUES (?, ?);";
+              "INSERT INTO group_course (group_id, course_id)\r\n"
+            + "VALUES (?, ?);";
 
     private static final String REMOVE_COURSE = 
-            "DELETE FROM group_course\r\n"
-          + "WHERE group_id = ?\r\n"
-          + "AND course_id = ?;";
+              "DELETE FROM group_course\r\n"
+            + "WHERE group_id = ?\r\n"
+            + "AND course_id = ?;";
     
     
     @Override
@@ -72,12 +76,11 @@ public class GroupDao implements Dao<Integer, Group> {
     }
 
     @Override
-    public Optional<Group> getById(Integer id) {
-        List<Group> result = jdbcTemplate.query(GET_GROUP_BY_ID, new GroupMapper(), id);
-        if(result.isEmpty()) {
-            return Optional.empty();
-        }else {
-            return Optional.of(result.get(0));
+    public Group getById(Integer id) {
+        try {
+            return jdbcTemplate.queryForObject(GET_GROUP_BY_ID, new GroupMapper(), id);
+        }catch(EmptyResultDataAccessException e) {
+            throw new DAOException("No such id in database", e);
         }
     }
     
@@ -88,6 +91,10 @@ public class GroupDao implements Dao<Integer, Group> {
     public boolean removeCourse (Group group, Course course) {
         return jdbcTemplate.update(REMOVE_COURSE, group.getId(), course.getId()) > 0;
     }
+    
+//    public List<Group> getByLecture(Lecture lecture) {
+//        
+//    }
     
 
 }

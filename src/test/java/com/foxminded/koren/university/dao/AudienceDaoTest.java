@@ -1,7 +1,7 @@
 package com.foxminded.koren.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 
@@ -14,6 +14,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.foxminded.koren.university.SpringConfigT;
+import com.foxminded.koren.university.dao.exceptions.DAOException;
+import com.foxminded.koren.university.dao.test_data.TablesCreation;
 import com.foxminded.koren.university.domain.entity.Audience;
 
 @SpringJUnitConfig
@@ -41,7 +43,7 @@ class AudienceDaoTest {
         Audience expected = new Audience(113, 30);
         int expectedId = 5;
         expected.setId(expectedId);
-        assertEquals(expected, audienceDao.getById(expectedId).get());
+        assertEquals(expected, audienceDao.getById(expectedId));
     }
     
     @Test
@@ -50,7 +52,7 @@ class AudienceDaoTest {
         Audience expected = new Audience(113, 30);  
         audienceDao.save(expected);
         expected.setId(expectedId);
-        assertEquals(expected, audienceDao.getById(expectedId).get());
+        assertEquals(expected, audienceDao.getById(expectedId));
     }
     
     @Test
@@ -59,20 +61,20 @@ class AudienceDaoTest {
         Audience expected = new Audience(113, 30);  
         audienceDao.save(expected);
         expected.setId(expectedId);
-        assertEquals(expected, audienceDao.getById(expectedId).get());
+        assertEquals(expected, audienceDao.getById(expectedId));
         expected.setNumber(35);
         audienceDao.update(expected);
-        assertEquals(expected, audienceDao.getById(expectedId).get());
+        assertEquals(expected, audienceDao.getById(expectedId));
     }
     
     @Test
     void deleteById_shouldWorkCorrectly() {
         int expectedId = 1;
-        Audience expected = new Audience(113, 30);  
-        audienceDao.save(expected);
-        expected.setId(expectedId);
-        assertEquals(expected, audienceDao.getById(expectedId).get());
+        Audience audience = new Audience(113, 30);  
+        audienceDao.save(audience);
+        audience.setId(expectedId);
+        assertEquals(audience, audienceDao.getById(expectedId));
         audienceDao.deleteById(expectedId);
-        assertFalse(audienceDao.getById(expectedId).isPresent());
+        assertThrows(DAOException.class, () -> audienceDao.getById(audience.getId()), "No such id in database");
     }    
 }

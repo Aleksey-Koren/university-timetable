@@ -1,5 +1,7 @@
 package com.foxminded.koren.university.domain.entity;
 
+import com.foxminded.koren.university.domain.entity.interfaces.TimetablePerson;
+
 public class Student implements TimetablePerson {
     private int id;
     private Group group;

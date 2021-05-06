@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class SpringConfig {
     
     @Autowired
-    Environment env;
+    private Environment env;
     
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();

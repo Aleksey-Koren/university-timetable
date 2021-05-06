@@ -1,4 +1,4 @@
-package com.foxminded.koren.university.dao;
+package com.foxminded.koren.university.dao.interfaces;
 
 import java.util.Optional;
 
@@ -10,5 +10,5 @@ public interface Dao <I, E> {
     
     boolean deleteById (I id);
     
-    Optional<E> getById (I id);
+    E getById (I id);
 }

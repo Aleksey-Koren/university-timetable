@@ -3,29 +3,34 @@ package com.foxminded.koren.university.domain.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.foxminded.koren.university.domain.entity.interfaces.TimetableEvent;
+
 public class Lecture implements TimetableEvent {
     
     private int id;
     private Audience audience;
     private Teacher teacher;
     private Course course;
-    private List<Group> groups;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    
+    public Lecture() {
+        
+    }
     
     public Lecture(Audience audience,
                    Teacher teacher, 
                    Course course, 
-                   List<Group> groups,
                    LocalDateTime startTime,
                    LocalDateTime endTime) {
         this.audience = audience;
         this.teacher = teacher;
         this.course = course;
-        this.groups = groups;
         this.startTime = startTime;
         this.endTime = endTime;
     }
+    
+    
     
     public int getId() {
         return id;
@@ -51,12 +56,6 @@ public class Lecture implements TimetableEvent {
     public void setCourse(Course course) {
         this.course = course;
     }
-    public List<Group> getGroups() {
-        return groups;
-    } 
-    public void setGroups(List<Group> groups) {
-        this.groups = groups;
-    }
     public LocalDateTime getStartTime() {
         return startTime;
     }
@@ -77,7 +76,6 @@ public class Lecture implements TimetableEvent {
         result = prime * result + ((audience == null) ? 0 : audience.hashCode());
         result = prime * result + ((course == null) ? 0 : course.hashCode());
         result = prime * result + ((endTime == null) ? 0 : endTime.hashCode());
-        result = prime * result + ((groups == null) ? 0 : groups.hashCode());
         result = prime * result + id;
         result = prime * result + ((startTime == null) ? 0 : startTime.hashCode());
         result = prime * result + ((teacher == null) ? 0 : teacher.hashCode());
@@ -106,11 +104,6 @@ public class Lecture implements TimetableEvent {
                 return false;
         } else if (!endTime.equals(other.endTime))
             return false;
-        if (groups == null) {
-            if (other.groups != null)
-                return false;
-        } else if (!groups.equals(other.groups))
-            return false;
         if (id != other.id)
             return false;
         if (startTime == null) {
@@ -129,6 +122,6 @@ public class Lecture implements TimetableEvent {
     @Override
     public String toString() {
         return "Lecture [id=" + id + ", audience=" + audience + ", teacher=" + teacher + ", course=" + course
-                + ", groups=" + groups + ", startTime=" + startTime + ", endTime=" + endTime + "]";
+                + ", startTime=" + startTime + ", endTime=" + endTime + "]";
     }
 }
