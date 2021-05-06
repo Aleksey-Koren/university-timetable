@@ -68,10 +68,17 @@ class CourseDaoTest {
     
     @Test
     void deleteById_shouldWorkCorrectly() {
-        int expectedId = 1;
+        int expectedId = 3;
         Course course = courseDao.getById(expectedId);
         courseDao.deleteById(course.getId());
         assertThrows(DAOException.class, () -> courseDao.getById(course.getId()), "No such id in database");
+    }
+    
+    @Test 
+    void deleteById_shouldThrowException_whenConstraintReferencesPresent(){
+        int expectedId = 1;
+        Course course = courseDao.getById(expectedId);
+        assertThrows(DAOException.class, () -> courseDao.deleteById(course.getId()));
     }
     
     @Test 
