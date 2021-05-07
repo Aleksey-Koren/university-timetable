@@ -86,7 +86,7 @@ class GroupDaoTest {
         Course course = new Course("name3", "desc3");
         course.setId(3);
         String sql = 
-                "SELECT c.id, c.name, c.description\r\n"
+                "SELECT c.id course_id, c.name course_name, c.description course_description\r\n"
               + "FROM group_course gc \r\n"
               + "    JOIN course c ON gc.course_id = c.id \r\n"
               + "WHERE gc.group_id = 1\r\n"
@@ -108,7 +108,7 @@ class GroupDaoTest {
         Course course = new Course("name3", "desc3");
         course.setId(2);
         String sql = 
-                "SELECT c.id, c.name, c.description\r\n"
+                "SELECT c.id course_id, c.name course_name, c.description course_description\r\n"
               + "FROM group_course gc \r\n"
               + "    JOIN course c ON gc.course_id = c.id \r\n"
               + "WHERE gc.group_id = 1\r\n"

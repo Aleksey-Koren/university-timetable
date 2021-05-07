@@ -17,7 +17,7 @@ public class GroupSql {
           + "WHERE id = ?;";
 
     private static final String GET_GROUP_BY_ID = 
-            "SELECT id, name\r\n"
+            "SELECT id group_id, name group_name\r\n"
           + "FROM group_table\r\n"
           + "WHERE id = ?;";
       

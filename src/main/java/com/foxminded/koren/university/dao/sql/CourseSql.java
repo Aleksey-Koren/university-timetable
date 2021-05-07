@@ -19,12 +19,12 @@ public class CourseSql {
           + "WHERE id = ?;";
     
     private static final String GET_BY_ID = 
-            "SELECT id, name, description\r\n"
+            "SELECT id course_id, name course_name, description course_description\r\n"
           + "FROM course\r\n"
           + "WHERE id = ?;";
     
     private static final String GET_BY_GROUP_ID = 
-            "SELECT c.id , c.name , c.description\r\n"
+            "SELECT c.id course_id, c.name course_name, c.description course_description\r\n"
           + "FROM group_course gc\r\n"
           + "    JOIN course c ON gc.course_id = c.id\r\n"
           + "WHERE gc.group_id = ?"

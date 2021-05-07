@@ -12,9 +12,9 @@ public class AudienceMapper implements RowMapper<Audience> {
     @Override
     public Audience mapRow(ResultSet rs, int rowNum) throws SQLException {
         Audience audience = new Audience();
-        audience.setId(rs.getInt("id"));
-        audience.setNumber(rs.getInt("room_number"));
-        audience.setCapacity(rs.getInt("capacity"));
+        audience.setId(rs.getInt("audience_id"));
+        audience.setNumber(rs.getInt("audience_room_number"));
+        audience.setCapacity(rs.getInt("audience_capacity"));
         return audience;
     }
 }

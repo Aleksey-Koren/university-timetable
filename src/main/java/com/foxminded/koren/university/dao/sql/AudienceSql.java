@@ -15,7 +15,8 @@ public class AudienceSql {
     private static final String DELETE = "DELETE FROM audience\r\n"
               + "WHERE id = ?;";
 
-    private static final String GET_BY_ID = "SELECT id, room_number, capacity\r\n"
+    private static final String GET_BY_ID = 
+                   "SELECT id audience_id, room_number audience_room_number, capacity audience_capacity\r\n"
                  + "FROM audience\r\n"
                  + "WHERE id = ?;";
 
