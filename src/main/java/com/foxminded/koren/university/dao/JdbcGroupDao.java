@@ -10,14 +10,15 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.foxminded.koren.university.dao.exceptions.DAOException;
-import com.foxminded.koren.university.dao.interfaces.Dao;
+import com.foxminded.koren.university.dao.interfaces.CrudDao;
+import com.foxminded.koren.university.dao.interfaces.GroupDao;
 import com.foxminded.koren.university.dao.mappers.GroupMapper;
 import com.foxminded.koren.university.dao.sql.GroupSql;
 import com.foxminded.koren.university.domain.entity.Course;
 import com.foxminded.koren.university.domain.entity.Group;
 
 @Repository
-public class GroupDao implements Dao<Integer, Group> {
+public class JdbcGroupDao implements GroupDao {
     
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -54,11 +55,12 @@ public class GroupDao implements Dao<Integer, Group> {
         }
     }
     
+    @Override
     public void addCourse(Group group, Course course) {
         jdbcTemplate.update(GroupSql.getAddCourse(), group.getId(), course.getId());
     }
-    
-    public boolean removeCourse (Group group, Course course) {
+    @Override
+    public boolean removeCourse(Group group, Course course) {
         return jdbcTemplate.update(GroupSql.getRemoveCourse(), group.getId(), course.getId()) > 0;
     }
 }

@@ -1,8 +1,6 @@
 package com.foxminded.koren.university.dao.interfaces;
 
-import java.util.Optional;
-
-public interface Dao <I, E> {
+public interface CrudDao <I, E> {
     
     E save(E entity);
     

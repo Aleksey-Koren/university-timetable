@@ -23,12 +23,12 @@ import com.foxminded.koren.university.domain.entity.Group;
 
 @SpringJUnitConfig
 @ContextConfiguration(classes = {SpringConfigT.class})
-class CourseDaoTest {
+class JdbcCourseDaoTest {
     
     @Autowired
     private TablesCreation tablesCreation;
     @Autowired
-    private CourseDao courseDao;
+    private JdbcCourseDao jdbcCourseDao;
     @Autowired
     private TestData testData;
     
@@ -44,41 +44,41 @@ class CourseDaoTest {
         Course expected = new Course("name4", "desc4");
         int expectedId = 4;
         expected.setId(expectedId);
-        assertEquals(expected, courseDao.getById(expectedId));
+        assertEquals(expected, jdbcCourseDao.getById(expectedId));
     }
     
     @Test
     void save_shouldWorkCorrectly() {
         int expectedId = 5;
         Course expected = new Course("name", "description");  
-        courseDao.save(expected);
+        jdbcCourseDao.save(expected);
         expected.setId(expectedId);
-        assertEquals(expected, courseDao.getById(expectedId));
+        assertEquals(expected, jdbcCourseDao.getById(expectedId));
     }
     
     @Test
     void update_shouldWorkCorrectly() {
         int expectedId = 1;
-        Course expected = courseDao.getById(expectedId);
+        Course expected = jdbcCourseDao.getById(expectedId);
         expected.setName("changed");
         expected.setDescrption("changed");
-        courseDao.update(expected);
-        assertEquals(expected, courseDao.getById(expectedId));
+        jdbcCourseDao.update(expected);
+        assertEquals(expected, jdbcCourseDao.getById(expectedId));
     }
     
     @Test
     void deleteById_shouldWorkCorrectly() {
         int expectedId = 3;
-        Course course = courseDao.getById(expectedId);
-        courseDao.deleteById(course.getId());
-        assertThrows(DAOException.class, () -> courseDao.getById(course.getId()), "No such id in database");
+        Course course = jdbcCourseDao.getById(expectedId);
+        jdbcCourseDao.deleteById(course.getId());
+        assertThrows(DAOException.class, () -> jdbcCourseDao.getById(course.getId()), "No such id in database");
     }
     
     @Test 
     void deleteById_shouldThrowException_whenConstraintReferencesPresent(){
         int expectedId = 1;
-        Course course = courseDao.getById(expectedId);
-        assertThrows(DAOException.class, () -> courseDao.deleteById(course.getId()));
+        Course course = jdbcCourseDao.getById(expectedId);
+        assertThrows(DAOException.class, () -> jdbcCourseDao.deleteById(course.getId()));
     }
     
     @Test 
@@ -91,6 +91,6 @@ class CourseDaoTest {
        course3.setId(4);
        Group group = new Group(" ");
        group.setId(2);
-       assertEquals(List.of(course1, course2, course3), courseDao.getByGroup(group));
+       assertEquals(List.of(course1, course2, course3), jdbcCourseDao.getByGroup(group));
     }
 }

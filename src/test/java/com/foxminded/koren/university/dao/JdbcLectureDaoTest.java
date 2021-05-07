@@ -23,13 +23,13 @@ import com.foxminded.koren.university.domain.entity.Teacher;
 
 @SpringJUnitConfig
 @ContextConfiguration(classes = {SpringConfigT.class})
-class LectureDaoTest {
+class JdbcLectureDaoTest {
     
     @Autowired
     private TablesCreation tablesCreation;
     
     @Autowired
-    private LectureDao lectureDao;
+    private JdbcLectureDao jdbcLectureDao;
     
     @Autowired
     private TestData testData;
@@ -47,7 +47,7 @@ class LectureDaoTest {
     void getById_shouldGetById() {
         int expectedId = 1;
         Lecture expected = prepareExpected(expectedId); 
-        assertEquals(expected, lectureDao.getById(expectedId));
+        assertEquals(expected, jdbcLectureDao.getById(expectedId));
     }
     
     @Test
@@ -58,13 +58,13 @@ class LectureDaoTest {
                            + "SET teacher_id = NULL;");
         
         expected.setTeacher(null);
-        assertEquals(expected, lectureDao.getById(expectedId));
+        assertEquals(expected, jdbcLectureDao.getById(expectedId));
         
         jdbcTemplate.execute("UPDATE lecture\r\n"
                            + "SET audience_id = NULL;");
         
         expected.setAudience(null);
-        assertEquals(expected, lectureDao.getById(expectedId));
+        assertEquals(expected, jdbcLectureDao.getById(expectedId));
         
     }
     

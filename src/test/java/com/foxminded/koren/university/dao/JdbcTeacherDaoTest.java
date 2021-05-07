@@ -20,12 +20,12 @@ import com.foxminded.koren.university.domain.entity.Teacher;
 
 @SpringJUnitConfig
 @ContextConfiguration(classes = {SpringConfigT.class})
-class TeacherDaoTest {
+class JdbcTeacherDaoTest {
     
     @Autowired
     private TablesCreation tablesCreation;
     @Autowired
-    private TeacherDao teacherDao;
+    private JdbcTeacherDao jdbcTeacherDao;
     @Autowired
     private TestData testData;
 
@@ -40,35 +40,35 @@ class TeacherDaoTest {
         int expectedId = 1;
         Teacher expected = new Teacher("first name1", "last name1");
         expected.setId(expectedId);
-        assertEquals(expected, teacherDao.getById(expectedId));
+        assertEquals(expected, jdbcTeacherDao.getById(expectedId));
     }
     
     @Test
     void save_shouldWorkCorrectly() {
         int expectedId = 3;
-        assertThrows(DAOException.class, () -> teacherDao.getById(expectedId), "No such id in database");
+        assertThrows(DAOException.class, () -> jdbcTeacherDao.getById(expectedId), "No such id in database");
         Teacher expected = new Teacher("first name", "last name");  
-        teacherDao.save(expected);
+        jdbcTeacherDao.save(expected);
         expected.setId(expectedId);
-        assertEquals(expected, teacherDao.getById(expectedId));
+        assertEquals(expected, jdbcTeacherDao.getById(expectedId));
     }
     
     @Test
     void update_shouldWorkCorrectly() {
         int expectedId = 1;
-        Teacher expected = teacherDao.getById(expectedId);
+        Teacher expected = jdbcTeacherDao.getById(expectedId);
         expected.setFirstName("changed");
         expected.setLastName("changed");
-        teacherDao.update(expected);
-        assertEquals(expected, teacherDao.getById(expectedId));
+        jdbcTeacherDao.update(expected);
+        assertEquals(expected, jdbcTeacherDao.getById(expectedId));
     }
     
     @Test
     void deleteById_shouldWorkCorrectly() {
         int expectedId = 1;
-        Teacher teacher = teacherDao.getById(expectedId);
-        teacherDao.deleteById(teacher.getId());
-        assertThrows(DAOException.class, () -> teacherDao.getById(teacher.getId()), "No such id in database");
+        Teacher teacher = jdbcTeacherDao.getById(expectedId);
+        jdbcTeacherDao.deleteById(teacher.getId());
+        assertThrows(DAOException.class, () -> jdbcTeacherDao.getById(teacher.getId()), "No such id in database");
 
     }
 }

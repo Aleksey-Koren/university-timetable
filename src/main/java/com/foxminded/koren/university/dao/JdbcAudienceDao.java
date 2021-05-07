@@ -10,13 +10,14 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.foxminded.koren.university.dao.exceptions.DAOException;
-import com.foxminded.koren.university.dao.interfaces.Dao;
+import com.foxminded.koren.university.dao.interfaces.AudienceDao;
+import com.foxminded.koren.university.dao.interfaces.CrudDao;
 import com.foxminded.koren.university.dao.mappers.AudienceMapper;
 import com.foxminded.koren.university.dao.sql.AudienceSql;
 import com.foxminded.koren.university.domain.entity.Audience;
 
 @Repository
-public class AudienceDao implements Dao<Integer, Audience> {
+public class JdbcAudienceDao implements AudienceDao{
     
     @Autowired
     private JdbcTemplate jdbcTemplate;

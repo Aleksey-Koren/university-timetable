@@ -1,7 +1,7 @@
 package com.foxminded.koren.university.dao;
 
 import com.foxminded.koren.university.dao.exceptions.DAOException;
-import com.foxminded.koren.university.dao.interfaces.Dao;
+import com.foxminded.koren.university.dao.interfaces.StudentDao;
 import com.foxminded.koren.university.dao.mappers.StudentMapper;
 import com.foxminded.koren.university.dao.sql.StudentSql;
 import com.foxminded.koren.university.domain.entity.Student;
@@ -16,7 +16,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class StudentDao implements Dao<Integer, Student> {
+public class JdbcStudentDao implements StudentDao {
     
     @Autowired
     private JdbcTemplate jdbcTemplate;

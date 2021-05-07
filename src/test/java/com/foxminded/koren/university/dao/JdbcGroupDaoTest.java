@@ -26,7 +26,7 @@ import com.foxminded.koren.university.domain.entity.Group;
 
 @SpringJUnitConfig
 @ContextConfiguration(classes = {SpringConfigT.class})
-class GroupDaoTest {
+class JdbcGroupDaoTest {
            
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -35,7 +35,7 @@ class GroupDaoTest {
     private TablesCreation tablesCreation;
     
     @Autowired
-    private GroupDao groupDao;
+    private JdbcGroupDao jdbcGroupDao;
     
     @Autowired
     private TestData testData;
@@ -51,32 +51,32 @@ class GroupDaoTest {
         int expectedId = 1;
         Group expected = new Group("group name1");
         expected.setId(expectedId);
-        assertEquals(expected, groupDao.getById(1));        
+        assertEquals(expected, jdbcGroupDao.getById(1));        
     }
     
     @Test
     void save_shouldWorkCorrectly() {        
         int expectedId = 3;
         Group expected = new Group("test!!!");    
-        groupDao.save(expected);
-        assertEquals(expected, groupDao.getById(expectedId));
+        jdbcGroupDao.save(expected);
+        assertEquals(expected, jdbcGroupDao.getById(expectedId));
     }
     
     @Test
     void update_shouldWorkCorrectly() {
         int expectedId = 1;
-        Group expected = groupDao.getById(expectedId);
+        Group expected = jdbcGroupDao.getById(expectedId);
         expected.setName("changed name");
-        groupDao.update(expected);
-        assertEquals(expected, groupDao.getById(expectedId));
+        jdbcGroupDao.update(expected);
+        assertEquals(expected, jdbcGroupDao.getById(expectedId));
     }
     
     @Test
     void deleteById_shouldWorkCorrectly() {
         int expectedId = 1;
-        Group group = groupDao.getById(expectedId);
-        groupDao.deleteById(group.getId());
-        assertThrows(DAOException.class, () -> groupDao.getById(group.getId()), "No such id in database");
+        Group group = jdbcGroupDao.getById(expectedId);
+        jdbcGroupDao.deleteById(group.getId());
+        assertThrows(DAOException.class, () -> jdbcGroupDao.getById(group.getId()), "No such id in database");
     }
     
     @Test
@@ -95,7 +95,7 @@ class GroupDaoTest {
         List<Course> courses = jdbcTemplate.query(sql, new CourseMapper());
         assertTrue(courses.isEmpty());
 
-        groupDao.addCourse(group, course);
+        jdbcGroupDao.addCourse(group, course);
         courses = jdbcTemplate.query(sql, new CourseMapper());
         assertFalse(courses.isEmpty());
         assertEquals(course, courses.get(0));
@@ -115,7 +115,7 @@ class GroupDaoTest {
               + "AND gc.course_id = 2;";
         List<Course> courses = jdbcTemplate.query(sql, new CourseMapper());
         assertFalse(courses.isEmpty());
-        groupDao.removeCourse(group, course);
+        jdbcGroupDao.removeCourse(group, course);
         courses = jdbcTemplate.query(sql, new CourseMapper());
         assertTrue(courses.isEmpty());
     }

@@ -11,12 +11,12 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.foxminded.koren.university.dao.exceptions.DAOException;
-import com.foxminded.koren.university.dao.interfaces.Dao;
+import com.foxminded.koren.university.dao.interfaces.TeacherDao;
 import com.foxminded.koren.university.dao.sql.TeacherSql;
 import com.foxminded.koren.university.domain.entity.Teacher;
 
 @Repository
-public class TeacherDao implements Dao<Integer, Teacher> {
+public class JdbcTeacherDao implements TeacherDao {
     
     @Autowired
     private JdbcTemplate jdbcTemplate;

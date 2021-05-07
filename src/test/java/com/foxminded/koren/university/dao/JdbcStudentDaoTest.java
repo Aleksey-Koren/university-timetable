@@ -22,13 +22,13 @@ import com.foxminded.koren.university.domain.entity.Year;
 
 @SpringJUnitConfig
 @ContextConfiguration(classes = {SpringConfigT.class})
-class StudentDaoTest {
+class JdbcStudentDaoTest {
     
     
     @Autowired
     private TablesCreation tablesCreation;
     @Autowired
-    private StudentDao studentDao;
+    private JdbcStudentDao jdbcStudentDao;
     @Autowired
     private TestData testData;
         
@@ -45,7 +45,7 @@ class StudentDaoTest {
         group.setId(1);
         Student expected = new Student(group, "first name1", "last name1", Year.SECOND);
         expected.setId(expectedId);
-        assertEquals(expected, studentDao.getById(expectedId));
+        assertEquals(expected, jdbcStudentDao.getById(expectedId));
     }
     
     @Test
@@ -54,7 +54,7 @@ class StudentDaoTest {
         Group group = null;
         Student expected = new Student(group, "first name4", "last name4", Year.SECOND);
         expected.setId(expectedId);
-        assertEquals(expected, studentDao.getById(expectedId));
+        assertEquals(expected, jdbcStudentDao.getById(expectedId));
     }
     
     @Test
@@ -63,8 +63,8 @@ class StudentDaoTest {
         Group group = new Group("group name1");
         group.setId(1);
         Student expected = new Student(group, "test!!!", "test", Year.SIXTH);    
-        studentDao.save(expected);
-        assertEquals(expected, studentDao.getById(expectedId));
+        jdbcStudentDao.save(expected);
+        assertEquals(expected, jdbcStudentDao.getById(expectedId));
     }
     
     @Test
@@ -72,8 +72,8 @@ class StudentDaoTest {
         int expectedId = 5;
         Group group = null;
         Student expected = new Student(group, "test!!!", "test", Year.SIXTH);    
-        studentDao.save(expected);
-        assertEquals(expected, studentDao.getById(expectedId));
+        jdbcStudentDao.save(expected);
+        assertEquals(expected, jdbcStudentDao.getById(expectedId));
     }
     
     @Test
@@ -81,33 +81,33 @@ class StudentDaoTest {
         Group group = new Group("group name2");
         group.setId(2);
         int expectedId = 1;
-        Student expected = studentDao.getById(expectedId);
+        Student expected = jdbcStudentDao.getById(expectedId);
         expected.setFirstName("changed name");
         expected.setLastName("changed name");
         expected.setGroup(group);
         expected.setYear(Year.FIRST);
-        studentDao.update(expected);
-        assertEquals(expected, studentDao.getById(expectedId));
+        jdbcStudentDao.update(expected);
+        assertEquals(expected, jdbcStudentDao.getById(expectedId));
     }
     
     @Test
     void update_shouldWorkCorrectly_ifGroupIdIsNull() {
         int expectedId = 1;
-        Student expected = studentDao.getById(expectedId);
+        Student expected = jdbcStudentDao.getById(expectedId);
         expected.setFirstName("changed name");
         expected.setLastName("changed name");
         expected.setGroup(null);
         expected.setYear(Year.FIRST);
-        studentDao.update(expected);
-        assertEquals(expected, studentDao.getById(expectedId));
+        jdbcStudentDao.update(expected);
+        assertEquals(expected, jdbcStudentDao.getById(expectedId));
     }
     
     @Test
     
     void deleteById_shouldWorkCorrectly() {
         int expectedId = 1;
-        Student student = studentDao.getById(expectedId);
-        studentDao.deleteById(student.getId());
-        assertThrows(DAOException.class, () -> studentDao.getById(student.getId()), "No such id in database");
+        Student student = jdbcStudentDao.getById(expectedId);
+        jdbcStudentDao.deleteById(student.getId());
+        assertThrows(DAOException.class, () -> jdbcStudentDao.getById(student.getId()), "No such id in database");
     }
 }

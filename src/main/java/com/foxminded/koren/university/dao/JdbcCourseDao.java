@@ -12,14 +12,15 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.foxminded.koren.university.dao.exceptions.DAOException;
-import com.foxminded.koren.university.dao.interfaces.Dao;
+import com.foxminded.koren.university.dao.interfaces.CourseDao;
+import com.foxminded.koren.university.dao.interfaces.CrudDao;
 import com.foxminded.koren.university.dao.mappers.CourseMapper;
 import com.foxminded.koren.university.dao.sql.CourseSql;
 import com.foxminded.koren.university.domain.entity.Course;
 import com.foxminded.koren.university.domain.entity.Group;
 
 @Repository
-public class CourseDao implements Dao<Integer, Course> {
+public class JdbcCourseDao implements CourseDao {
     
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -62,7 +63,8 @@ public class CourseDao implements Dao<Integer, Course> {
         }
     }
     
-        public List<Course> getByGroup(Group group) {
-            return jdbcTemplate.query(CourseSql.getGetByGroupId(), new CourseMapper(), group.getId());  
-        }
+    @Override
+    public List<Course> getByGroup(Group group) {
+        return jdbcTemplate.query(CourseSql.getGetByGroupId(), new CourseMapper(), group.getId());  
+    }
 }

@@ -20,14 +20,14 @@ import com.foxminded.koren.university.domain.entity.Audience;
 
 @SpringJUnitConfig
 @ContextConfiguration(classes = {SpringConfigT.class})
-class AudienceDaoTest {
+class JdbcAudienceDaoTest {
     
     @Autowired
     private TablesCreation tablesCreation;
     @Autowired
     private JdbcTemplate jdbcTemplate;
     @Autowired
-    private AudienceDao audienceDao;
+    private JdbcAudienceDao jdbcAudienceDao;
     
     @BeforeEach
     void createTables() throws DataAccessException, IOException {
@@ -43,38 +43,38 @@ class AudienceDaoTest {
         Audience expected = new Audience(113, 30);
         int expectedId = 5;
         expected.setId(expectedId);
-        assertEquals(expected, audienceDao.getById(expectedId));
+        assertEquals(expected, jdbcAudienceDao.getById(expectedId));
     }
     
     @Test
     void save_shouldWorkCorrectly() {
         int expectedId = 1;
         Audience expected = new Audience(113, 30);  
-        audienceDao.save(expected);
+        jdbcAudienceDao.save(expected);
         expected.setId(expectedId);
-        assertEquals(expected, audienceDao.getById(expectedId));
+        assertEquals(expected, jdbcAudienceDao.getById(expectedId));
     }
     
     @Test
     void update_shouldWorkCorrectly() {
         int expectedId = 1;
         Audience expected = new Audience(113, 30);  
-        audienceDao.save(expected);
+        jdbcAudienceDao.save(expected);
         expected.setId(expectedId);
-        assertEquals(expected, audienceDao.getById(expectedId));
+        assertEquals(expected, jdbcAudienceDao.getById(expectedId));
         expected.setNumber(35);
-        audienceDao.update(expected);
-        assertEquals(expected, audienceDao.getById(expectedId));
+        jdbcAudienceDao.update(expected);
+        assertEquals(expected, jdbcAudienceDao.getById(expectedId));
     }
     
     @Test
     void deleteById_shouldWorkCorrectly() {
         int expectedId = 1;
         Audience audience = new Audience(113, 30);  
-        audienceDao.save(audience);
+        jdbcAudienceDao.save(audience);
         audience.setId(expectedId);
-        assertEquals(audience, audienceDao.getById(expectedId));
-        audienceDao.deleteById(expectedId);
-        assertThrows(DAOException.class, () -> audienceDao.getById(audience.getId()), "No such id in database");
+        assertEquals(audience, jdbcAudienceDao.getById(expectedId));
+        jdbcAudienceDao.deleteById(expectedId);
+        assertThrows(DAOException.class, () -> jdbcAudienceDao.getById(audience.getId()), "No such id in database");
     }    
 }
