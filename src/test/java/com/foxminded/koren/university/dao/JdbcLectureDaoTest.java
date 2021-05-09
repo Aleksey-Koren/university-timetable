@@ -1,6 +1,8 @@
 package com.foxminded.koren.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -14,6 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.foxminded.koren.university.SpringConfigT;
+import com.foxminded.koren.university.dao.exceptions.DAOException;
 import com.foxminded.koren.university.dao.test_data.TablesCreation;
 import com.foxminded.koren.university.dao.test_data.TestData;
 import com.foxminded.koren.university.domain.entity.Audience;
@@ -65,7 +68,78 @@ class JdbcLectureDaoTest {
         
         expected.setAudience(null);
         assertEquals(expected, jdbcLectureDao.getById(expectedId));
-        
+    }
+    
+    @Test
+    void save_shouldSaveAndGetGeneratedKey() {
+        int presentId = 1;
+        int savedId = 10;
+        Lecture lecture = jdbcLectureDao.getById(presentId);
+        assertEquals(presentId, lecture.getId());
+        assertThrows(DAOException.class, () -> jdbcLectureDao.getById(savedId), "No such id in database");
+        jdbcLectureDao.save(lecture);
+        assertEquals(savedId, lecture.getId());
+        assertEquals(lecture, jdbcLectureDao.getById(savedId));
+    }
+    
+    @Test
+    void save_shouldSave_whenTeacherOrAudienceIsNull() {
+        int presentId = 1;
+        int savedId = 10;
+        Lecture lecture = jdbcLectureDao.getById(presentId); 
+        assertEquals(presentId, lecture.getId());
+        assertThrows(DAOException.class, () -> jdbcLectureDao.getById(savedId),
+                "No such id in database");
+        lecture.setTeacher(null);
+        lecture.setAudience(null);
+        jdbcLectureDao.save(lecture);
+        assertEquals(savedId, lecture.getId());
+        assertEquals(lecture, jdbcLectureDao.getById(savedId));
+    }
+    
+    @Test
+    void update_shouldUpdateCorrectly() {
+        int lectureId = 1;
+        int presentId = 1;
+        int updatedId = 2;
+        Lecture lecture = jdbcLectureDao.getById(lectureId);
+        assertEquals(presentId, lecture.getCourse().getId());
+        assertEquals(presentId, lecture.getTeacher().getId());
+        assertEquals(presentId, lecture.getAudience().getId());
+        lecture.getCourse().setId(updatedId);
+        lecture.getTeacher().setId(updatedId);
+        lecture.getAudience().setId(updatedId);
+        jdbcLectureDao.update(lecture);
+        assertEquals(updatedId, jdbcLectureDao.getById(lectureId).getCourse().getId());
+        assertEquals(updatedId, jdbcLectureDao.getById(lectureId).getTeacher().getId());
+        assertEquals(updatedId, jdbcLectureDao.getById(lectureId).getAudience().getId());
+    }
+    
+    @Test
+    void update_shouldUpdateCorrectly_whenTeacherOrAudienceIsNull() {
+        int lectureId = 1;
+        int presentId = 1;
+        int updatedId = 2;
+        Lecture lecture = jdbcLectureDao.getById(lectureId);
+        assertEquals(presentId, lecture.getCourse().getId());
+        assertEquals(presentId, lecture.getTeacher().getId());
+        assertEquals(presentId, lecture.getAudience().getId());
+        lecture.getCourse().setId(updatedId);
+        lecture.setTeacher(null);
+        lecture.setAudience(null);
+        jdbcLectureDao.update(lecture);
+        assertEquals(updatedId, jdbcLectureDao.getById(lectureId).getCourse().getId());
+        assertNull(jdbcLectureDao.getById(lectureId).getTeacher());
+        assertNull(jdbcLectureDao.getById(lectureId).getAudience());
+    }
+    
+    @Test
+    void deleteById_shouldDeleteWhenIdProvided() {
+        int lectureId = 1;
+        Lecture lecture = jdbcLectureDao.getById(lectureId);
+        jdbcLectureDao.deleteById(lecture.getId());
+        assertThrows(DAOException.class, () -> jdbcLectureDao.getById(lecture.getId()),
+                "No such id in database");
     }
     
     private Lecture prepareExpected(int expectedId) {

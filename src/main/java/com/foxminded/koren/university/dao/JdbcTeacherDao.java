@@ -12,8 +12,12 @@ import org.springframework.stereotype.Repository;
 
 import com.foxminded.koren.university.dao.exceptions.DAOException;
 import com.foxminded.koren.university.dao.interfaces.TeacherDao;
-import com.foxminded.koren.university.dao.sql.TeacherSql;
 import com.foxminded.koren.university.domain.entity.Teacher;
+
+import static com.foxminded.koren.university.dao.sql.TeacherSql.SAVE;
+import static com.foxminded.koren.university.dao.sql.TeacherSql.UPDATE;
+import static com.foxminded.koren.university.dao.sql.TeacherSql.DELETE;
+import static com.foxminded.koren.university.dao.sql.TeacherSql.GET_BY_ID;
 
 @Repository
 public class JdbcTeacherDao implements TeacherDao {
@@ -25,7 +29,7 @@ public class JdbcTeacherDao implements TeacherDao {
     public Teacher save(Teacher entity) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement(TeacherSql.getSave(), new String[] {"id"});
+            PreparedStatement statement = connection.prepareStatement(SAVE, new String[] {"id"});
             statement.setString(1, entity.getFirstName());
             statement.setString(2, entity.getLastName());
             return statement;
@@ -37,18 +41,18 @@ public class JdbcTeacherDao implements TeacherDao {
 
     @Override
     public void update(Teacher entity) {
-        jdbcTemplate.update(TeacherSql.getUpdate(), entity.getFirstName(), entity.getLastName(), entity.getId());        
+        jdbcTemplate.update(UPDATE, entity.getFirstName(), entity.getLastName(), entity.getId());        
     }
 
     @Override
     public boolean deleteById(Integer id) {
-        return jdbcTemplate.update(TeacherSql.getDelete(), id) > 0;
+        return jdbcTemplate.update(DELETE, id) > 0;
     }
 
     @Override
     public Teacher getById(Integer id) {
         try {
-            return jdbcTemplate.queryForObject(TeacherSql.getGetById(), new BeanPropertyRowMapper<>(Teacher.class), id);
+            return jdbcTemplate.queryForObject(GET_BY_ID, new BeanPropertyRowMapper<>(Teacher.class), id);
         }catch(EmptyResultDataAccessException e) {
             throw new DAOException("No such id in database", e);
         }

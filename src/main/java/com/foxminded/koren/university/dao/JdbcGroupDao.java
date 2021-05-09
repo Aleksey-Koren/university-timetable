@@ -10,12 +10,17 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.foxminded.koren.university.dao.exceptions.DAOException;
-import com.foxminded.koren.university.dao.interfaces.CrudDao;
 import com.foxminded.koren.university.dao.interfaces.GroupDao;
 import com.foxminded.koren.university.dao.mappers.GroupMapper;
-import com.foxminded.koren.university.dao.sql.GroupSql;
 import com.foxminded.koren.university.domain.entity.Course;
 import com.foxminded.koren.university.domain.entity.Group;
+
+import static com.foxminded.koren.university.dao.sql.GroupSql.SAVE;
+import static com.foxminded.koren.university.dao.sql.GroupSql.UPDATE;
+import static com.foxminded.koren.university.dao.sql.GroupSql.DELETE;
+import static com.foxminded.koren.university.dao.sql.GroupSql.GET_GROUP_BY_ID;
+import static com.foxminded.koren.university.dao.sql.GroupSql.ADD_COURSE;
+import static com.foxminded.koren.university.dao.sql.GroupSql.REMOVE_COURSE;
 
 @Repository
 public class JdbcGroupDao implements GroupDao {
@@ -27,7 +32,7 @@ public class JdbcGroupDao implements GroupDao {
     public Group save(Group entity) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-                PreparedStatement statement = connection.prepareStatement(GroupSql.getSave(), new String[] {"id"});
+                PreparedStatement statement = connection.prepareStatement(SAVE, new String[] {"id"});
                 statement.setString(1, entity.getName());
                 return statement;
         }, keyHolder);
@@ -38,18 +43,18 @@ public class JdbcGroupDao implements GroupDao {
 
     @Override
     public void update(Group entity) {
-        jdbcTemplate.update(GroupSql.getUpdate(), entity.getName(), entity.getId());
+        jdbcTemplate.update(UPDATE, entity.getName(), entity.getId());
     }
 
     @Override
     public boolean deleteById(Integer id) {
-        return jdbcTemplate.update(GroupSql.getDelete(), id) > 0;
+        return jdbcTemplate.update(DELETE, id) > 0;
     }
 
     @Override
     public Group getById(Integer id) {
         try {
-            return jdbcTemplate.queryForObject(GroupSql.getGetGroupById(), new GroupMapper(), id);
+            return jdbcTemplate.queryForObject(GET_GROUP_BY_ID, new GroupMapper(), id);
         }catch(EmptyResultDataAccessException e) {
             throw new DAOException("No such id in database", e);
         }
@@ -57,10 +62,10 @@ public class JdbcGroupDao implements GroupDao {
     
     @Override
     public void addCourse(Group group, Course course) {
-        jdbcTemplate.update(GroupSql.getAddCourse(), group.getId(), course.getId());
+        jdbcTemplate.update(ADD_COURSE, group.getId(), course.getId());
     }
     @Override
     public boolean removeCourse(Group group, Course course) {
-        return jdbcTemplate.update(GroupSql.getRemoveCourse(), group.getId(), course.getId()) > 0;
+        return jdbcTemplate.update(REMOVE_COURSE, group.getId(), course.getId()) > 0;
     }
 }

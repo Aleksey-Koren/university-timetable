@@ -11,10 +11,13 @@ import org.springframework.stereotype.Repository;
 
 import com.foxminded.koren.university.dao.exceptions.DAOException;
 import com.foxminded.koren.university.dao.interfaces.AudienceDao;
-import com.foxminded.koren.university.dao.interfaces.CrudDao;
 import com.foxminded.koren.university.dao.mappers.AudienceMapper;
-import com.foxminded.koren.university.dao.sql.AudienceSql;
 import com.foxminded.koren.university.domain.entity.Audience;
+
+import static com.foxminded.koren.university.dao.sql.AudienceSql.SAVE;
+import static com.foxminded.koren.university.dao.sql.AudienceSql.UPDATE;
+import static com.foxminded.koren.university.dao.sql.AudienceSql.DELETE;
+import static com.foxminded.koren.university.dao.sql.AudienceSql.GET_BY_ID;
 
 @Repository
 public class JdbcAudienceDao implements AudienceDao{
@@ -26,7 +29,7 @@ public class JdbcAudienceDao implements AudienceDao{
     public Audience save(Audience entity) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement(AudienceSql.getSave(), new String[] {"id"});
+            PreparedStatement statement = connection.prepareStatement(SAVE, new String[] {"id"});
             statement.setInt(1, entity.getNumber());
             statement.setInt(2,  entity.getCapacity());
             return statement;
@@ -38,18 +41,18 @@ public class JdbcAudienceDao implements AudienceDao{
 
     @Override
     public void update(Audience entity) {
-        jdbcTemplate.update(AudienceSql.getUpdate(), entity.getNumber(), entity.getCapacity(), entity.getId());
+        jdbcTemplate.update(UPDATE, entity.getNumber(), entity.getCapacity(), entity.getId());
     }
 
     @Override
     public boolean deleteById(Integer id) {
-        return jdbcTemplate.update(AudienceSql.getDelete(), id) > 0;
+        return jdbcTemplate.update(DELETE, id) > 0;
     }
 
     @Override
     public Audience getById(Integer id) {
         try {
-            return jdbcTemplate.queryForObject(AudienceSql.getGetById(), new AudienceMapper(), id);
+            return jdbcTemplate.queryForObject(GET_BY_ID, new AudienceMapper(), id);
         }catch(EmptyResultDataAccessException e) {
             throw new DAOException("No such id in database", e);
         }
