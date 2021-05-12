@@ -12,12 +12,13 @@ public class CourseServise {
     @Autowired
     private JdbcCourseDao jdbcCourseDao;
     
-    public void createNewCourse(Course course) {
-        jdbcCourseDao.save(course);
+    public Course createNewCourse(Course course) {
+        return jdbcCourseDao.save(course);
     }
     
-    public void createNewCourse(String name, String description) {
+    public Course createNewCourse(String name, String description) {
         Course course = new Course(name, description);
-        jdbcCourseDao.save(course);
-    } 
+        return jdbcCourseDao.save(course);
+    }
+
 }
