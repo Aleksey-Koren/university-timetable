@@ -11,7 +11,6 @@ public class Timetable {
     private List<TimetableEvent> events;
     
     public Timetable(TimetablePerson person, List<TimetableEvent> events) {
-        super();
         this.person = person;
         this.events = events;
     }
