@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -52,6 +53,16 @@ class JdbcGroupDaoTest {
         Group expected = new Group("group name1");
         expected.setId(expectedId);
         assertEquals(expected, jdbcGroupDao.getById(1));        
+    }
+    
+    @Test
+    void getAll_shouldWorkCorrectly() {
+        Group group1 = new Group("group name1");
+        group1.setId(1);
+        Group group2 = new Group("group name2");
+        group2.setId(2);
+        List<Group> expected = List.of(group1, group2);
+        assertEquals(expected, jdbcGroupDao.getAll());
     }
     
     @Test

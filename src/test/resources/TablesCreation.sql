@@ -10,20 +10,20 @@ DROP TABLE IF EXISTS audience;
 CREATE TABLE audience
 (
     id SERIAL PRIMARY KEY,
-    room_number INT NOT NULL,
+    room_number INT UNIQUE NOT NULL,
     capacity INT NOT NULL
 );
 
 CREATE TABLE group_table
 (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(30) NOT NULL
+    name VARCHAR(30) UNIQUE NOT NULL
 );
 
 CREATE TABLE course
 (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(30) NOT NULL,
+    name VARCHAR(30) UNIQUE NOT NULL,
     description VARCHAR(1000) NOT NULL
 );
 

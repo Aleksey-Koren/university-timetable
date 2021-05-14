@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,6 +42,16 @@ class JdbcTeacherDaoTest {
         Teacher expected = new Teacher("first name1", "last name1");
         expected.setId(expectedId);
         assertEquals(expected, jdbcTeacherDao.getById(expectedId));
+    }
+    
+    @Test
+    void getAll_shouldWorkCorrectly() {
+        Teacher teacher1 = new Teacher("first name1", "last name1");
+        teacher1.setId(1);
+        Teacher teacher2 = new Teacher("first name2", "last name2");
+        teacher2.setId(2);
+        List<Teacher> expected = List.of(teacher1, teacher2);
+        assertEquals(expected, jdbcTeacherDao.getAll());
     }
     
     @Test

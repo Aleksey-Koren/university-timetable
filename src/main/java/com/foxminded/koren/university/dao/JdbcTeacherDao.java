@@ -1,6 +1,8 @@
 package com.foxminded.koren.university.dao;
 
 import java.sql.PreparedStatement;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -13,11 +15,13 @@ import org.springframework.stereotype.Repository;
 import com.foxminded.koren.university.dao.exceptions.DAOException;
 import com.foxminded.koren.university.dao.interfaces.TeacherDao;
 import com.foxminded.koren.university.domain.entity.Teacher;
+import com.foxminded.koren.university.domain.entity.interfaces.TimetableEvent;
 
 import static com.foxminded.koren.university.dao.sql.TeacherSql.SAVE;
 import static com.foxminded.koren.university.dao.sql.TeacherSql.UPDATE;
 import static com.foxminded.koren.university.dao.sql.TeacherSql.DELETE;
 import static com.foxminded.koren.university.dao.sql.TeacherSql.GET_BY_ID;
+import static com.foxminded.koren.university.dao.sql.TeacherSql.GET_ALL;
 
 @Repository
 public class JdbcTeacherDao implements TeacherDao {
@@ -56,5 +60,10 @@ public class JdbcTeacherDao implements TeacherDao {
         }catch(EmptyResultDataAccessException e) {
             throw new DAOException("No such id in database", e);
         }
+    }
+
+    @Override
+    public List<Teacher> getAll() {
+        return jdbcTemplate.query(GET_ALL, new BeanPropertyRowMapper<>(Teacher.class));
     }
 }

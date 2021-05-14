@@ -54,6 +54,7 @@ class JdbcCourseDaoTest {
         jdbcCourseDao.save(expected);
         expected.setId(expectedId);
         assertEquals(expected, jdbcCourseDao.getById(expectedId));
+//        jdbcCourseDao.save(expected);
     }
     
     @Test
@@ -72,6 +73,20 @@ class JdbcCourseDaoTest {
         Course course = jdbcCourseDao.getById(expectedId);
         jdbcCourseDao.deleteById(course.getId());
         assertThrows(DAOException.class, () -> jdbcCourseDao.getById(course.getId()), "No such id in database");
+    }
+    
+    @Test
+    void getAll_shouldWorkCorrectly() {
+        Course course1 = new Course("name1", "desc1");
+        course1.setId(1);
+        Course course2 = new Course("name2", "desc2");
+        course2.setId(2);
+        Course course3 = new Course("name3", "desc3");
+        course3.setId(3);
+        Course course4 = new Course("name4", "desc4");
+        course4.setId(4);
+        List<Course> expected = List.of(course1, course2, course3, course4);
+        assertEquals(expected, jdbcCourseDao.getAll());
     }
     
     @Test 

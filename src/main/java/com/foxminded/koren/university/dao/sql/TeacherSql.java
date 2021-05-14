@@ -20,4 +20,9 @@ public class TeacherSql {
                  "SELECT id, first_name, last_name\r\n"
                + "FROM teacher\r\n"
                + "WHERE id = ?;";
+    
+    public static final String GET_ALL = 
+            "SELECT id, first_name, last_name\r\n"
+          + "FROM teacher\r\n"
+          + "ORDER BY id;";
 }

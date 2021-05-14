@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -68,6 +69,21 @@ class JdbcLectureDaoTest {
         
         expected.setAudience(null);
         assertEquals(expected, jdbcLectureDao.getById(expectedId));
+    }
+    
+    @Test
+    void getAll_shouldGetById_whenTeacherOrAudienceIsNull() {
+        jdbcTemplate.execute("DELETE FROM lecture;");
+        jdbcTemplate.execute("INSERT INTO lecture \r\n"
+                           + "(id, course_id, teacher_id, audience_id, start_time , end_time)\r\n"
+                           + "VALUES\r\n"
+                           + "(1 , 1, 1, 1, '2021-05-02 16:00:00', '2021-05-02 17:00:00'),\r\n"
+                           + "(2 , 1, 1, 1, '2021-05-02 16:00:00', '2021-05-02 17:00:00');");
+        
+        Lecture lecture1 = prepareExpected(1);
+        Lecture lecture2 = prepareExpected(2);
+        List<Lecture> expected = List.of(lecture1, lecture2);
+        assertEquals(expected, jdbcLectureDao.getAll());
     }
     
     @Test

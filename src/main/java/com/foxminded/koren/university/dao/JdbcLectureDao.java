@@ -13,12 +13,14 @@ import com.foxminded.koren.university.dao.mappers.LectureMapper;
 import com.foxminded.koren.university.domain.entity.Lecture;
 
 import static com.foxminded.koren.university.dao.sql.LectureSql.GET_BY_ID;
+import static com.foxminded.koren.university.dao.sql.LectureSql.GET_ALL;
 import static com.foxminded.koren.university.dao.sql.LectureSql.SAVE;
 import static com.foxminded.koren.university.dao.sql.LectureSql.UPDATE;
 import static com.foxminded.koren.university.dao.sql.LectureSql.DELETE;
 
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Repository
 public class JdbcLectureDao implements LectureDao {
@@ -66,5 +68,10 @@ public class JdbcLectureDao implements LectureDao {
         }catch(EmptyResultDataAccessException e){
             throw new DAOException("No such id in database", e);
         }
+    }
+
+    @Override
+    public List<Lecture> getAll() {
+        return jdbcTemplate.query(GET_ALL, new LectureMapper());
     }
 }

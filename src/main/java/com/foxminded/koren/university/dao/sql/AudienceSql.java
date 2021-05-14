@@ -22,4 +22,9 @@ public class AudienceSql {
             "SELECT id audience_id, room_number audience_room_number, capacity audience_capacity\r\n"
             + "FROM audience\r\n"
             + "WHERE id = ?;";
+    
+    public static final String GET_ALL = 
+            "SELECT id audience_id, room_number audience_room_number, capacity audience_capacity\r\n"
+            + "FROM audience\r\n"
+            + "ORDER BY id;";
 }
