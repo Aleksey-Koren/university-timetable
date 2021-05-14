@@ -8,7 +8,4 @@ import com.foxminded.koren.university.domain.entity.interfaces.TimetableEvent;
 public interface LectureDao extends CrudDao<Integer, Lecture> {
 
     List<TimetableEvent> getLecturesByPersonId(Integer id);
-    
-    
-    
 }
