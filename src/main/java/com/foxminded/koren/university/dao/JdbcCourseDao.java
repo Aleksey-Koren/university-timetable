@@ -15,8 +15,8 @@ import org.springframework.stereotype.Repository;
 import com.foxminded.koren.university.dao.exceptions.DAOException;
 import com.foxminded.koren.university.dao.interfaces.CourseDao;
 import com.foxminded.koren.university.dao.mappers.CourseMapper;
-import com.foxminded.koren.university.domain.entity.Course;
-import com.foxminded.koren.university.domain.entity.Group;
+import com.foxminded.koren.university.entity.Course;
+import com.foxminded.koren.university.entity.Group;
 
 import static com.foxminded.koren.university.dao.sql.CourseSql.SAVE;
 import static com.foxminded.koren.university.dao.sql.CourseSql.UPDATE;

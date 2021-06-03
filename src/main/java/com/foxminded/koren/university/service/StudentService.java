@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.foxminded.koren.university.dao.interfaces.StudentDao;
-import com.foxminded.koren.university.domain.entity.Student;
-import com.foxminded.koren.university.domain.entity.Year;
+import com.foxminded.koren.university.entity.Student;
+import com.foxminded.koren.university.entity.Year;
 
 public class StudentService {
     

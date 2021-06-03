@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import com.foxminded.koren.university.domain.entity.Group;
+import com.foxminded.koren.university.entity.Group;
 
 public class GroupMapper implements RowMapper<Group> {
 

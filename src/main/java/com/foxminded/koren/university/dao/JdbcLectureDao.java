@@ -10,16 +10,20 @@ import org.springframework.stereotype.Repository;
 import com.foxminded.koren.university.dao.exceptions.DAOException;
 import com.foxminded.koren.university.dao.interfaces.LectureDao;
 import com.foxminded.koren.university.dao.mappers.LectureMapper;
-import com.foxminded.koren.university.domain.entity.Lecture;
+import com.foxminded.koren.university.entity.Student;
+import com.foxminded.koren.university.entity.Teacher;
+import com.foxminded.koren.university.entity.interfaces.TimetableEvent;
 
 import static com.foxminded.koren.university.dao.sql.LectureSql.GET_BY_ID;
 import static com.foxminded.koren.university.dao.sql.LectureSql.GET_ALL;
 import static com.foxminded.koren.university.dao.sql.LectureSql.SAVE;
 import static com.foxminded.koren.university.dao.sql.LectureSql.UPDATE;
 import static com.foxminded.koren.university.dao.sql.LectureSql.DELETE;
+import static com.foxminded.koren.university.dao.sql.LectureSql.GET_BY_TEACHER_AND_TIME_PERIOD;
 
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -29,7 +33,7 @@ public class JdbcLectureDao implements LectureDao {
     private JdbcTemplate jdbcTemplate;
     
     @Override
-    public Lecture save(Lecture entity) {
+    public TimetableEvent save(TimetableEvent entity) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         
         jdbcTemplate.update(connection -> {
@@ -47,7 +51,7 @@ public class JdbcLectureDao implements LectureDao {
     }
 
     @Override
-    public void update(Lecture entity) {
+    public void update(TimetableEvent entity) {
         jdbcTemplate.update(UPDATE, entity.getCourse().getId(),
                         entity.getTeacher() != null ? entity.getTeacher().getId() : null,
                         entity.getAudience() != null ? entity.getAudience().getId() : null,
@@ -62,7 +66,7 @@ public class JdbcLectureDao implements LectureDao {
     }
 
     @Override
-    public Lecture getById(Integer id) {
+    public TimetableEvent getById(Integer id) {
         try {
             return jdbcTemplate.queryForObject(GET_BY_ID, new LectureMapper(), id);
         }catch(EmptyResultDataAccessException e){
@@ -71,7 +75,23 @@ public class JdbcLectureDao implements LectureDao {
     }
 
     @Override
-    public List<Lecture> getAll() {
+    public List<TimetableEvent> getAll() {
         return jdbcTemplate.query(GET_ALL, new LectureMapper());
+    }
+
+    @Override
+    public List<TimetableEvent> getLecturesByTeacherAndTimePeriod(Teacher teacher, LocalDate start, LocalDate finish) {
+        return jdbcTemplate.query(GET_BY_TEACHER_AND_TIME_PERIOD,
+                                  new LectureMapper(), teacher.getId(),
+                                  start.atTime(0,0),
+                                  finish.atTime(0,0));
+    }
+
+    @Override
+    public List<TimetableEvent> getLecturesByStudentAndTimePeriod(Student student, LocalDate start, LocalDate finish) {
+        return jdbcTemplate.query(GET_BY_TEACHER_AND_TIME_PERIOD,
+                new LectureMapper(), student.getId(),
+                start.atTime(0,0),
+                finish.atTime(0,0));
     }
 }

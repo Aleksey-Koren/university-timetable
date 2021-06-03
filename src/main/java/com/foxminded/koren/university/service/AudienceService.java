@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.foxminded.koren.university.dao.interfaces.AudienceDao;
-import com.foxminded.koren.university.domain.entity.Audience;
+import com.foxminded.koren.university.entity.Audience;
 
 @Service
 public class AudienceService {

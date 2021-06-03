@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.foxminded.koren.university.dao.interfaces.GroupDao;
 import com.foxminded.koren.university.dao.interfaces.StudentDao;
-import com.foxminded.koren.university.domain.entity.Group;
+import com.foxminded.koren.university.entity.Group;
 
 @Service
 public class GroupService {

@@ -18,9 +18,9 @@ import com.foxminded.koren.university.SpringConfigT;
 import com.foxminded.koren.university.dao.exceptions.DAOException;
 import com.foxminded.koren.university.dao.test_data.TablesCreation;
 import com.foxminded.koren.university.dao.test_data.TestData;
-import com.foxminded.koren.university.domain.entity.Group;
-import com.foxminded.koren.university.domain.entity.Student;
-import com.foxminded.koren.university.domain.entity.Year;
+import com.foxminded.koren.university.entity.Group;
+import com.foxminded.koren.university.entity.Student;
+import com.foxminded.koren.university.entity.Year;
 
 @SpringJUnitConfig
 @ContextConfiguration(classes = {SpringConfigT.class})

@@ -1,9 +1,9 @@
-package com.foxminded.koren.university.domain.entity;
+package com.foxminded.koren.university.entity;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.foxminded.koren.university.domain.entity.interfaces.TimetableEvent;
+import com.foxminded.koren.university.entity.interfaces.TimetableEvent;
 
 public class Lecture implements TimetableEvent {
     

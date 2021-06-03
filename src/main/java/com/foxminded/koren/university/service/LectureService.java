@@ -5,15 +5,16 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.foxminded.koren.university.dao.interfaces.LectureDao;
-import com.foxminded.koren.university.domain.entity.Lecture;
+import com.foxminded.koren.university.entity.Lecture;
+import com.foxminded.koren.university.entity.interfaces.TimetableEvent;
 
 public class LectureService {
     
     @Autowired
     private LectureDao lectureDao;
     
-    public Lecture createNew(Lecture lecture) {
-        return lectureDao.save(lecture);
+    public TimetableEvent createNew(Lecture lecture) {
+        return  lectureDao.save(lecture);
     }
     
     public void update(Lecture lecture) {
@@ -24,11 +25,11 @@ public class LectureService {
         return lectureDao.deleteById(id);
     }
     
-    public Lecture getById(int id) {
+    public TimetableEvent getById(int id) {
         return lectureDao.getById(id);
     }
     
-    public List<Lecture> getAll() {
+    public List<TimetableEvent> getAll() {
         return lectureDao.getAll();
     }
 }

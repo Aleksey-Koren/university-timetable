@@ -17,7 +17,7 @@ import com.foxminded.koren.university.SpringConfigT;
 import com.foxminded.koren.university.dao.exceptions.DAOException;
 import com.foxminded.koren.university.dao.test_data.TablesCreation;
 import com.foxminded.koren.university.dao.test_data.TestData;
-import com.foxminded.koren.university.domain.entity.Teacher;
+import com.foxminded.koren.university.entity.Teacher;
 
 @SpringJUnitConfig
 @ContextConfiguration(classes = {SpringConfigT.class})

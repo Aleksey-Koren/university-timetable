@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 import com.foxminded.koren.university.dao.exceptions.DAOException;
 import com.foxminded.koren.university.dao.interfaces.AudienceDao;
 import com.foxminded.koren.university.dao.mappers.AudienceMapper;
-import com.foxminded.koren.university.domain.entity.Audience;
+import com.foxminded.koren.university.entity.Audience;
 
 import static com.foxminded.koren.university.dao.sql.AudienceSql.SAVE;
 import static com.foxminded.koren.university.dao.sql.AudienceSql.UPDATE;

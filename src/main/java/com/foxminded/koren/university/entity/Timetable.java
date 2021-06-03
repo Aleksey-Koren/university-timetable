@@ -1,9 +1,9 @@
-package com.foxminded.koren.university.domain.entity;
+package com.foxminded.koren.university.entity;
 
 import java.util.List;
 
-import com.foxminded.koren.university.domain.entity.interfaces.TimetableEvent;
-import com.foxminded.koren.university.domain.entity.interfaces.TimetablePerson;
+import com.foxminded.koren.university.entity.interfaces.TimetableEvent;
+import com.foxminded.koren.university.entity.interfaces.TimetablePerson;
 
 public class Timetable {
     

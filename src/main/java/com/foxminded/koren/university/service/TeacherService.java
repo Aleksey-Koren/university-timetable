@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 
 import com.foxminded.koren.university.dao.interfaces.LectureDao;
 import com.foxminded.koren.university.dao.interfaces.TeacherDao;
-import com.foxminded.koren.university.domain.entity.Lecture;
-import com.foxminded.koren.university.domain.entity.Teacher;
-import com.foxminded.koren.university.domain.entity.Timetable;
-import com.foxminded.koren.university.domain.entity.interfaces.TimetableEvent;
-import com.foxminded.koren.university.domain.entity.interfaces.TimetablePerson;
+import com.foxminded.koren.university.entity.Lecture;
+import com.foxminded.koren.university.entity.Teacher;
+import com.foxminded.koren.university.entity.Timetable;
+import com.foxminded.koren.university.entity.interfaces.TimetableEvent;
+import com.foxminded.koren.university.entity.interfaces.TimetablePerson;
 
 @Service
 public class TeacherService {
@@ -41,10 +41,5 @@ public class TeacherService {
     
     public List<Teacher> getAll() {
         return teacherDao.getAll();
-    }
-    
-    public Timetable getTimetable(TimetablePerson teacher, LocalDateTime period) {
-        List<TimetableEvent> lectures = lectureDao.getLecturesByPersonId(teacher.getId());
-        return new Timetable(teacher, (lectures));
     }
 }

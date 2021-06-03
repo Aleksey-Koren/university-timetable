@@ -14,8 +14,8 @@ import org.springframework.stereotype.Repository;
 
 import com.foxminded.koren.university.dao.exceptions.DAOException;
 import com.foxminded.koren.university.dao.interfaces.TeacherDao;
-import com.foxminded.koren.university.domain.entity.Teacher;
-import com.foxminded.koren.university.domain.entity.interfaces.TimetableEvent;
+import com.foxminded.koren.university.entity.Teacher;
+import com.foxminded.koren.university.entity.interfaces.TimetableEvent;
 
 import static com.foxminded.koren.university.dao.sql.TeacherSql.SAVE;
 import static com.foxminded.koren.university.dao.sql.TeacherSql.UPDATE;

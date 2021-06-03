@@ -30,7 +30,7 @@ CREATE TABLE course
 CREATE TABLE student
 (
     id SERIAL PRIMARY KEY,
-    group_id INT REFERENCES group_table(id) ON DELETE SET NULL,
+    group_id INT REFERENCES group_table(id) ON DELETE CASCADE,
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
     student_year VARCHAR(15) NOT NULL

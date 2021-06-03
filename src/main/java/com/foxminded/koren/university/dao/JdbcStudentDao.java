@@ -3,7 +3,7 @@ package com.foxminded.koren.university.dao;
 import com.foxminded.koren.university.dao.exceptions.DAOException;
 import com.foxminded.koren.university.dao.interfaces.StudentDao;
 import com.foxminded.koren.university.dao.mappers.StudentMapper;
-import com.foxminded.koren.university.domain.entity.Student;
+import com.foxminded.koren.university.entity.Student;
 
 import java.sql.PreparedStatement;
 import java.util.List;
