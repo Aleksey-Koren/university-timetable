@@ -1,3 +1,4 @@
+
 package com.foxminded.koren.university.dao.test_data;
 
 import org.springframework.beans.factory.annotation.Autowired;

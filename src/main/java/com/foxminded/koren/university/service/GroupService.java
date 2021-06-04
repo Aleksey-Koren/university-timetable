@@ -14,16 +14,13 @@ public class GroupService {
     
     @Autowired
     private GroupDao groupDao;
-    
-    @Autowired
-    private StudentDao studentDao;
-    
+        
     public Group createNew(Group group) {
         return groupDao.save(group);
     }
     
-    public void update(Group course) {
-        groupDao.update(course);
+    public void update(Group group) {
+        groupDao.update(group);
     }
     
     public boolean deleteById(int id) {
@@ -39,7 +36,7 @@ public class GroupService {
     }
     
     public void releaseGroup(Group group) {
-        studentDao.deleteByGroupId(group.getId());
+//        studentDao.deleteByGroupId(group.getId());
         groupDao.deleteById(group.getId());
     }
 }

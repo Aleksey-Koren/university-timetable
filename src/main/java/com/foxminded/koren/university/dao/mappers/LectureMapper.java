@@ -13,11 +13,11 @@ import com.foxminded.koren.university.entity.Lecture;
 import com.foxminded.koren.university.entity.Teacher;
 import com.foxminded.koren.university.entity.interfaces.TimetableEvent;
 
-public class LectureMapper implements RowMapper<TimetableEvent> {
+public class LectureMapper implements RowMapper<Lecture> {
 
     @Override
-    public TimetableEvent mapRow(ResultSet rs, int rowNum) throws SQLException {
-        TimetableEvent lecture = new Lecture ();
+    public Lecture mapRow(ResultSet rs, int rowNum) throws SQLException {
+        Lecture lecture = new Lecture ();
         lecture.setCourse(new CourseMapper().mapRow(rs, rowNum));
         
         if(rs.getObject("teacher_id") != null) {

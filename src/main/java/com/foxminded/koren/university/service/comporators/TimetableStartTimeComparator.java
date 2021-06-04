@@ -4,7 +4,7 @@ import java.util.Comparator;
 
 import com.foxminded.koren.university.entity.interfaces.TimetableEvent;
 
-public class TimetableTimeComparator implements Comparator<TimetableEvent> {
+public class TimetableStartTimeComparator implements Comparator<TimetableEvent> {
 
     @Override
     public int compare(TimetableEvent o1, TimetableEvent o2) {

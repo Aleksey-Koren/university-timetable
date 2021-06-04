@@ -3,11 +3,13 @@ package com.foxminded.koren.university.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.foxminded.koren.university.dao.interfaces.LectureDao;
 import com.foxminded.koren.university.entity.Lecture;
 import com.foxminded.koren.university.entity.interfaces.TimetableEvent;
 
+@Service
 public class LectureService {
     
     @Autowired
@@ -29,7 +31,7 @@ public class LectureService {
         return lectureDao.getById(id);
     }
     
-    public List<TimetableEvent> getAll() {
+    public List<Lecture> getAll() {
         return lectureDao.getAll();
     }
 }

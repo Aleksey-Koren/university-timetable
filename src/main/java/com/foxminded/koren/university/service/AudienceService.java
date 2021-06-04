@@ -3,6 +3,7 @@ package com.foxminded.koren.university.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.foxminded.koren.university.dao.interfaces.AudienceDao;
@@ -12,8 +13,9 @@ import com.foxminded.koren.university.entity.Audience;
 public class AudienceService {
     
     @Autowired
+    @Qualifier("jdbcAudienceDao")
     private AudienceDao audienceDao;
-    
+        
     public Audience createNew(Audience audience) {
         return audienceDao.save(audience);
     }

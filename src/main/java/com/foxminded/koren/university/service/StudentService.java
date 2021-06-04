@@ -3,11 +3,13 @@ package com.foxminded.koren.university.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.foxminded.koren.university.dao.interfaces.StudentDao;
 import com.foxminded.koren.university.entity.Student;
 import com.foxminded.koren.university.entity.Year;
 
+@Service
 public class StudentService {
     
     @Autowired

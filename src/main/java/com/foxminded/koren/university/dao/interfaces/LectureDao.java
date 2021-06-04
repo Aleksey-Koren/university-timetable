@@ -6,11 +6,10 @@ import java.util.List;
 import com.foxminded.koren.university.entity.Lecture;
 import com.foxminded.koren.university.entity.Student;
 import com.foxminded.koren.university.entity.Teacher;
-import com.foxminded.koren.university.entity.interfaces.TimetableEvent;
 
-public interface LectureDao extends CrudDao<Integer, TimetableEvent> {
+public interface LectureDao extends CrudDao<Integer, Lecture> {
     
-    List<TimetableEvent> getLecturesByTeacherAndTimePeriod(Teacher teacher, LocalDate start, LocalDate finish);
+    List<Lecture> getTeacherLecturesByTimePeriod(Teacher teacher, LocalDate start, LocalDate finish);
 
-    List<TimetableEvent> getLecturesByStudentAndTimePeriod(Student student, LocalDate start, LocalDate finish);
+    List<Lecture> getStudentLecturesByTimePeriod(Student student, LocalDate start, LocalDate finish);
 }
