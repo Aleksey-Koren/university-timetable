@@ -23,6 +23,11 @@ public class CourseSql {
           + "FROM course\r\n"
           + "WHERE id = ?;";
     
+    public static final String GET_ALL =
+            "SELECT id course_id, name course_name, description course_description\r\n"
+          + "FROM course\r\n"
+          + "ORDER BY id;";
+    
     public static final String GET_BY_GROUP_ID = 
             "SELECT c.id course_id, c.name course_name, c.description course_description\r\n"
           + "FROM group_course gc\r\n"

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,8 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import com.foxminded.koren.university.SpringConfigT;
 import com.foxminded.koren.university.dao.exceptions.DAOException;
 import com.foxminded.koren.university.dao.test_data.TablesCreation;
-import com.foxminded.koren.university.domain.entity.Audience;
+import com.foxminded.koren.university.dao.test_data.TestData;
+import com.foxminded.koren.university.entity.Audience;
 
 @SpringJUnitConfig
 @ContextConfiguration(classes = {SpringConfigT.class})
@@ -25,30 +27,39 @@ class JdbcAudienceDaoTest {
     @Autowired
     private TablesCreation tablesCreation;
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-    @Autowired
     private JdbcAudienceDao jdbcAudienceDao;
+    @Autowired
+    private TestData testData;
     
     @BeforeEach
     void createTables() throws DataAccessException, IOException {
         tablesCreation.createTables();
+        testData.prepareTestData();
     }
     
     @Test
-    void getById_shouldWorkCorrectly() {
-        String sql = "INSERT INTO audience (id, room_number, capacity)\r\n"
-                   + "VALUES (5, 113, 30);";
-        
-        jdbcTemplate.update(sql);  
-        Audience expected = new Audience(113, 30);
-        int expectedId = 5;
+    void getById_shouldWorkCorrectly() {  
+        Audience expected = new Audience(4, 30);
+        int expectedId = 1;
         expected.setId(expectedId);
         assertEquals(expected, jdbcAudienceDao.getById(expectedId));
     }
     
     @Test
+    void getAll_shouldWorkCorrectly() {
+        Audience audience1 = new Audience(4, 30);
+        audience1.setId(1);
+        Audience audience2 = new Audience(34, 30);
+        audience2.setId(2);
+        Audience audience3 = new Audience(37, 150);
+        audience3.setId(3);
+        List<Audience> expected = List.of(audience1, audience2, audience3);
+        assertEquals(expected, jdbcAudienceDao.getAll());
+    }
+    
+    @Test
     void save_shouldWorkCorrectly() {
-        int expectedId = 1;
+        int expectedId = 4;
         Audience expected = new Audience(113, 30);  
         jdbcAudienceDao.save(expected);
         expected.setId(expectedId);
@@ -58,8 +69,7 @@ class JdbcAudienceDaoTest {
     @Test
     void update_shouldWorkCorrectly() {
         int expectedId = 1;
-        Audience expected = new Audience(113, 30);  
-        jdbcAudienceDao.save(expected);
+        Audience expected = new Audience(4, 30);  
         expected.setId(expectedId);
         assertEquals(expected, jdbcAudienceDao.getById(expectedId));
         expected.setNumber(35);
@@ -70,8 +80,7 @@ class JdbcAudienceDaoTest {
     @Test
     void deleteById_shouldWorkCorrectly() {
         int expectedId = 1;
-        Audience audience = new Audience(113, 30);  
-        jdbcAudienceDao.save(audience);
+        Audience audience = new Audience(4, 30);  
         audience.setId(expectedId);
         assertEquals(audience, jdbcAudienceDao.getById(expectedId));
         jdbcAudienceDao.deleteById(expectedId);

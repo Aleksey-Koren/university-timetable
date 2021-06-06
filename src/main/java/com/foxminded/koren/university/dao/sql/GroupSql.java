@@ -20,6 +20,11 @@ public class GroupSql {
             "SELECT id group_id, name group_name\r\n"
           + "FROM group_table\r\n"
           + "WHERE id = ?;";
+    
+    public static final String GET_ALL = 
+            "SELECT id group_id, name group_name\r\n"
+            + "FROM group_table\r\n"
+            + "ORDER BY id;";
       
     public static final String ADD_COURSE = 
             "INSERT INTO group_course (group_id, course_id)\r\n"

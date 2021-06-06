@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import com.foxminded.koren.university.domain.entity.Teacher;
+import com.foxminded.koren.university.entity.Teacher;
 
 public class TeacherMapper implements RowMapper<Teacher>{
 

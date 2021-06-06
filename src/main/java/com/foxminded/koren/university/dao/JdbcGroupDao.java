@@ -1,8 +1,10 @@
 package com.foxminded.koren.university.dao;
 
 import java.sql.PreparedStatement;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -12,13 +14,14 @@ import org.springframework.stereotype.Repository;
 import com.foxminded.koren.university.dao.exceptions.DAOException;
 import com.foxminded.koren.university.dao.interfaces.GroupDao;
 import com.foxminded.koren.university.dao.mappers.GroupMapper;
-import com.foxminded.koren.university.domain.entity.Course;
-import com.foxminded.koren.university.domain.entity.Group;
+import com.foxminded.koren.university.entity.Course;
+import com.foxminded.koren.university.entity.Group;
 
 import static com.foxminded.koren.university.dao.sql.GroupSql.SAVE;
 import static com.foxminded.koren.university.dao.sql.GroupSql.UPDATE;
 import static com.foxminded.koren.university.dao.sql.GroupSql.DELETE;
 import static com.foxminded.koren.university.dao.sql.GroupSql.GET_GROUP_BY_ID;
+import static com.foxminded.koren.university.dao.sql.GroupSql.GET_ALL;
 import static com.foxminded.koren.university.dao.sql.GroupSql.ADD_COURSE;
 import static com.foxminded.koren.university.dao.sql.GroupSql.REMOVE_COURSE;
 
@@ -31,19 +34,27 @@ public class JdbcGroupDao implements GroupDao {
     @Override
     public Group save(Group entity) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection -> {
-                PreparedStatement statement = connection.prepareStatement(SAVE, new String[] {"id"});
+        try {
+            jdbcTemplate.update(connection -> {
+                PreparedStatement statement = connection.prepareStatement(SAVE, new String[] { "id" });
                 statement.setString(1, entity.getName());
                 return statement;
-        }, keyHolder);
-                
+            }, keyHolder);
+        } catch (DuplicateKeyException e) {
+            throw new DAOException(e.getMessage(), e);
+        }
+        
         entity.setId(keyHolder.getKeyAs(Integer.class));
         return entity;
     }
 
     @Override
     public void update(Group entity) {
-        jdbcTemplate.update(UPDATE, entity.getName(), entity.getId());
+        try {
+            jdbcTemplate.update(UPDATE, entity.getName(), entity.getId());
+        } catch (DuplicateKeyException e) {
+            throw new DAOException(e.getMessage(), e);
+        }
     }
 
     @Override
@@ -58,6 +69,10 @@ public class JdbcGroupDao implements GroupDao {
         }catch(EmptyResultDataAccessException e) {
             throw new DAOException("No such id in database", e);
         }
+    }
+    
+    public List<Group> getAll() {
+        return jdbcTemplate.query(GET_ALL, new GroupMapper());
     }
     
     @Override

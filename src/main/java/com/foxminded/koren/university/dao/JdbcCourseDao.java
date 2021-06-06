@@ -3,7 +3,9 @@ package com.foxminded.koren.university.dao;
 import java.sql.PreparedStatement;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -13,13 +15,14 @@ import org.springframework.stereotype.Repository;
 import com.foxminded.koren.university.dao.exceptions.DAOException;
 import com.foxminded.koren.university.dao.interfaces.CourseDao;
 import com.foxminded.koren.university.dao.mappers.CourseMapper;
-import com.foxminded.koren.university.domain.entity.Course;
-import com.foxminded.koren.university.domain.entity.Group;
+import com.foxminded.koren.university.entity.Course;
+import com.foxminded.koren.university.entity.Group;
 
 import static com.foxminded.koren.university.dao.sql.CourseSql.SAVE;
 import static com.foxminded.koren.university.dao.sql.CourseSql.UPDATE;
 import static com.foxminded.koren.university.dao.sql.CourseSql.DELETE;
 import static com.foxminded.koren.university.dao.sql.CourseSql.GET_BY_ID;
+import static com.foxminded.koren.university.dao.sql.CourseSql.GET_ALL;
 import static com.foxminded.koren.university.dao.sql.CourseSql.GET_BY_GROUP_ID;
 
 
@@ -29,24 +32,33 @@ public class JdbcCourseDao implements CourseDao {
     
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
+    
     @Override
     public Course save(Course entity) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement(SAVE, new String[] {"id"});
-            statement.setString(1, entity.getName());
-            statement.setString(2, entity.getDescrption());
-            return statement;
-        }, keyHolder);
+        
+        try {
+            jdbcTemplate.update(connection -> {
+                PreparedStatement statement = connection.prepareStatement(SAVE, new String[] {"id"});
+                statement.setString(1, entity.getName());
+                statement.setString(2, entity.getDescrption());
+                return statement;
+            }, keyHolder);
+        } catch (DuplicateKeyException e) {
+            throw new DAOException(e.getMessage(), e);
+        }
         
         entity.setId(keyHolder.getKeyAs(Integer.class));
         return entity;
     }
-
+    
     @Override
     public void update(Course entity) {
-        jdbcTemplate.update(UPDATE, entity.getName(), entity.getDescrption(), entity.getId());
+        try {
+            jdbcTemplate.update(UPDATE, entity.getName(), entity.getDescrption(), entity.getId());
+        } catch (DuplicateKeyException e) {
+            throw new DAOException(e.getMessage(), e);
+        }
     }
 
     @Override
@@ -71,5 +83,10 @@ public class JdbcCourseDao implements CourseDao {
     @Override
     public List<Course> getByGroup(Group group) {
         return jdbcTemplate.query(GET_BY_GROUP_ID, new CourseMapper(), group.getId());  
+    }
+
+    @Override
+    public List<Course> getAll() {
+        return jdbcTemplate.query(GET_ALL, new CourseMapper());
     }
 }

@@ -2,14 +2,16 @@ package com.foxminded.koren.university.dao.mappers;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.sql.Timestamp;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import com.foxminded.koren.university.domain.entity.Audience;
-import com.foxminded.koren.university.domain.entity.Course;
-import com.foxminded.koren.university.domain.entity.Lecture;
-import com.foxminded.koren.university.domain.entity.Teacher;
+import com.foxminded.koren.university.entity.Audience;
+import com.foxminded.koren.university.entity.Course;
+import com.foxminded.koren.university.entity.Lecture;
+import com.foxminded.koren.university.entity.Teacher;
+import com.foxminded.koren.university.entity.interfaces.TimetableEvent;
 
 public class LectureMapper implements RowMapper<Lecture> {
 

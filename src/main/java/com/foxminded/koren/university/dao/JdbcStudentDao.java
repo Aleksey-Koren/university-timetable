@@ -3,9 +3,10 @@ package com.foxminded.koren.university.dao;
 import com.foxminded.koren.university.dao.exceptions.DAOException;
 import com.foxminded.koren.university.dao.interfaces.StudentDao;
 import com.foxminded.koren.university.dao.mappers.StudentMapper;
-import com.foxminded.koren.university.domain.entity.Student;
+import com.foxminded.koren.university.entity.Student;
 
 import java.sql.PreparedStatement;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -13,12 +14,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.foxminded.koren.university.dao.sql.StudentSql.SAVE;
 import static com.foxminded.koren.university.dao.sql.StudentSql.UPDATE;
 import static com.foxminded.koren.university.dao.sql.StudentSql.DELETE;
 import static com.foxminded.koren.university.dao.sql.StudentSql.GET_BY_ID;
-
+import static com.foxminded.koren.university.dao.sql.StudentSql.GET_ALL;
+import static com.foxminded.koren.university.dao.sql.StudentSql.DELETE_BY_GROUP_ID;
 @Repository
 public class JdbcStudentDao implements StudentDao {
     
@@ -26,6 +29,7 @@ public class JdbcStudentDao implements StudentDao {
     private JdbcTemplate jdbcTemplate;
         
     @Override
+    @Transactional
     public Student save(Student entity) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -67,5 +71,15 @@ public class JdbcStudentDao implements StudentDao {
         }catch(EmptyResultDataAccessException e) {
             throw new DAOException("No such id in database", e);
         }
+    }
+
+    @Override
+    public void deleteByGroupId(int id) {
+        jdbcTemplate.update(DELETE_BY_GROUP_ID, id);
+    }
+
+    @Override
+    public List<Student> getAll() {
+        return jdbcTemplate.query(GET_ALL, new StudentMapper());
     }
 }

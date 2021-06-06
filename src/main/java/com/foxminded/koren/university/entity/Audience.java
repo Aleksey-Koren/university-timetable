@@ -1,4 +1,4 @@
-package com.foxminded.koren.university.domain.entity;
+package com.foxminded.koren.university.entity;
 
 public class Audience {
     

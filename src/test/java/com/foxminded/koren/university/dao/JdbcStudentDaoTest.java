@@ -4,11 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
@@ -16,9 +18,9 @@ import com.foxminded.koren.university.SpringConfigT;
 import com.foxminded.koren.university.dao.exceptions.DAOException;
 import com.foxminded.koren.university.dao.test_data.TablesCreation;
 import com.foxminded.koren.university.dao.test_data.TestData;
-import com.foxminded.koren.university.domain.entity.Group;
-import com.foxminded.koren.university.domain.entity.Student;
-import com.foxminded.koren.university.domain.entity.Year;
+import com.foxminded.koren.university.entity.Group;
+import com.foxminded.koren.university.entity.Student;
+import com.foxminded.koren.university.entity.Year;
 
 @SpringJUnitConfig
 @ContextConfiguration(classes = {SpringConfigT.class})
@@ -31,6 +33,8 @@ class JdbcStudentDaoTest {
     private JdbcStudentDao jdbcStudentDao;
     @Autowired
     private TestData testData;
+    @Autowired
+    private JdbcTemplate JdbcTemplate;
         
     @BeforeEach
     void createTables() throws DataAccessException, IOException {
@@ -55,6 +59,25 @@ class JdbcStudentDaoTest {
         Student expected = new Student(group, "first name4", "last name4", Year.SECOND);
         expected.setId(expectedId);
         assertEquals(expected, jdbcStudentDao.getById(expectedId));
+    }
+    
+    @Test
+    void getAll_shouldWorkCorrectly_ifGroupIdIsNull() {
+        JdbcTemplate.execute("DELETE FROM student");
+        JdbcTemplate.execute("INSERT INTO student (id, group_id, first_name, last_name, student_year)\n"
+                           + "VALUES\n"
+                           + "(1, 1, 'first name1', 'last name1', 'SECOND'),\r\n"
+                           + "(2, 2, 'first name2', 'last name2', 'FIRST');");
+        Group group1 = new Group("group name1");
+        group1.setId(1);
+        Group group2 = new Group("group name2");
+        group2.setId(2);
+        Student student1 = new Student(group1, "first name1", "last name1", Year.SECOND);
+        student1.setId(1);
+        Student student2 = new Student(group2, "first name2", "last name2", Year.FIRST);
+        student2.setId(2);
+        List<Student> expected = List.of(student1, student2);
+        assertEquals(expected, jdbcStudentDao.getAll());
     }
     
     @Test
@@ -110,4 +133,6 @@ class JdbcStudentDaoTest {
         jdbcStudentDao.deleteById(student.getId());
         assertThrows(DAOException.class, () -> jdbcStudentDao.getById(student.getId()), "No such id in database");
     }
+    
+
 }

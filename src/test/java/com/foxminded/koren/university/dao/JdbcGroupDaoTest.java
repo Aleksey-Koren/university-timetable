@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -21,8 +22,8 @@ import com.foxminded.koren.university.dao.exceptions.DAOException;
 import com.foxminded.koren.university.dao.mappers.CourseMapper;
 import com.foxminded.koren.university.dao.test_data.TablesCreation;
 import com.foxminded.koren.university.dao.test_data.TestData;
-import com.foxminded.koren.university.domain.entity.Course;
-import com.foxminded.koren.university.domain.entity.Group;
+import com.foxminded.koren.university.entity.Course;
+import com.foxminded.koren.university.entity.Group;
 
 @SpringJUnitConfig
 @ContextConfiguration(classes = {SpringConfigT.class})
@@ -52,6 +53,16 @@ class JdbcGroupDaoTest {
         Group expected = new Group("group name1");
         expected.setId(expectedId);
         assertEquals(expected, jdbcGroupDao.getById(1));        
+    }
+    
+    @Test
+    void getAll_shouldWorkCorrectly() {
+        Group group1 = new Group("group name1");
+        group1.setId(1);
+        Group group2 = new Group("group name2");
+        group2.setId(2);
+        List<Group> expected = List.of(group1, group2);
+        assertEquals(expected, jdbcGroupDao.getAll());
     }
     
     @Test

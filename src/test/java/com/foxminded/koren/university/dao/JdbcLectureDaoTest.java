@@ -5,7 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,10 +22,12 @@ import com.foxminded.koren.university.SpringConfigT;
 import com.foxminded.koren.university.dao.exceptions.DAOException;
 import com.foxminded.koren.university.dao.test_data.TablesCreation;
 import com.foxminded.koren.university.dao.test_data.TestData;
-import com.foxminded.koren.university.domain.entity.Audience;
-import com.foxminded.koren.university.domain.entity.Course;
-import com.foxminded.koren.university.domain.entity.Lecture;
-import com.foxminded.koren.university.domain.entity.Teacher;
+import com.foxminded.koren.university.entity.Audience;
+import com.foxminded.koren.university.entity.Course;
+import com.foxminded.koren.university.entity.Lecture;
+import com.foxminded.koren.university.entity.Student;
+import com.foxminded.koren.university.entity.Teacher;
+import com.foxminded.koren.university.entity.interfaces.TimetableEvent;
 
 @SpringJUnitConfig
 @ContextConfiguration(classes = {SpringConfigT.class})
@@ -49,14 +54,14 @@ class JdbcLectureDaoTest {
     @Test
     void getById_shouldGetById() {
         int expectedId = 1;
-        Lecture expected = prepareExpected(expectedId); 
+        TimetableEvent expected = prepareExpected(expectedId); 
         assertEquals(expected, jdbcLectureDao.getById(expectedId));
     }
     
     @Test
     void getById_shouldGetById_whenTeacherOrAudienceIsNull() {
         int expectedId = 1;
-        Lecture expected = prepareExpected(expectedId);
+        TimetableEvent expected = prepareExpected(expectedId);
         jdbcTemplate.execute("UPDATE lecture\r\n"
                            + "SET teacher_id = NULL;");
         
@@ -68,6 +73,21 @@ class JdbcLectureDaoTest {
         
         expected.setAudience(null);
         assertEquals(expected, jdbcLectureDao.getById(expectedId));
+    }
+    
+    @Test
+    void getAll_shouldGetAll_whenTeacherOrAudienceIsNull() {
+        jdbcTemplate.execute("DELETE FROM lecture;");
+        jdbcTemplate.execute("INSERT INTO lecture \r\n"
+                           + "(id, course_id, teacher_id, audience_id, start_time , end_time)\r\n"
+                           + "VALUES\r\n"
+                           + "(1 , 1, 1, 1, '2021-05-02 16:00:00', '2021-05-02 17:00:00'),\r\n"
+                           + "(2 , 1, 1, 1, '2021-05-02 16:00:00', '2021-05-02 17:00:00');");
+        
+        Lecture lecture1 = prepareExpected(1);
+        Lecture lecture2 = prepareExpected(2);
+        List<TimetableEvent> expected = List.of(lecture1, lecture2);
+        assertEquals(expected, jdbcLectureDao.getAll());
     }
     
     @Test
@@ -136,10 +156,60 @@ class JdbcLectureDaoTest {
     @Test
     void deleteById_shouldDeleteWhenIdProvided() {
         int lectureId = 1;
-        Lecture lecture = jdbcLectureDao.getById(lectureId);
+        TimetableEvent lecture = jdbcLectureDao.getById(lectureId);
         jdbcLectureDao.deleteById(lecture.getId());
         assertThrows(DAOException.class, () -> jdbcLectureDao.getById(lecture.getId()),
                 "No such id in database");
+    }
+    
+    @Test
+    void getTeacherLecturesByTimePeriod_shouldWorkCorrectly() {      
+        reinsertLectures();
+        
+        List<Lecture> expected = new ArrayList<>();
+        int expectedLectureId1 = 4;
+        int expectedLectureId2 = 6;
+        expected.add(jdbcLectureDao.getById(expectedLectureId1));
+        expected.add(jdbcLectureDao.getById(expectedLectureId2));
+        
+        int teacherId = 2;
+        Teacher teacher = new Teacher();
+        teacher.setId(teacherId);
+        
+        LocalDate start = LocalDate.of(2021, 6, 3);
+        LocalDate finish = LocalDate.of(2021, 6, 5);
+        
+        assertEquals(expected, jdbcLectureDao.getTeacherLecturesByTimePeriod(teacher, start, finish));
+    }
+    
+    @Test
+    void getStudentLecturesByTimePeriod_shouldWorckCorrectly() {
+        reinsertLectures();
+        jdbcTemplate.execute(
+                  "INSERT INTO lecture_group\r\n"
+                + "(group_id, lecture_id)\r\n"
+                + "VALUES\r\n"
+                + "(2, 2),\r\n"
+                + "(2, 4),\r\n"
+                + "(2, 6);");
+        
+        List<Lecture> expected = new ArrayList<>();
+        int expectedLectureId1 = 2;
+        int expectedLectureId2 = 4;
+        int expectedLectureId3 = 6;
+        expected.add(jdbcLectureDao.getById(expectedLectureId1));
+        expected.add(jdbcLectureDao.getById(expectedLectureId2));
+        expected.add(jdbcLectureDao.getById(expectedLectureId3));
+        
+        
+        int testStudentId = 2;
+        Student testStudent = new Student();
+        testStudent.setId(testStudentId);
+        
+        LocalDate start = LocalDate.of(2021, 6, 2);
+        LocalDate finish = LocalDate.of(2021, 6, 5);
+        
+        assertEquals(expected, jdbcLectureDao.getStudentLecturesByTimePeriod(testStudent, start, finish));
     }
     
     private Lecture prepareExpected(int expectedId) {
@@ -156,5 +226,23 @@ class JdbcLectureDaoTest {
                                        LocalDateTime.of(2021, 5, 2, 17, 0));
         expected.setId(expectedId);
         return expected;
+    }
+    
+    private void reinsertLectures() {
+        jdbcTemplate.execute("DELETE FROM lecture;");
+
+        jdbcTemplate.execute(
+                  "INSERT INTO lecture \r\n"
+                + "(id, course_id, teacher_id, audience_id, start_time , end_time)\r\n"
+                + "VALUES\r\n"
+                + "(1 , 1, 1, 1, '2021-05-02 16:00:00', '2021-05-02 17:00:00'),\r\n"
+                + "(2 , 2, 2, 2, '2021-06-02 16:00:00', '2021-06-02 17:00:00'),\r\n"
+                + "(3 , 1, 1, 1, '2021-06-02 18:00:00', '2021-06-02 19:00:00'),\r\n"
+                + "(4 , 2, 2, 3, '2021-06-03 19:00:00', '2021-06-03 20:00:00'),\r\n"
+                + "(5 , 1, 1, 2, '2021-06-02 21:00:00', '2021-06-02 22:00:00'),\r\n"
+                + "(6 , 2, 2, 1, '2021-06-04 07:00:00', '2021-06-04 08:00:00'),\r\n"
+                + "(7 , 1, 2, 2, '2021-06-06 23:59:59', '2021-06-07 01:00:00'),\r\n"
+                + "(8 , 1, NULL, NULL, '2021-06-02 18:00:00', '2021-06-02 19:00:00'),\r\n"
+                + "(9 , 1, NULL, 2, '2021-06-02 18:00:00', '2021-06-02 19:00:00');");
     }
 }
