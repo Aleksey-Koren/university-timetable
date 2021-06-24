@@ -1,5 +1,7 @@
 package com.foxminded.koren.university.dao;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,6 +22,7 @@ import static com.foxminded.koren.university.dao.sql.LectureSql.SAVE;
 import static com.foxminded.koren.university.dao.sql.LectureSql.UPDATE;
 import static com.foxminded.koren.university.dao.sql.LectureSql.DELETE;
 import static com.foxminded.koren.university.dao.sql.LectureSql.GET_BY_TEACHER_AND_TIME_PERIOD;
+import static com.foxminded.koren.university.dao.sql.LectureSql.GET_BY_STUDENT_AND_TIME_PERIOD;
 
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
@@ -29,12 +32,18 @@ import java.util.List;
 @Repository
 public class JdbcLectureDao implements LectureDao {
     
+    private static final Logger LOG = LoggerFactory.getLogger(JdbcLectureDao.class);
+    
     @Autowired
     private JdbcTemplate jdbcTemplate;
     
     @Override
     public Lecture save(Lecture entity) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
+        
+        LOG.debug("Update database SQL = {} course = {} teacher = {} audience = {} start = {} finish = {}",
+                SAVE, entity.getCourse(), entity.getTeacher(), entity.getAudience(),
+                entity.getStartTime(), entity.getEndTime());
         
         jdbcTemplate.update(connection -> {
             PreparedStatement statement = connection.prepareStatement(SAVE, new String[] {"id"});
@@ -47,11 +56,14 @@ public class JdbcLectureDao implements LectureDao {
         }, keyHolder);
         
         entity.setId(keyHolder.getKeyAs(Integer.class));
+        LOG.debug("New Lecture got id = {} ", keyHolder.getKeyAs(Integer.class));
         return entity;
     }
 
     @Override
     public void update(Lecture entity) {
+        LOG.debug("Update database SQL: {} lecture.id = {}", UPDATE, entity.getId());
+        
         jdbcTemplate.update(UPDATE, entity.getCourse().getId(),
                         entity.getTeacher() != null ? entity.getTeacher().getId() : null,
                         entity.getAudience() != null ? entity.getAudience().getId() : null,
@@ -62,11 +74,14 @@ public class JdbcLectureDao implements LectureDao {
 
     @Override
     public boolean deleteById(Integer id) {
+        LOG.debug("Update database SQL: {} lecture.id = {}", DELETE, id);
         return jdbcTemplate.update(DELETE, id) > 0;
     }
 
     @Override
     public Lecture getById(Integer id) {
+        LOG.debug("Query to database SQL: {} lecture.id = {}", GET_BY_ID, id);
+        
         try {
             return jdbcTemplate.queryForObject(GET_BY_ID, new LectureMapper(), id);
         }catch(EmptyResultDataAccessException e){
@@ -76,11 +91,16 @@ public class JdbcLectureDao implements LectureDao {
 
     @Override
     public List<Lecture> getAll() {
+        LOG.debug("Query to database SQL: {}", GET_ALL);
+        
         return jdbcTemplate.query(GET_ALL, new LectureMapper());
     }
 
     @Override
     public List<Lecture> getTeacherLecturesByTimePeriod(Teacher teacher, LocalDate start, LocalDate finish) {
+        LOG.debug("Query to database SQL: {} teacher.id = {}, start: {} finish: {}",
+                GET_BY_TEACHER_AND_TIME_PERIOD, teacher.getId(), start.atTime(0,0), finish.atTime(23,59,59));
+        
         return jdbcTemplate.query(GET_BY_TEACHER_AND_TIME_PERIOD,
                                   new LectureMapper(), teacher.getId(),
                                   start.atTime(0,0),
@@ -89,6 +109,9 @@ public class JdbcLectureDao implements LectureDao {
 
     @Override
     public List<Lecture> getStudentLecturesByTimePeriod(Student student, LocalDate start, LocalDate finish) {
+        LOG.debug("Query to database SQL: {} student.id = {}, start: {} finish: {}",
+                GET_BY_STUDENT_AND_TIME_PERIOD, student.getId(), start.atTime(0,0), finish.atTime(23,59,59));
+        
         return jdbcTemplate.query(GET_BY_TEACHER_AND_TIME_PERIOD,
                 new LectureMapper(), student.getId(),
                 start.atTime(0,0),

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,25 +21,19 @@ import com.foxminded.koren.university.service.comporators.TimetableStartTimeComp
 import com.foxminded.koren.university.service.exceptions.ServiceException;
 
 @Service
-public class TimetableService {
+public class TimetableService {                                                 
+    
+    private static final Logger LOG = LoggerFactory.getLogger(TimetableService.class);
     
     @Autowired
     private LectureDao lectureDao;
-    
-    public Timetable getTmetableByPersonId (TimetablePerson person, LocalDate start, LocalDate finish) {  
-        if (person instanceof Teacher) {
-            return getTeacherTimetableByPeriod((Teacher) person, start, finish);      
-        }  
         
-        if (person instanceof Student) {
-            return getStudentTimetableByPeriod((Student) person, start, finish);
-        }
-        
-        throw new ServiceException("Unexpected type of TimetablePerson");
-    }
-    
     public Timetable getTeacherTimetableByPeriod(Teacher teacher, LocalDate start, LocalDate finish) {
         List<Lecture> lectures = lectureDao.getTeacherLecturesByTimePeriod(teacher, start, finish);
+        
+        LOG.debug("List of lectutes for teacher.id = {}, start = {}, finish = {}",
+                teacher.getId(), start, finish);
+        
         List<TimetableEvent> allEvents = agregateAllToTimetableEvents(lectures);
         allEvents.sort(new TimetableStartTimeComparator());
         return new Timetable(teacher, allEvents); 
@@ -45,8 +41,13 @@ public class TimetableService {
     
     public Timetable getStudentTimetableByPeriod(Student student, LocalDate start, LocalDate finish) {
         List<Lecture> lectures = lectureDao.getStudentLecturesByTimePeriod(student, start, finish);
+        
+        LOG.debug("List of lectutes for student.id = {}, start = {}, finish = {}",
+                student.getId(), start, finish);
+
         List<TimetableEvent> allEvents = agregateAllToTimetableEvents(lectures);
         allEvents.sort(new TimetableStartTimeComparator());
+
         return new Timetable(student, allEvents);        
     }
     
