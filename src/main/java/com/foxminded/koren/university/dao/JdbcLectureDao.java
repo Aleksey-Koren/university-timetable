@@ -56,7 +56,7 @@ public class JdbcLectureDao implements LectureDao {
         }, keyHolder);
         
         entity.setId(keyHolder.getKeyAs(Integer.class));
-        LOG.debug("New Lecture got id = {} ", keyHolder.getKeyAs(Integer.class));
+        LOG.debug("New Lecture has gotten id = {} ", keyHolder.getKeyAs(Integer.class));
         return entity;
     }
 
@@ -92,7 +92,6 @@ public class JdbcLectureDao implements LectureDao {
     @Override
     public List<Lecture> getAll() {
         LOG.debug("Query to database SQL: {}", GET_ALL);
-        
         return jdbcTemplate.query(GET_ALL, new LectureMapper());
     }
 

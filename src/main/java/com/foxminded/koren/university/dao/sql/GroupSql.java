@@ -16,7 +16,7 @@ public class GroupSql {
             "DELETE FROM group_table\r\n"
           + "WHERE id = ?;";
 
-    public static final String GET_GROUP_BY_ID = 
+    public static final String GET_BY_ID = 
             "SELECT id group_id, name group_name\r\n"
           + "FROM group_table\r\n"
           + "WHERE id = ?;";

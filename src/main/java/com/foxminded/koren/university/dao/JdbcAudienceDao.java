@@ -3,6 +3,8 @@ package com.foxminded.koren.university.dao;
 import java.sql.PreparedStatement;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -23,7 +25,9 @@ import static com.foxminded.koren.university.dao.sql.AudienceSql.GET_BY_ID;
 import static com.foxminded.koren.university.dao.sql.AudienceSql.GET_ALL;
 
 @Repository
-public class JdbcAudienceDao implements AudienceDao{
+public class JdbcAudienceDao implements AudienceDao {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(JdbcAudienceDao.class);
     
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -31,6 +35,10 @@ public class JdbcAudienceDao implements AudienceDao{
     @Override
     public Audience save(Audience entity) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
+        
+        LOG.debug("Update database SQL = {} number = {} capasity = {}",
+                SAVE, entity.getNumber(), entity.getCapacity());
+        
         try {
             jdbcTemplate.update(connection -> {
                 PreparedStatement statement = connection.prepareStatement(SAVE, new String[] { "id" });
@@ -42,11 +50,15 @@ public class JdbcAudienceDao implements AudienceDao{
             throw new DAOException(e.getMessage(), e);
         }
         entity.setId(keyHolder.getKeyAs(Integer.class));
+        
+        LOG.debug("New Audience has gotten id = {} ", keyHolder.getKeyAs(Integer.class));
+        
         return entity;
     }
 
     @Override
     public void update(Audience entity) {
+        LOG.debug("Update database. Update audience SQL: {} audience {}", UPDATE, entity);
         try {
             jdbcTemplate.update(UPDATE, entity.getNumber(), entity.getCapacity(), entity.getId());
         } catch (DuplicateKeyException e) {
@@ -56,11 +68,13 @@ public class JdbcAudienceDao implements AudienceDao{
 
     @Override
     public boolean deleteById(Integer id) {
+        LOG.debug("Update database. Delete audience by id. SQL: {} audience.id = {}", DELETE, id);
         return jdbcTemplate.update(DELETE, id) > 0;
     }
 
     @Override
     public Audience getById(Integer id) {
+        LOG.debug("Query to database. Get audience by id. SQL: {} audience.id = {}", GET_BY_ID, id);
         try {
             return jdbcTemplate.queryForObject(GET_BY_ID, new AudienceMapper(), id);
         }catch(EmptyResultDataAccessException e) {
@@ -70,6 +84,7 @@ public class JdbcAudienceDao implements AudienceDao{
 
     @Override
     public List<Audience> getAll() {
+        LOG.debug("Query to database. Get all audiences. SQL: {}", GET_ALL);
         return jdbcTemplate.query(GET_ALL, new AudienceMapper());
     }
 }

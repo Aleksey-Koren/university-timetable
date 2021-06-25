@@ -62,7 +62,7 @@ class JdbcCourseDaoTest {
         int expectedId = 1;
         Course expected = jdbcCourseDao.getById(expectedId);
         expected.setName("changed");
-        expected.setDescrption("changed");
+        expected.setDescription("changed");
         jdbcCourseDao.update(expected);
         assertEquals(expected, jdbcCourseDao.getById(expectedId));
     }

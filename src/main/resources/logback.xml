@@ -5,27 +5,12 @@
       <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg %n</pattern>
     </encoder>
   </appender>
-
-  <appender name="CommonLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>logFile.log</file>
-    
-    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <fileNamePattern>logFile.%d{yyyy-MM-dd}.zip</fileNamePattern>
-      <maxHistory>10</maxHistory>
-      <totalSizeCap>1GB</totalSizeCap>
-    </rollingPolicy>
-    
-    <encoder>
-      <pattern>%d{HH:mm:ss.SSS} [%thread] [%-5level] [%logger{36}] - %msg %n</pattern>
-    </encoder>
-  </appender>
   
   <logger name="com.foxminded.koren.university" 
-          level ="info">
+          level="warn">
   </logger>
   
   <root level="OFF">
     <appender-ref ref="ConsoleCommonLog"/>
-    <appender-ref ref="CommonLog"/>
   </root>
 </configuration>
