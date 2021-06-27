@@ -3,6 +3,7 @@ package com.foxminded.koren.university.dao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -45,15 +46,19 @@ public class JdbcLectureDao implements LectureDao {
                 SAVE, entity.getCourse(), entity.getTeacher(), entity.getAudience(),
                 entity.getStartTime(), entity.getEndTime());
         
-        jdbcTemplate.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement(SAVE, new String[] {"id"});
-            statement.setInt(1, entity.getCourse().getId());
-            statement.setObject(2, entity.getTeacher() != null ? entity.getTeacher().getId() : null, 4);
-            statement.setObject(3, entity.getAudience() != null ? entity.getAudience().getId() : null, 4);
-            statement.setString(4, Timestamp.valueOf(entity.getStartTime()).toString());
-            statement.setString(5, Timestamp.valueOf(entity.getEndTime()).toString());
-            return statement;
-        }, keyHolder);
+        try {
+            jdbcTemplate.update(connection -> {
+                PreparedStatement statement = connection.prepareStatement(SAVE, new String[] { "id" });
+                statement.setInt(1, entity.getCourse().getId());
+                statement.setObject(2, entity.getTeacher() != null ? entity.getTeacher().getId() : null, 4);
+                statement.setObject(3, entity.getAudience() != null ? entity.getAudience().getId() : null, 4);
+                statement.setString(4, Timestamp.valueOf(entity.getStartTime()).toString());
+                statement.setString(5, Timestamp.valueOf(entity.getEndTime()).toString());
+                return statement;
+            }, keyHolder);
+        } catch (DuplicateKeyException e) {
+            throw new DAOException(e.getMessage(), e);
+        }
         
         entity.setId(keyHolder.getKeyAs(Integer.class));
         LOG.debug("New Lecture has gotten id = {} ", keyHolder.getKeyAs(Integer.class));

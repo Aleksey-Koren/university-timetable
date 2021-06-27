@@ -70,11 +70,11 @@ public class JdbcCourseDao implements CourseDao {
 
     @Override
     public boolean deleteById(Integer id) {
-        LOG.debug("Update database. Delete course by id. SQL: {} course.id = {}", DELETE, id);
         try {
+            LOG.debug("Update database. Delete course by id. SQL: {} course.id = {}", DELETE, id);
             return jdbcTemplate.update(DELETE, id) > 0;
         } catch (DataIntegrityViolationException e) {
-            throw new DAOException (e.getMessage(), e);
+            throw new DAOException(e.getMessage(), e);
         }
     }
    

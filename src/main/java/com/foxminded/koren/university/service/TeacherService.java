@@ -7,8 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.foxminded.koren.university.dao.exceptions.DAOException;
 import com.foxminded.koren.university.dao.interfaces.TeacherDao;
 import com.foxminded.koren.university.entity.Teacher;
+import com.foxminded.koren.university.service.exceptions.ServiceException;
 
 @Service
 public class TeacherService {
@@ -34,8 +36,12 @@ public class TeacherService {
     }
     
     public Teacher getById(int id) {
-        LOG.debug("Get teacher by id = {}", id);
-        return teacherDao.getById(id);
+        try {
+            LOG.debug("Get teacher by id = {}", id);
+            return teacherDao.getById(id);
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
     }
     
     public List<Teacher> getAll() {
