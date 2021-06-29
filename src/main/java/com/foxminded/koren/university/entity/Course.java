@@ -4,7 +4,7 @@ public class Course {
     
     private int id;
     private String name;
-    private String descrption;
+    private String description;
     
     public Course() {
         
@@ -12,7 +12,7 @@ public class Course {
     
     public Course(String name, String descrption) {
         this.name = name;
-        this.descrption = descrption;
+        this.description = descrption;
     }
 
     public int getId() {
@@ -31,19 +31,19 @@ public class Course {
         this.name = name;
     }
 
-    public String getDescrption() {
-        return descrption;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescrption(String descrption) {
-        this.descrption = descrption;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((descrption == null) ? 0 : descrption.hashCode());
+        result = prime * result + ((description == null) ? 0 : description.hashCode());
         result = prime * result + id;
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
@@ -56,10 +56,10 @@ public class Course {
         if (!(obj instanceof Course))
             return false;
         Course other = (Course) obj;
-        if (descrption == null) {
-            if (other.descrption != null)
+        if (description == null) {
+            if (other.description != null)
                 return false;
-        } else if (!descrption.equals(other.descrption))
+        } else if (!description.equals(other.description))
             return false;
         if (id != other.id)
             return false;
@@ -73,6 +73,6 @@ public class Course {
 
     @Override
     public String toString() {
-        return "Course [id=" + id + ", name=" + name + ", descrption=" + descrption + "]";
+        return "Course [id=" + id + ", name=" + name + ", description=" + description + "]";
     }   
 }

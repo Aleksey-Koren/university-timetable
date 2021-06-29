@@ -188,6 +188,7 @@ class JdbcLectureDaoTest {
         jdbcTemplate.execute(
                   "INSERT INTO lecture_group\r\n"
                 + "(group_id, lecture_id)\r\n"
+                          
                 + "VALUES\r\n"
                 + "(2, 2),\r\n"
                 + "(2, 4),\r\n"

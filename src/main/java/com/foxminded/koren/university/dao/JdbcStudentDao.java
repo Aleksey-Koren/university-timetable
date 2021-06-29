@@ -8,6 +8,8 @@ import com.foxminded.koren.university.entity.Student;
 import java.sql.PreparedStatement;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,6 +27,8 @@ import static com.foxminded.koren.university.dao.sql.StudentSql.DELETE_BY_GROUP_
 @Repository
 public class JdbcStudentDao implements StudentDao {
     
+    private static final Logger LOG = LoggerFactory.getLogger(JdbcStudentDao.class);
+    
     @Autowired
     private JdbcTemplate jdbcTemplate;
         
@@ -32,6 +36,10 @@ public class JdbcStudentDao implements StudentDao {
     @Transactional
     public Student save(Student entity) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
+        
+        LOG.debug("Update database. SQL = {} group: {}, first name: {}, last name: {}, year: {}",
+                SAVE, entity.getGroup(), entity.getFirstName(), entity.getLastName(), entity.getYear());
+        
         jdbcTemplate.update(connection -> {
             PreparedStatement statement = connection.prepareStatement(SAVE, new String[]{"id"});
             if(entity.getGroup() != null) {
@@ -46,11 +54,13 @@ public class JdbcStudentDao implements StudentDao {
         }, keyHolder);
         
         entity.setId(keyHolder.getKeyAs(Integer.class));
+        LOG.debug("New student has gotten id = {} ", keyHolder.getKeyAs(Integer.class));
         return entity;
     }
 
     @Override
     public void update(Student entity) {
+        LOG.debug("Update database SQL: {} student {}", UPDATE, entity);
         jdbcTemplate.update(UPDATE, 
                 entity.getGroup() != null ? entity.getGroup().getId() : null, 
                 entity.getFirstName(),
@@ -61,11 +71,14 @@ public class JdbcStudentDao implements StudentDao {
 
     @Override
     public boolean deleteById(Integer id) {
+        LOG.debug("Update database SQL: {} student.id = {}", DELETE, id);
         return jdbcTemplate.update(DELETE, id) > 0;
     }
 
     @Override
     public Student getById(Integer id) {
+        LOG.debug("Query to database SQL: {} student.id = {}", GET_BY_ID, id);
+
         try {
             return jdbcTemplate.queryForObject(GET_BY_ID, new StudentMapper(), id);
         }catch(EmptyResultDataAccessException e) {
@@ -75,11 +88,13 @@ public class JdbcStudentDao implements StudentDao {
 
     @Override
     public void deleteByGroupId(int id) {
+        LOG.debug("Update database SQL: {} group.id {}", DELETE_BY_GROUP_ID, id);
         jdbcTemplate.update(DELETE_BY_GROUP_ID, id);
     }
 
     @Override
     public List<Student> getAll() {
+        LOG.debug("Query to database SQL: {}", GET_ALL);
         return jdbcTemplate.query(GET_ALL, new StudentMapper());
     }
 }
