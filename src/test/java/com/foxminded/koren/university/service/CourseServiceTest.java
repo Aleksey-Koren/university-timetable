@@ -14,14 +14,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.foxminded.koren.university.SpringConfigT;
 import com.foxminded.koren.university.dao.interfaces.CourseDao;
 import com.foxminded.koren.university.dao.test_data.TablesCreation;
 import com.foxminded.koren.university.entity.Course;
+import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
-@SpringJUnitConfig
+@SpringJUnitWebConfig
 @ContextConfiguration(classes = {SpringConfigT.class})
 @ExtendWith(MockitoExtension.class)
 @TestInstance(Lifecycle.PER_CLASS)

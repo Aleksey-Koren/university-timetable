@@ -21,8 +21,9 @@ import com.foxminded.koren.university.dao.test_data.TestData;
 import com.foxminded.koren.university.entity.Group;
 import com.foxminded.koren.university.entity.Student;
 import com.foxminded.koren.university.entity.Year;
+import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
-@SpringJUnitConfig
+@SpringJUnitWebConfig
 @ContextConfiguration(classes = {SpringConfigT.class})
 class JdbcStudentDaoTest {
     

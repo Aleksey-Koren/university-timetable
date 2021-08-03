@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lectures</title>
+</head>
+<body>
+<a href="/">Back to main page</a>
+<br>
+<strong>List of all lectures</strong>
+    <table>
+        <tr>
+            <th>Course</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Audience</th>
+            <th>Teacher</th>
+        </tr>
+        <tr th:each = "lecture : ${lectures}">
+            <td th:text="${lecture.course.name}">course</td>
+            <td th:text="${lecture.startTime}">Start</td>
+            <td th:text="${lecture.endTime}">End</td>
+            <td th:text="${lecture.audience} != null ? ${lecture.audience.number} : '---'">audience</td>
+            <td th:text="${lecture.teacher} != null ?
+                                |${lecture.teacher.firstName} ${lecture.teacher.lastName}| : '---'">
+                teacher
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

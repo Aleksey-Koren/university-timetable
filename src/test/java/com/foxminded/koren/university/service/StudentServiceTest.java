@@ -22,8 +22,9 @@ import com.foxminded.koren.university.dao.interfaces.StudentDao;
 import com.foxminded.koren.university.dao.test_data.TablesCreation;
 import com.foxminded.koren.university.entity.Student;
 import com.foxminded.koren.university.entity.Year;
+import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
-@SpringJUnitConfig
+@SpringJUnitWebConfig
 @ContextConfiguration(classes = {SpringConfigT.class})
 @ExtendWith(MockitoExtension.class)
 @TestInstance(Lifecycle.PER_CLASS)

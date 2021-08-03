@@ -7,7 +7,7 @@
   </appender>
   
   <logger name="com.foxminded.koren.university" 
-          level="warn">
+          level="debug">
   </logger>
   
   <root level="OFF">

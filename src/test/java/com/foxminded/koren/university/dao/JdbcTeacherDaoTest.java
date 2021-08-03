@@ -18,8 +18,9 @@ import com.foxminded.koren.university.dao.exceptions.DAOException;
 import com.foxminded.koren.university.dao.test_data.TablesCreation;
 import com.foxminded.koren.university.dao.test_data.TestData;
 import com.foxminded.koren.university.entity.Teacher;
+import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
-@SpringJUnitConfig
+@SpringJUnitWebConfig
 @ContextConfiguration(classes = {SpringConfigT.class})
 class JdbcTeacherDaoTest {
     

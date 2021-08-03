@@ -37,7 +37,7 @@ public class JdbcAudienceDao implements AudienceDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         
         LOG.debug("Update database SQL = {} number = {} capasity = {}",
-                SAVE, entity.getNumber(), entity.getCapacity());
+                "\n" + SAVE, entity.getNumber(), entity.getCapacity());
         
         try {
             jdbcTemplate.update(connection -> {
@@ -58,7 +58,7 @@ public class JdbcAudienceDao implements AudienceDao {
 
     @Override
     public void update(Audience entity) {
-        LOG.debug("Update database. Update audience SQL: {} audience {}", UPDATE, entity);
+        LOG.debug("Update database. Update audience SQL: {} audience {}", "\n" + UPDATE, entity);
         try {
             jdbcTemplate.update(UPDATE, entity.getNumber(), entity.getCapacity(), entity.getId());
         } catch (DuplicateKeyException e) {
@@ -68,13 +68,13 @@ public class JdbcAudienceDao implements AudienceDao {
 
     @Override
     public boolean deleteById(Integer id) {
-        LOG.debug("Update database. Delete audience by id. SQL: {} audience.id = {}", DELETE, id);
+        LOG.debug("Update database. Delete audience by id. SQL: {} audience.id = {}", "\n" + DELETE, id);
         return jdbcTemplate.update(DELETE, id) > 0;
     }
 
     @Override
     public Audience getById(Integer id) {
-        LOG.debug("Query to database. Get audience by id. SQL: {} audience.id = {}", GET_BY_ID, id);
+        LOG.debug("Query to database. Get audience by id. SQL: {} audience.id = {}", "\n" + GET_BY_ID, id);
         try {
             return jdbcTemplate.queryForObject(GET_BY_ID, new AudienceMapper(), id);
         }catch(EmptyResultDataAccessException e) {
@@ -84,7 +84,7 @@ public class JdbcAudienceDao implements AudienceDao {
 
     @Override
     public List<Audience> getAll() {
-        LOG.debug("Query to database. Get all audiences. SQL: {}", GET_ALL);
+        LOG.debug("Query to database. Get all audiences. SQL: {}", "\n" + GET_ALL);
         return jdbcTemplate.query(GET_ALL, new AudienceMapper());
     }
 }

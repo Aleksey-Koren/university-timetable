@@ -28,11 +28,13 @@ import com.foxminded.koren.university.entity.Lecture;
 import com.foxminded.koren.university.entity.Student;
 import com.foxminded.koren.university.entity.Teacher;
 import com.foxminded.koren.university.entity.interfaces.TimetableEvent;
+import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
-@SpringJUnitConfig
+@SpringJUnitWebConfig
 @ContextConfiguration(classes = {SpringConfigT.class})
 class JdbcLectureDaoTest {
-    
+
+
     @Autowired
     private TablesCreation tablesCreation;
     
