@@ -1,6 +1,6 @@
 package com.foxminded.koren.university.controller;
 
-import com.foxminded.koren.university.controller.exceptions.BusinessLogicException;
+import com.foxminded.koren.university.controller.exceptions.NoEntitiesInDatabaseException;
 import com.foxminded.koren.university.entity.Lecture;
 import com.foxminded.koren.university.service.LectureService;
 import org.slf4j.Logger;
@@ -16,7 +16,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/lectures")
-public class Lectures {
+public class Lectures extends BaseController {
 
     private static final Logger LOG = LoggerFactory.getLogger(Lectures.class);
 
@@ -29,13 +29,13 @@ public class Lectures {
 
     @GetMapping
     public String index(Model model) {
-        LOG.info("Retrieving all lectures");
+        LOG.trace("CONTROLLER: Retrieving all lectures");
         List<Lecture> lectures = lectureService.getAll();
         if (lectures.isEmpty()) {
-            throw new BusinessLogicException("There is no any lectures in database");
+            throw new NoEntitiesInDatabaseException("There is no any lectures in database");
         }
         model.addAttribute("lectures", lectures);
-        LOG.info("Retrieving all lectures : success");
+        LOG.trace("CONTROLLER: Retrieving all lectures : success");
         return "lectures/index";
     }
 }

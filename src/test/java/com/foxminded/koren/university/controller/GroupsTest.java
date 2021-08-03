@@ -1,6 +1,8 @@
 package com.foxminded.koren.university.controller;
 
 import com.foxminded.koren.university.config.SpringConfig;
+import com.foxminded.koren.university.controller.exceptions.NoEntitiesInDatabaseException;
+import com.foxminded.koren.university.entity.Audience;
 import com.foxminded.koren.university.entity.Group;
 import com.foxminded.koren.university.service.GroupService;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,8 +23,9 @@ import org.springframework.web.util.NestedServletException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -57,16 +60,18 @@ public class GroupsTest {
     @Test
     void index_shouldCallGetAllMethodOfService() throws Exception {
         when(mockedService.getAll()).thenReturn(retrieveTestGroups());
-        InOrder inOrder = Mockito.inOrder(mockedService);
+        InOrder inOrder = inOrder(mockedService);
         mockMvc.perform(get("/groups"));
         inOrder.verify(mockedService, times(1)).getAll();
     }
 
     @Test
-    void index_shouldThrowException_whenServiceReturnsEmptyList() throws Exception{
+    void index_shouldThrowAnException_IfServiceReturnsEmptyList() throws Exception {
         when(mockedService.getAll()).thenReturn(new ArrayList<Group>());
-        assertThrows(NestedServletException.class,
-                () -> mockMvc.perform(get("/groups")));
+        mockMvc.perform(get("/groups"))
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof NoEntitiesInDatabaseException))
+                .andExpect(result -> assertTrue(result.getResolvedException().
+                        getMessage().equals("There is no any groups in database")));
     }
 
     private List<Group> retrieveTestGroups() {

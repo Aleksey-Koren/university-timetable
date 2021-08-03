@@ -1,9 +1,9 @@
 package com.foxminded.koren.university.controller;
 
 import com.foxminded.koren.university.config.SpringConfig;
-import com.foxminded.koren.university.controller.exceptions.BusinessLogicException;
+import com.foxminded.koren.university.controller.exceptions.NoEntitiesInDatabaseException;
+import com.foxminded.koren.university.entity.Audience;
 import com.foxminded.koren.university.entity.Student;
-import com.foxminded.koren.university.entity.Teacher;
 import com.foxminded.koren.university.service.StudentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -58,16 +59,18 @@ public class StudentsTest {
     @Test
     void index_shouldCallGetAllMethodOfService() throws Exception {
         when(mockedService.getAll()).thenReturn(retrieveTestStudents());
-        InOrder inOrder = Mockito.inOrder(mockedService);
+        InOrder inOrder = inOrder(mockedService);
         mockMvc.perform(get("/students"));
         inOrder.verify(mockedService, times(1)).getAll();
     }
 
     @Test
-    void index_shouldThrowException_whenServiceReturnsEmptyList() throws Exception{
+    void index_shouldThrowAnException_IfServiceReturnsEmptyList() throws Exception {
         when(mockedService.getAll()).thenReturn(new ArrayList<Student>());
-        assertThrows(NestedServletException.class,
-                () -> mockMvc.perform(get("/students")));
+        mockMvc.perform(get("/students"))
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof NoEntitiesInDatabaseException))
+                .andExpect(result -> assertTrue(result.getResolvedException().
+                        getMessage().equals("There is no any students in database")));
     }
 
     private List<Student> retrieveTestStudents() {

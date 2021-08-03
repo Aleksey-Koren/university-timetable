@@ -1,6 +1,6 @@
 package com.foxminded.koren.university.controller;
 
-import com.foxminded.koren.university.controller.exceptions.BusinessLogicException;
+import com.foxminded.koren.university.controller.exceptions.NoEntitiesInDatabaseException;
 import com.foxminded.koren.university.entity.Group;
 import com.foxminded.koren.university.service.GroupService;
 import org.slf4j.Logger;
@@ -15,7 +15,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/groups")
-public class Groups {
+public class Groups extends BaseController {
 
     private static final Logger LOG = LoggerFactory.getLogger(Groups.class);
 
@@ -28,13 +28,13 @@ public class Groups {
 
     @GetMapping
     public String index(Model model) {
-        LOG.info("Retrieving all groups");
+        LOG.trace("CONTROLLER: Retrieving all groups");
         List<Group> groups = groupService.getAll();
         if (groups.isEmpty()) {
-            throw new BusinessLogicException("There is no any groups in database");
+            throw new NoEntitiesInDatabaseException("There is no any groups in database");
         }
         model.addAttribute("groups", groups);
-        LOG.info("Retrieving all groups : success");
+        LOG.trace("CONTROLLER: Retrieving all groups : success");
         return "groups/index";
     }
 }

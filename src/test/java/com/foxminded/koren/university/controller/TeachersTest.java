@@ -1,6 +1,8 @@
 package com.foxminded.koren.university.controller;
 
 import com.foxminded.koren.university.config.SpringConfig;
+import com.foxminded.koren.university.controller.exceptions.NoEntitiesInDatabaseException;
+import com.foxminded.koren.university.entity.Audience;
 import com.foxminded.koren.university.entity.Teacher;
 import com.foxminded.koren.university.service.TeacherService;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -57,26 +60,21 @@ public class TeachersTest {
     @Test
     void index_shouldCallGetAllMethodOfService() throws Exception {
         when(mockedService.getAll()).thenReturn(retrieveTestTeachers());
-        InOrder inOrder = Mockito.inOrder(mockedService);
+        InOrder inOrder = inOrder(mockedService);
         mockMvc.perform(get("/teachers"));
         inOrder.verify(mockedService, times(1)).getAll();
     }
 
     @Test
-    void index_shouldThrowException_whenServiceReturnsEmptyList() throws Exception{
+    void index_shouldThrowAnException_IfServiceReturnsEmptyList() throws Exception {
         when(mockedService.getAll()).thenReturn(new ArrayList<Teacher>());
-        assertThrows(NestedServletException.class,
-                () -> mockMvc.perform(get("/teachers")));
+        mockMvc.perform(get("/teachers"))
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof NoEntitiesInDatabaseException))
+                .andExpect(result -> assertTrue(result.getResolvedException().
+                        getMessage().equals("There is no any teachers in database")));
     }
 
     private List<Teacher> retrieveTestTeachers() {
         return List.of(new Teacher(), new Teacher(), new Teacher());
     }
-
-//    @Test
-//    void test1() throws Exception {
-//        when(mockedService.getAll()).thenReturn(new ArrayList<Teacher>());
-//        mockMvc.perform(get("/teachers"))
-//                .andExpect(result -> assertTrue(result.getResolvedException() instanceof BusinessLogicException));
-//    }
 }

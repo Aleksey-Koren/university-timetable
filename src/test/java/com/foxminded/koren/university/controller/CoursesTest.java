@@ -1,6 +1,8 @@
 package com.foxminded.koren.university.controller;
 
 import com.foxminded.koren.university.config.SpringConfig;
+import com.foxminded.koren.university.controller.exceptions.NoEntitiesInDatabaseException;
+import com.foxminded.koren.university.entity.Audience;
 import com.foxminded.koren.university.entity.Course;
 import com.foxminded.koren.university.service.CourseService;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -56,16 +59,18 @@ class CoursesTest {
     @Test
     void index_shouldCallGetAllMethodOfService() throws Exception {
         when(mockedService.getAll()).thenReturn(retrieveTestCourses());
-        InOrder inOrder = Mockito.inOrder(mockedService);
+        InOrder inOrder = inOrder(mockedService);
         mockMvc.perform(get("/courses"));
         inOrder.verify(mockedService, times(1)).getAll();
     }
 
     @Test
-    void index_shouldThrowException_whenServiceReturnsEmptyList() throws Exception{
+    void index_shouldThrowAnException_IfServiceReturnsEmptyList() throws Exception {
         when(mockedService.getAll()).thenReturn(new ArrayList<Course>());
-        assertThrows(NestedServletException.class,
-                () -> mockMvc.perform(get("/courses")),"There is no any courses in database");
+        mockMvc.perform(get("/courses"))
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof NoEntitiesInDatabaseException))
+                .andExpect(result -> assertTrue(result.getResolvedException().
+                        getMessage().equals("There is no any courses in database")));
     }
 
     private List<Course> retrieveTestCourses() {
