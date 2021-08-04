@@ -1,4 +1,5 @@
 package com.foxminded.koren.university.controller;
+
 ;
 import com.foxminded.koren.university.controller.exceptions.NoEntitiesInDatabaseException;
 import com.foxminded.koren.university.entity.Course;
@@ -15,26 +16,26 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/courses")
-public class Courses extends BaseController {
+public class CoursesController extends BaseController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Courses.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CoursesController.class);
 
     private CourseService courseService;
 
     @Autowired
-    public Courses(CourseService courseService) {
+    public CoursesController(CourseService courseService) {
         this.courseService = courseService;
     }
 
     @GetMapping()
-    public String index(Model model){
-        LOG.trace("CONTROLLER: Retrieving all courses");
+    public String index(Model model) {
+        LOG.trace("Retrieving all courses");
         List<Course> courses = courseService.getAll();
-        if(courses.isEmpty()){
+        if (courses.isEmpty()) {
             throw new NoEntitiesInDatabaseException("There is no any courses in database");
         }
         model.addAttribute("courses", courses);
-        LOG.trace("CONTROLLER: Retrieving all students: success");
+        LOG.trace("Retrieving all students: success");
         return "courses/index";
     }
 }

@@ -15,26 +15,26 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/students")
-public class Students extends BaseController {
+public class StudentsController extends BaseController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Students.class);
+    private static final Logger LOG = LoggerFactory.getLogger(StudentsController.class);
 
-    private  StudentService studentService;
+    private StudentService studentService;
 
     @Autowired
-    public Students(StudentService studentService) {
+    public StudentsController(StudentService studentService) {
         this.studentService = studentService;
     }
 
     @GetMapping()
     public String all(Model model) {
-        LOG.trace("CONTROLLER: Retrieving all students");
+        LOG.trace("Retrieving all students");
         List<Student> students = studentService.getAll();
-        if(students.isEmpty()){
+        if (students.isEmpty()) {
             throw new NoEntitiesInDatabaseException("There is no any students in database");
         }
         model.addAttribute("students", students);
-        LOG.trace("CONTROLLER: Retrieving all students: success");
+        LOG.trace("Retrieving all students: success");
         return "students/index";
     }
 }

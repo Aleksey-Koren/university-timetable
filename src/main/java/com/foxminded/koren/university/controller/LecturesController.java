@@ -16,26 +16,26 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/lectures")
-public class Lectures extends BaseController {
+public class LecturesController extends BaseController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Lectures.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LecturesController.class);
 
     private LectureService lectureService;
 
     @Autowired
-    public Lectures(LectureService lectureService) {
+    public LecturesController(LectureService lectureService) {
         this.lectureService = lectureService;
     }
 
     @GetMapping
     public String index(Model model) {
-        LOG.trace("CONTROLLER: Retrieving all lectures");
+        LOG.trace("Retrieving all lectures");
         List<Lecture> lectures = lectureService.getAll();
         if (lectures.isEmpty()) {
             throw new NoEntitiesInDatabaseException("There is no any lectures in database");
         }
         model.addAttribute("lectures", lectures);
-        LOG.trace("CONTROLLER: Retrieving all lectures : success");
+        LOG.trace("Retrieving all lectures : success");
         return "lectures/index";
     }
 }

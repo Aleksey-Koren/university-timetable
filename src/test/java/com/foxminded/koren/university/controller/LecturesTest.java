@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -17,7 +16,6 @@ import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.util.NestedServletException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +40,7 @@ class LecturesTest {
 
     @BeforeEach
     private void setup() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new Lectures(mockedService)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new LecturesController(mockedService)).build();
     }
 
     @Test

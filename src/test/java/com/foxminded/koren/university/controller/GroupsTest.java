@@ -2,7 +2,6 @@ package com.foxminded.koren.university.controller;
 
 import com.foxminded.koren.university.config.SpringConfig;
 import com.foxminded.koren.university.controller.exceptions.NoEntitiesInDatabaseException;
-import com.foxminded.koren.university.entity.Audience;
 import com.foxminded.koren.university.entity.Group;
 import com.foxminded.koren.university.service.GroupService;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -18,7 +16,6 @@ import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.util.NestedServletException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +41,7 @@ public class GroupsTest {
 
     @BeforeEach
     private void setup() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new Groups(mockedService)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new GroupsController(mockedService)).build();
     }
 
     @Test

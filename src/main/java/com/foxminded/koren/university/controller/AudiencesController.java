@@ -15,26 +15,26 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/audiences")
-public class Audiences extends BaseController {
+public class AudiencesController extends BaseController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Audiences.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AudiencesController.class);
 
     private AudienceService audienceService;
 
     @Autowired
-    public Audiences(AudienceService audienceService){
+    public AudiencesController(AudienceService audienceService){
         this.audienceService = audienceService;
     }
 
     @GetMapping()
     public String index(Model model) {
-        LOG.trace("CONTROLLER: Retrieving all audiences");
+        LOG.trace("Retrieving all audiences");
         List<Audience> audiences = audienceService.getAll();
         if (audiences.isEmpty()) {
             throw new NoEntitiesInDatabaseException("There is no any audiences in database");
         }
         model.addAttribute("audiences", audiences);
-        LOG.trace("CONTROLLER: Retrieving all audiences: success");
+        LOG.trace("Retrieving all audiences: success");
         return "audiences/index";
     }
 }

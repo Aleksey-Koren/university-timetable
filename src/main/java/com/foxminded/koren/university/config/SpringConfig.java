@@ -23,18 +23,10 @@ import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 @Configuration
 @ComponentScan("com.foxminded.koren.university")
 @PropertySource("classpath:application.properties")
-//@EnableWebMvc
 public class SpringConfig {
-    
 
     private Environment env;
-    
-//    private final ApplicationContext applicationContext;
-//
-//    @Autowired
-//    public SpringConfig(ApplicationContext applicationContext) {
-//        this.applicationContext = applicationContext;
-//    }
+
     @Autowired
     public SpringConfig(Environment env) {
         this.env = env;
@@ -58,28 +50,4 @@ public class SpringConfig {
     public Logger rootLogger() {
         return LoggerFactory.getLogger("root");
     }
-    
-//    @Bean
-//    public SpringResourceTemplateResolver templateResolver() {
-//        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
-//        templateResolver.setApplicationContext(applicationContext);
-//        templateResolver.setPrefix("/WEB-INF/views/");
-//        templateResolver.setSuffix(".html");
-//        return templateResolver;
-//    }
-//
-//    @Bean
-//    public SpringTemplateEngine templateEngine() {
-//        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-//        templateEngine.setTemplateResolver(templateResolver());
-//        templateEngine.setEnableSpringELCompiler(true);
-//        return templateEngine;
-//    }
-//
-//    @Override
-//    public void configureViewResolvers(ViewResolverRegistry registry) {
-//        ThymeleafViewResolver resolver = new ThymeleafViewResolver();
-//        resolver.setTemplateEngine(templateEngine());
-//        registry.viewResolver(resolver);
-//    }
 }

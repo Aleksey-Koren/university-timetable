@@ -15,26 +15,26 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/groups")
-public class Groups extends BaseController {
+public class GroupsController extends BaseController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Groups.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GroupsController.class);
 
     private GroupService groupService;
 
     @Autowired
-    public Groups(GroupService groupService) {
+    public GroupsController(GroupService groupService) {
         this.groupService = groupService;
     }
 
     @GetMapping
     public String index(Model model) {
-        LOG.trace("CONTROLLER: Retrieving all groups");
+        LOG.trace("Retrieving all groups");
         List<Group> groups = groupService.getAll();
         if (groups.isEmpty()) {
             throw new NoEntitiesInDatabaseException("There is no any groups in database");
         }
         model.addAttribute("groups", groups);
-        LOG.trace("CONTROLLER: Retrieving all groups : success");
+        LOG.trace("Retrieving all groups : success");
         return "groups/index";
     }
 }
