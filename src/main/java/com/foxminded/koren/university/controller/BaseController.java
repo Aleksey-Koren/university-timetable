@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class BaseController {
 
     @ExceptionHandler(NoEntitiesInDatabaseException.class)
-    public String businessLogicException(NoEntitiesInDatabaseException e, Model model) {
+    private String NoEntitiesInDatabaseException(NoEntitiesInDatabaseException e, Model model) {
         model.addAttribute("message", e.getMessage());
         return "exception";
     }
