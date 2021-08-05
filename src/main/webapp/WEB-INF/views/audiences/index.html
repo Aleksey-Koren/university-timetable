@@ -14,10 +14,11 @@
     <th>Capacity</th>
   </tr>
   <tr th:each = "audience : ${audiences}">
-    <td th:text="${audience.number}">number</td>
+    <td>
+        <a th:href="@{/audiences/{id}(id = ${audience.id})}" th:text="${audience.number}">Number</a>
+    </td>
     <td th:text="${audience.capacity}">capacity</td>
   </tr>
 </table>
-
 </body>
 </html>
