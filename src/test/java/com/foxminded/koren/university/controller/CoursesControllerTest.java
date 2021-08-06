@@ -2,8 +2,8 @@ package com.foxminded.koren.university.controller;
 
 import com.foxminded.koren.university.config.SpringConfig;
 import com.foxminded.koren.university.controller.exceptions.NoEntitiesInDatabaseException;
-import com.foxminded.koren.university.entity.Student;
-import com.foxminded.koren.university.service.StudentService;
+import com.foxminded.koren.university.entity.Course;
+import com.foxminded.koren.university.service.CourseService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,47 +30,48 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringJUnitWebConfig
 @ContextConfiguration(classes = {SpringConfig.class})
 @ExtendWith(MockitoExtension.class)
-public class StudentsTest {
+class CoursesControllerTest {
 
     private MockMvc mockMvc;
 
     @Mock
     @Autowired
-    private StudentService mockedService;
+    private CourseService mockedService;
 
     @BeforeEach
     private void setup() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new StudentsController(mockedService)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new CoursesController(mockedService)).build();
     }
 
     @Test
     void index_shouldAddExpectedListIntoModelAndSendItToRightView() throws Exception {
-        when(mockedService.getAll()).thenReturn(retrieveTestStudents());
-        MvcResult mvcResult = mockMvc.perform(get("/students"))
+        when(mockedService.getAll()).thenReturn(retrieveTestCourses());
+        MvcResult mvcResult = mockMvc.perform(get("/courses"))
                 .andExpect(model().attributeHasNoErrors())
                 .andReturn();
-        assertEquals(retrieveTestStudents(), mvcResult.getModelAndView().getModel().get("students"));
-        assertEquals("students/index", mvcResult.getModelAndView().getViewName());
+        assertEquals(retrieveTestCourses(), mvcResult.getModelAndView().getModel().get("courses"));
+        assertEquals("courses/index", mvcResult.getModelAndView().getViewName());
     }
 
     @Test
     void index_shouldCallGetAllMethodOfService() throws Exception {
-        when(mockedService.getAll()).thenReturn(retrieveTestStudents());
+        when(mockedService.getAll()).thenReturn(retrieveTestCourses());
         InOrder inOrder = inOrder(mockedService);
-        mockMvc.perform(get("/students"));
+        mockMvc.perform(get("/courses"));
         inOrder.verify(mockedService, times(1)).getAll();
     }
 
     @Test
     void index_shouldThrowAnException_IfServiceReturnsEmptyList() throws Exception {
-        when(mockedService.getAll()).thenReturn(new ArrayList<Student>());
-        mockMvc.perform(get("/students"))
+        when(mockedService.getAll()).thenReturn(new ArrayList<Course>());
+        mockMvc.perform(get("/courses"))
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof NoEntitiesInDatabaseException))
                 .andExpect(result -> assertTrue(result.getResolvedException().
-                        getMessage().equals("There is no any students in database")));
+                        getMessage().equals("There is no any courses in database")));
     }
 
-    private List<Student> retrieveTestStudents() {
-        return List.of(new Student(), new Student(), new Student());
+    private List<Course> retrieveTestCourses() {
+        return List.of(new Course("name1", "description1"),
+                       new Course("name2", "description2"));
     }
 }

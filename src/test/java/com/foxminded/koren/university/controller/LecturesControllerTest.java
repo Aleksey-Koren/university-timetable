@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringJUnitWebConfig
 @ContextConfiguration(classes = {SpringConfig.class})
 @ExtendWith(MockitoExtension.class)
-class LecturesTest {
+class LecturesControllerTest {
 
     private MockMvc mockMvc;
 
