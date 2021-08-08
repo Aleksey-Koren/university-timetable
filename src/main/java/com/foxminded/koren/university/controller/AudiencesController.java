@@ -70,4 +70,3 @@ public class AudiencesController extends BaseController {
         model.addAttribute("audience", audienceService.getById(id));
         return "audiences/edit";
     }
-}
