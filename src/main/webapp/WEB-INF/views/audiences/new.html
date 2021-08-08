@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create new audience</title>
+</head>
+<body>
+<a href="/">Back to main page</a>
+<br>
+<strong>List of all audiences</strong>
+<br>
+<h1>Enter the audience data</h1>
+
+<div>
+    <form th:method="POST" th:action="@{/audiences}" th:object="${audience}">
+
+        <input type="text" th:field="*{number}" id="number"/>
+        <label for="number" >enter number</label>
+        <br>
+        <input type="text" th:field="*{capacity}" id="capacity"/>
+        <label for="capacity" >enter capacity</label>
+        <br>
+        <input type="submit" value="create">
+    </form>
+</div>
+</body>
+</html>

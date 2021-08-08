@@ -27,7 +27,7 @@ public class AudienceService {
             LOG.debug("Save new audience: {}", audience);
             return audienceDao.save(audience);
         } catch (DAOException e) {
-            throw new ServiceException(e.getMessage(), e);
+            throw new ServiceException(e);
         }
     }
     
