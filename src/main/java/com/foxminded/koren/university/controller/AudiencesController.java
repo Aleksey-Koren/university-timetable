@@ -67,6 +67,28 @@ public class AudiencesController extends BaseController {
 
     @GetMapping("/{id}/edit")
     public String edit(Model model, @PathVariable("id") Integer id) {
+        LOG.trace("Request for form to update audience id = {}", id);
         model.addAttribute("audience", audienceService.getById(id));
         return "audiences/edit";
     }
+
+    @PatchMapping("/{id}")
+    public String update(@ModelAttribute("audience") Audience audience) {
+        LOG.trace("Try to update audience id = {}", audience.getId());
+        try{
+            audienceService.update(audience);
+        }catch(ServiceException e) {
+            throw new ControllerException(e);
+        }
+        LOG.trace("Try to update audience id = {} : success", audience.getId());
+        return "audiences/updateSuccess";
+    }
+
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable("id") Integer id) {
+        LOG.trace("Try to delete audience id = {}", id);
+        audienceService.deleteById(id);
+        LOG.trace("Audience id = {} has been deleted", id);
+        return "redirect:/audiences";
+    }
+}

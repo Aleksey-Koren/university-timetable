@@ -10,16 +10,22 @@
 <a href="/audiences/new">Create new audience</a>
 <strong>List of all audiences</strong>
 <table>
-  <tr>
-    <th>Number</th>
-    <th>Capacity</th>
-  </tr>
-  <tr th:each = "audience : ${audiences}">
-    <td>
-        <a th:href="@{/audiences/{id}(id = ${audience.id})}" th:text="${audience.number}">Number</a>
-    </td>
-    <td th:text="${audience.capacity}">capacity</td>
-  </tr>
+    <tr>
+        <th>Number</th>
+        <th>Capacity</th>
+    </tr>
+    <tr th:each="audience : ${audiences}">
+        <td>
+            <a th:href="@{/audiences/{id}(id = ${audience.id})}" th:text="${audience.number}">Number</a>
+        </td>
+        <td th:text="${audience.capacity}">capacity</td>
+        <td>
+            <form th:method="DELETE" th:action="@{/audiences/{id}(id = ${audience.id})}">
+                <input type="submit" value="Delete"/>
+            </form>
+        </td>
+
+    </tr>
 </table>
 </body>
 </html>

@@ -9,6 +9,8 @@
 <br>
 <a href="/audiences">Back to audiences list</a>
 <br>
+<a th:href="@{/audiences/{id}/edit(id=${audience.id})}" th:text="'Edit audience'"/>
+<br>
 <span>Audience number: </span>
 <span th:text="${audience.number}">Number</span>
 <br>

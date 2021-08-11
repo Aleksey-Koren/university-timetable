@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="'Audience ' + ${audience.number} + ' has been updated'">Title</title>
+</head>
+<body>
+<h1>Audience has been updated successfully</h1>
+<br>
+<span>Audience number: </span>
+<span th:text="${audience.number}">Number</span>
+<br>
+<span>Audience capacity: </span>
+<span th:text="${audience.capacity}">Capacity</span>
+<br>
+<a th:href="@{/audiences/{id}(id=${audience.id})}">Back to audience</a>
+<br>
+<a href="/audiences">Back to audiences list</a>
+</body>
+</html>

@@ -7,6 +7,9 @@
 <body>
 Hi! This is the Main Page
 <br>
+<form th:method="GET" th:action="@{/reload-test-data}">
+    <input type="submit" value="Reload test data">
+</form>
 <a href="/students">All students</a>
 <br>
 <a href="/teachers">All teachers</a>

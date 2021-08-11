@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'Edit audience number ' + ${audience.number}">Title</title>
+</head>
+<body>
+    <a href="/audiences">Back to audiences list</a>
+    <br>
+    <form th:method="PATCH", th:action="@{/audiences/{id}(id=${audience.id})}" th:object="${audience}">
+        <input type="text" th:field="*{number}" id="number"/>
+        <label for="number">edit number</label>
+        <br/>
+        <input type="text" th:field="*{capacity}" id="capacity"/>
+        <label for="capacity">edit capacity</label>
+        <br>
+        <input type="submit" value="Save"/>
+    </form>
+    <a th:href="@{/audiences/{id}(id = ${audience.id})}" th:text="'Cancel'"></a>
+</body>
+</html>

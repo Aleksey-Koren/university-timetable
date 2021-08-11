@@ -67,3 +67,53 @@ CREATE TABLE group_course
     course_id INT REFERENCES course(id) ON DELETE CASCADE,
     UNIQUE (group_id, course_id)
 );
+
+INSERT INTO audience (room_number, capacity)
+VALUES
+    (10, 30),
+    (12, 30),
+    (102, 150);
+
+INSERT INTO group_table (name)
+VALUES
+    ('group_name1'),
+    ('group_name2'),
+    ('group_name3'),
+    ('group_name4');
+
+INSERT INTO course (name, description)
+VALUES
+    ('course_name1', 'description1'),
+    ('course_name2', 'description2'),
+    ('course_name3', 'description3'),
+    ('course_name4', 'description4');
+
+INSERT INTO student (group_id, first_name, last_name, student_year)
+VALUES
+    (1, 'first name 1', 'last name 1', 'FIRST'),
+    (2, 'first name 2', 'last name 2', 'SECOND'),
+    (3, 'first name 3', 'last name 3', 'THIRD'),
+    (4, 'first name 4', 'last name 4', 'FOURTH'),
+    (1, 'first name 5', 'last name 5', 'FIFTH');
+
+INSERT INTO teacher (first_name, last_name)
+VALUES
+    ('first name 1', 'last name 1'),
+    ('first name 2', 'last name 2'),
+    ('first name 3', 'last name 3'),
+    ('first name 4', 'last name 4'),
+    ('first name 5', 'last name 5');
+
+INSERT INTO lecture (course_id, teacher_id, audience_id, start_time, end_time)
+VALUES
+    (1, 1, 2, '2021-05-02 16:00:00', '2021-05-02 17:00:00'),
+    (3, 4, 1, '2021-05-02 16:00:00', '2021-05-02 17:00:00'),
+    (2, 3, 3, '2021-05-02 10:00:00', '2021-05-02 11:00:00'),
+    (1, 1, 2, '2021-05-03 16:00:00', '2021-05-03 17:00:00'),
+    (3, 4, 1, '2021-05-03 17:00:00', '2021-05-03 18:00:00'),
+    (2, 3, 3, '2021-05-03 08:00:00', '2021-05-03 09:00:00'),
+    (1, 1, 2, '2021-05-04 14:00:00', '2021-05-04 15:00:00');
+
+
+
+

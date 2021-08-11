@@ -50,4 +50,9 @@ public class SpringConfig {
     public Logger rootLogger() {
         return LoggerFactory.getLogger("root");
     }
+
+    @Bean
+    public String tablesCreationUrl() {
+        return env.getProperty("tables.creation.url");
+    }
 }
