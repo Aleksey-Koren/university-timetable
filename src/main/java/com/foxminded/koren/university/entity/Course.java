@@ -10,9 +10,9 @@ public class Course {
         
     }
     
-    public Course(String name, String descrption) {
+    public Course(String name, String description) {
         this.name = name;
-        this.description = descrption;
+        this.description = description;
     }
 
     public int getId() {

@@ -19,12 +19,16 @@ public class AudienceSql {
             + "WHERE id = ?;";
 
     public static final String GET_BY_ID = 
-            "SELECT id audience_id, room_number audience_room_number, capacity audience_capacity\r\n"
-            + "FROM audience\r\n"
+              "SELECT id audience_id,\n" +
+              "       room_number audience_room_number,\n" +
+              "       capacity audience_capacity\n"
+            + "FROM audience\n"
             + "WHERE id = ?;";
     
     public static final String GET_ALL = 
-            "SELECT id audience_id, room_number audience_room_number, capacity audience_capacity\r\n"
-            + "FROM audience\r\n"
+              "SELECT id audience_id,\n" +
+              "       room_number audience_room_number,\n" +
+              "       capacity audience_capacity\n"
+            + "FROM audience\n"
             + "ORDER BY id;";
 }

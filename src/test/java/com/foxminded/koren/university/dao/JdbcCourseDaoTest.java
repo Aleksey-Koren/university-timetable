@@ -1,27 +1,25 @@
 package com.foxminded.koren.university.dao;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.IOException;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-
 import com.foxminded.koren.university.SpringConfigT;
 import com.foxminded.koren.university.dao.exceptions.DAOException;
 import com.foxminded.koren.university.dao.test_data.TablesCreation;
 import com.foxminded.koren.university.dao.test_data.TestData;
 import com.foxminded.koren.university.entity.Course;
 import com.foxminded.koren.university.entity.Group;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
-@SpringJUnitConfig
+import java.io.IOException;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+@SpringJUnitWebConfig
 @ContextConfiguration(classes = {SpringConfigT.class})
 class JdbcCourseDaoTest {
     
@@ -89,13 +87,7 @@ class JdbcCourseDaoTest {
         assertEquals(expected, jdbcCourseDao.getAll());
     }
     
-    @Test 
-    void deleteById_shouldThrowException_whenConstraintReferencesPresent(){
-        int expectedId = 1;
-        Course course = jdbcCourseDao.getById(expectedId);
-        assertThrows(DAOException.class, () -> jdbcCourseDao.deleteById(course.getId()));
-    }
-    
+
     @Test 
     void getByGroup_shouldWorkCorrectly() {
        Course course1 = new Course("name1", "desc1");

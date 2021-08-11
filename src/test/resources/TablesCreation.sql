@@ -46,7 +46,7 @@ CREATE TABLE teacher
 CREATE TABLE lecture
 (
     id SERIAL PRIMARY KEY,
-    course_id INT REFERENCES course(id),
+    course_id INT REFERENCES course(id) ON DELETE CASCADE,
     teacher_id INT REFERENCES teacher(id) ON DELETE SET NULL,
     audience_id INT REFERENCES audience(id) ON DELETE SET NULL,
     start_time TIMESTAMP NOT NULL,

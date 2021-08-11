@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Audiences</title>
+</head>
+<body>
+<a href="/">Back to main page</a>
+<br>
+<strong>List of all audiences</strong>
+<table>
+  <tr>
+    <th>Number</th>
+    <th>Capacity</th>
+  </tr>
+  <tr th:each = "audience : ${audiences}">
+    <td>
+        <a th:href="@{/audiences/{id}(id = ${audience.id})}" th:text="${audience.number}">Number</a>
+    </td>
+    <td th:text="${audience.capacity}">capacity</td>
+  </tr>
+</table>
+</body>
+</html>

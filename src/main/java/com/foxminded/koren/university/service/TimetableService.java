@@ -21,7 +21,8 @@ import com.foxminded.koren.university.service.comporators.TimetableStartTimeComp
 import com.foxminded.koren.university.service.exceptions.ServiceException;
 
 @Service
-public class TimetableService {                                                 
+public class
+TimetableService {
     
     private static final Logger LOG = LoggerFactory.getLogger(TimetableService.class);
     

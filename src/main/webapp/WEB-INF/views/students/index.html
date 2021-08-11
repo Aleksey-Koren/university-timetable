@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Students</title>
+</head>
+<body>
+<a href="/">Back to main page</a>
+<br>
+<strong>List of all students</strong>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Group</th>
+            <th>Year</th>
+        </tr>
+        <tr th:each = "student : ${students}">
+            <td th:text="|${student.firstName} ${student.lastName}|">name</td>
+            <td th:text="${student.group} != null ? ${student.group.name} : '---'">group</td>
+            <td th:text="${student.year}">year</td>
+        </tr>
+    </table>
+</body>
+</html>
