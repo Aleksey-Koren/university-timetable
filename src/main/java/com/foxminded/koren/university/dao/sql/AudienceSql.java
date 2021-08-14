@@ -30,5 +30,5 @@ public class AudienceSql {
               "       room_number audience_room_number,\n" +
               "       capacity audience_capacity\n"
             + "FROM audience\n"
-            + "ORDER BY id;";
+            + "ORDER BY room_number;";
 }

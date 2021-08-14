@@ -7,15 +7,20 @@
 <body>
 <a href="/">Back to main page</a>
 <br>
-<strong>List of all courses</strong>
+<h1>List of all courses</h1>
+<a href="/courses/new">Create new course</a>
 <table>
     <tr>
         <th>Name</th>
         <th>Description</th>
     </tr>
     <tr th:each = "course : ${courses}">
-        <td th:text="${course.name}">name</td>
-        <td th:text="${course.description}">description</td>
+        <td>
+            <a th:href="@{courses/{id}/edit (id=${course.id})}" th:text="${course.name}"/>
+        </td>
+        <td>
+            <textarea th:text="${course.description}" rows="10" cols="100" readonly="readonly"/>
+        </td>
     </tr>
 </table>
 </body>

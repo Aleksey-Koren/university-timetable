@@ -55,13 +55,13 @@ public class AudiencesController extends BaseController {
 
     @PostMapping
     public String create(@ModelAttribute("audience") Audience audience) {
-        LOG.trace("Try to create new audience");
+        LOG.trace("Creating new audience");
         try {
             audienceService.createNew(audience);
         } catch (ServiceException e) {
             throw new ControllerException(e);
         }
-        LOG.trace("Create new audience : success");
+        LOG.trace("Creating new audience : success");
         return "/audiences/createSuccess";
     }
 
@@ -74,21 +74,21 @@ public class AudiencesController extends BaseController {
 
     @PatchMapping("/{id}")
     public String update(@ModelAttribute("audience") Audience audience) {
-        LOG.trace("Try to update audience id = {}", audience.getId());
-        try{
+        LOG.trace("Updating audience id = {}", audience.getId());
+        try {
             audienceService.update(audience);
-        }catch(ServiceException e) {
+        } catch (ServiceException e) {
             throw new ControllerException(e);
         }
-        LOG.trace("Try to update audience id = {} : success", audience.getId());
-        return "audiences/updateSuccess";
+        LOG.trace("Updating audience id = {} : success", audience.getId());
+        return "redirect:/audiences";
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") Integer id) {
-        LOG.trace("Try to delete audience id = {}", id);
+        LOG.trace("Deleting audience id = {}", id);
         audienceService.deleteById(id);
-        LOG.trace("Audience id = {} has been deleted", id);
+        LOG.trace("Deleting audience id = {} : success", id);
         return "redirect:/audiences";
     }
 }
