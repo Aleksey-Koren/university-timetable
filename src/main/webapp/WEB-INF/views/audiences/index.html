@@ -24,36 +24,51 @@
         <div class="col">
             <h1 class="row justify-content-center">Audiences</h1>
             <a class="row justify-content-center" href="/audiences/new">Create new audience</a>
-            <table class="container-fluid" >
+            <table class="container-fluid">
                 <tr style="background: silver">
                     <th class>Number</th>
                     <th class>Capacity</th>
                     <th></th>
                 </tr>
-                <tr th:each="audience : ${audiences}" th:switch="${audiences.indexOf(audience) % 2 != 0}">
-                    <div th:case="true">
-                        <td style="background: gainsboro">
-                            <a th:href="@{/audiences/{id}/edit (id = ${audience.id})}" th:text="${audience.number}">Number</a>
-                        </td>
-                        <td th:text="${audience.capacity}" style="background: gainsboro">capacity</td>
-                        <td style="background: gainsboro">
-                            <form th:method="DELETE" th:action="@{/audiences/{id}(id = ${audience.id})}">
-                                <input type="submit" value="Delete"/>
-                            </form>
-                        </td>
-                    </div>
+<!--                <tr th:each="audience : ${audiences}" th:switch="${audiences.indexOf(audience) % 2 != 0}">-->
+<!--                    <div th:case="true">-->
+<!--                        <td style="background: gainsboro">-->
+<!--                            <a th:href="@{/audiences/{id}/edit (id = ${audience.id})}" th:text="${audience.number}">Number</a>-->
+<!--                        </td>-->
+<!--                        <td th:text="${audience.capacity}" style="background: gainsboro">capacity</td>-->
+<!--                        <td style="background: gainsboro">-->
+<!--                            <form th:method="DELETE" th:action="@{/audiences/{id}(id = ${audience.id})}">-->
+<!--                                <input type="submit" value="Delete"/>-->
+<!--                            </form>-->
+<!--                        </td>-->
+<!--                    </div>-->
 
-                    <div th:case="false">
-                        <td>
-                            <a th:href="@{/audiences/{id}/edit (id = ${audience.id})}" th:text="${audience.number}">Number</a>
-                        </td>
-                        <td th:text="${audience.capacity}">capacity</td>
-                        <td>
-                            <form th:method="DELETE" th:action="@{/audiences/{id}(id = ${audience.id})}">
-                                <input type="submit" value="Delete"/>
-                            </form>
-                        </td>
-                    </div>
+<!--                    <div th:case="false">-->
+<!--                        <td>-->
+<!--                            <a th:href="@{/audiences/{id}/edit (id = ${audience.id})}" th:text="${audience.number}">Number</a>-->
+<!--                        </td>-->
+<!--                        <td th:text="${audience.capacity}">capacity</td>-->
+<!--                        <td>-->
+<!--                            <form th:method="DELETE" th:action="@{/audiences/{id}(id = ${audience.id})}">-->
+<!--                                <input type="submit" value="Delete"/>-->
+<!--                            </form>-->
+<!--                        </td>-->
+<!--                    </div>-->
+<!--                </tr>-->
+                <tr th:each="audience : ${audiences}" th:switch="${audiences.indexOf(audience) % 2 != 0}">
+                    <td th:style="${audiences.indexOf(audience) % 2 != 0} ? 'background: gainsboro' : 'background : lightgrey'">
+                        <a th:href="@{/audiences/{id}/edit (id = ${audience.id})}"
+                           th:text="${audience.number}">Number</a>
+                    </td>
+                    <td th:text="${audience.capacity}"
+                        th:style="${audiences.indexOf(audience) % 2 != 0} ? 'background: gainsboro' : 'background : lightgrey'">
+                        capacity
+                    </td>
+                    <td th:style="${audiences.indexOf(audience) % 2 != 0} ? 'background: gainsboro' : 'background : lightgrey'">
+                        <form th:method="DELETE" th:action="@{/audiences/{id}(id = ${audience.id})}">
+                            <input type="submit" value="Delete"/>
+                        </form>
+                    </td>
                 </tr>
             </table>
         </div>
