@@ -2,12 +2,18 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <div th:fragment="sideMenu" class="col-2" style="background: dimgray">
-    <a class="row justify-content-center" style="color: white" href="/groups">Groups</a>
-    <a class="row justify-content-center" style="color: white" href="/students">Students</a>
-    <a class="row justify-content-center" style="color: white" href="/teachers">Teachers</a>
-    <a class="row justify-content-center" style="color: white" href="/lectures">Lectures</a>
-    <a class="row justify-content-center" style="color: white" href="/audiences">Audiences</a>
-    <a class="row justify-content-center" style="color: white" href="/courses">Courses</a>
+    <a class="row justify-content-center" href="/groups"
+       th:style="${#httpServletRequest.getRequestURI().contains('/groups')} ? 'background-color: white; color: black' : 'color: white'">Groups</a>
+    <a class="row justify-content-center" href="/students"
+       th:style="${#httpServletRequest.getRequestURI().contains('/students')} ? 'background-color: white; color: black' : 'color: white'">Students</a>
+    <a class="row justify-content-center" href="/teachers"
+       th:style="${#httpServletRequest.getRequestURI().contains('/teachers')} ? 'background-color: white; color: black' : 'color: white'">Teachers</a>
+    <a class="row justify-content-center" href="/lectures"
+       th:style="${#httpServletRequest.getRequestURI().contains('/lectures')} ? 'background-color: white; color: black' : 'color: white'">Lectures</a>
+    <a class="row justify-content-center" href="/audiences"
+       th:style="${#httpServletRequest.getRequestURI().contains('/audiences')} ? 'background-color: white; color: black' : 'color: white'">Audiences</a>
+    <a class="row justify-content-center" href="/courses"
+       th:style="${#httpServletRequest.getRequestURI().contains('/courses')} ? 'background-color: white; color: black' : 'color: white'">Courses</a>
     <br>
     <a class="row justify-content-center" style="color: white" href="/">Log out</a>
 </div>
