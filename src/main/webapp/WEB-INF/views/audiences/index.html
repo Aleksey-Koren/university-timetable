@@ -11,16 +11,7 @@
 <body>
 <div class="container-fluid">
     <div class="row" style="height: 100vh">
-        <div class="col-2 " style="background: dimgray">
-            <a class="row justify-content-center" style="color: white" href="/groups">Groups</a>
-            <a class="row justify-content-center" style="color: white" href="/students">Students</a>
-            <a class="row justify-content-center" style="color: white" href="/teachers">Teachers</a>
-            <a class="row justify-content-center" style="color: white" href="/lectures">Lectures</a>
-            <a class="row justify-content-center" style="color: white" href="/audiences">Audiences</a>
-            <a class="row justify-content-center" style="color: white" href="/courses">Courses</a>
-            <br>
-            <a class="row justify-content-center" style="color: white" href="/">Log out</a>
-        </div>
+        <div th:replace="templates/sideMenu :: sideMenu"></div>
         <div class="col">
             <h1 class="row justify-content-center">Audiences</h1>
             <a class="row justify-content-center" href="/audiences/new">Create new audience</a>
@@ -30,41 +21,14 @@
                     <th class>Capacity</th>
                     <th></th>
                 </tr>
-<!--                <tr th:each="audience : ${audiences}" th:switch="${audiences.indexOf(audience) % 2 != 0}">-->
-<!--                    <div th:case="true">-->
-<!--                        <td style="background: gainsboro">-->
-<!--                            <a th:href="@{/audiences/{id}/edit (id = ${audience.id})}" th:text="${audience.number}">Number</a>-->
-<!--                        </td>-->
-<!--                        <td th:text="${audience.capacity}" style="background: gainsboro">capacity</td>-->
-<!--                        <td style="background: gainsboro">-->
-<!--                            <form th:method="DELETE" th:action="@{/audiences/{id}(id = ${audience.id})}">-->
-<!--                                <input type="submit" value="Delete"/>-->
-<!--                            </form>-->
-<!--                        </td>-->
-<!--                    </div>-->
-
-<!--                    <div th:case="false">-->
-<!--                        <td>-->
-<!--                            <a th:href="@{/audiences/{id}/edit (id = ${audience.id})}" th:text="${audience.number}">Number</a>-->
-<!--                        </td>-->
-<!--                        <td th:text="${audience.capacity}">capacity</td>-->
-<!--                        <td>-->
-<!--                            <form th:method="DELETE" th:action="@{/audiences/{id}(id = ${audience.id})}">-->
-<!--                                <input type="submit" value="Delete"/>-->
-<!--                            </form>-->
-<!--                        </td>-->
-<!--                    </div>-->
-<!--                </tr>-->
-                <tr th:each="audience : ${audiences}" th:switch="${audiences.indexOf(audience) % 2 != 0}">
-                    <td th:style="${audiences.indexOf(audience) % 2 != 0} ? 'background: gainsboro' : 'background : lightgrey'">
+                <tr th:each="audience : ${audiences}"
+                    th:style="${audiences.indexOf(audience) % 2 != 0} ? 'background: gainsboro' : 'background : lightgrey'">
+                    <td>
                         <a th:href="@{/audiences/{id}/edit (id = ${audience.id})}"
                            th:text="${audience.number}">Number</a>
                     </td>
-                    <td th:text="${audience.capacity}"
-                        th:style="${audiences.indexOf(audience) % 2 != 0} ? 'background: gainsboro' : 'background : lightgrey'">
-                        capacity
-                    </td>
-                    <td th:style="${audiences.indexOf(audience) % 2 != 0} ? 'background: gainsboro' : 'background : lightgrey'">
+                    <td th:text="${audience.capacity}">capacity</td>
+                    <td>
                         <form th:method="DELETE" th:action="@{/audiences/{id}(id = ${audience.id})}">
                             <input type="submit" value="Delete"/>
                         </form>
