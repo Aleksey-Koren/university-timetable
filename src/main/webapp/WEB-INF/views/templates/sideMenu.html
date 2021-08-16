@@ -2,20 +2,20 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <div th:fragment="sideMenu" class="col-2" style="background: dimgray">
-    <a class="row justify-content-center" href="/groups"
+    <a href="/groups" class="d-block w-100"
        th:style="${#httpServletRequest.getRequestURI().contains('/groups')} ? 'background-color: white; color: black' : 'color: white'">Groups</a>
-    <a class="row justify-content-center" href="/students"
+    <a href="/students" class="d-block w-100"
        th:style="${#httpServletRequest.getRequestURI().contains('/students')} ? 'background-color: white; color: black' : 'color: white'">Students</a>
-    <a class="row justify-content-center" href="/teachers"
+    <a href="/teachers" class="d-block w-100"
        th:style="${#httpServletRequest.getRequestURI().contains('/teachers')} ? 'background-color: white; color: black' : 'color: white'">Teachers</a>
-    <a class="row justify-content-center" href="/lectures"
+    <a href="/lectures" class="d-block w-100"
        th:style="${#httpServletRequest.getRequestURI().contains('/lectures')} ? 'background-color: white; color: black' : 'color: white'">Lectures</a>
-    <a class="row justify-content-center" href="/audiences"
+    <a href="/audiences" class="d-block w-100"
        th:style="${#httpServletRequest.getRequestURI().contains('/audiences')} ? 'background-color: white; color: black' : 'color: white'">Audiences</a>
-    <a class="row justify-content-center" href="/courses"
+    <a href="/courses" class="d-block w-100"
        th:style="${#httpServletRequest.getRequestURI().contains('/courses')} ? 'background-color: white; color: black' : 'color: white'">Courses</a>
     <br>
-    <a class="row justify-content-center" style="color: white" href="/">Log out</a>
+    <a class="d-block w-100" style="color: white" href="/">Log out</a>
 </div>
 </body>
 </html>
