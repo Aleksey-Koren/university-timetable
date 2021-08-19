@@ -222,12 +222,21 @@ class JdbcLectureDaoTest {
         teacher.setId(1);
         Course course = new Course("name1", "desc1");
         course.setId(1);
-        Lecture expected = new Lecture(audience,
-                                       teacher,
-                                       course,
-                                       LocalDateTime.of(2021, 5, 2, 16, 0),
-                                       LocalDateTime.of(2021, 5, 2, 17, 0));
-        expected.setId(expectedId);
+//        Lecture expected = new Lecture(audience,
+//                                       teacher,
+//                                       course,
+//                                       LocalDateTime.of(2021, 5, 2, 16, 0),
+//                                       LocalDateTime.of(2021, 5, 2, 17, 0));
+
+        Lecture expected = new Lecture.Builder()
+                .id(expectedId)
+                .audience(audience)
+                .teacher(teacher)
+                .course(course)
+                .startTime(LocalDateTime.of(2021, 5, 2, 16, 0))
+                .endTime(LocalDateTime.of(2021, 5, 2, 17, 0))
+                .build();
+
         return expected;
     }
     

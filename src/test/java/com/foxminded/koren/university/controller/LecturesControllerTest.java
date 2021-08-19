@@ -3,6 +3,7 @@ package com.foxminded.koren.university.controller;
 import com.foxminded.koren.university.config.SpringConfig;
 import com.foxminded.koren.university.controller.exceptions.NoEntitiesInDatabaseException;
 import com.foxminded.koren.university.entity.*;
+import com.foxminded.koren.university.service.GroupService;
 import com.foxminded.koren.university.service.LectureService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,16 +37,17 @@ class LecturesControllerTest {
 
     @Mock
     @Autowired
-    private LectureService mockedService;
+    private LectureService mockedLectureService;
+    private GroupService mockedGroupService;
 
     @BeforeEach
     private void setup() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new LecturesController(mockedService)).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(new LecturesController(mockedLectureService, mockedGroupService)).build();
     }
 
     @Test
     void index_shouldAddExpectedListIntoModelAndSendItToRightView() throws Exception {
-        when(mockedService.getAll()).thenReturn(retrieveTestLectures());
+        when(mockedLectureService.getAll()).thenReturn(retrieveTestLectures());
         MvcResult mvcResult = mockMvc.perform(get("/lectures"))
                 .andExpect(model().attributeHasNoErrors())
                 .andReturn();
@@ -55,15 +57,15 @@ class LecturesControllerTest {
 
     @Test
     void index_shouldCallGetAllMethodOfService() throws Exception {
-        when(mockedService.getAll()).thenReturn(retrieveTestLectures());
-        InOrder inOrder = inOrder(mockedService);
+        when(mockedLectureService.getAll()).thenReturn(retrieveTestLectures());
+        InOrder inOrder = inOrder(mockedLectureService);
         mockMvc.perform(get("/lectures"));
-        inOrder.verify(mockedService, times(1)).getAll();
+        inOrder.verify(mockedLectureService, times(1)).getAll();
     }
 
     @Test
     void index_shouldThrowAnException_IfServiceReturnsEmptyList() throws Exception {
-        when(mockedService.getAll()).thenReturn(new ArrayList<Lecture>());
+        when(mockedLectureService.getAll()).thenReturn(new ArrayList<Lecture>());
         mockMvc.perform(get("/lectures"))
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof NoEntitiesInDatabaseException))
                 .andExpect(result -> assertTrue(result.getResolvedException().

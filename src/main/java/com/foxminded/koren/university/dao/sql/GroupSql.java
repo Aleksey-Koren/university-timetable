@@ -34,4 +34,11 @@ public class GroupSql {
             "DELETE FROM group_course\r\n"
           + "WHERE group_id = ?\r\n"
           + "AND course_id = ?;";
+
+    public static final String GET_BY_LECTURE_ID =
+            "SELECT id group_id , name group_name\n" +
+            "   FROM group_table\n" +
+            "       JOIN lecture_group lg on group_table.id = lg.group_id\n" +
+            "   WHERE lg.lecture_id = ?" +
+            "ORDER BY group_name";
 }

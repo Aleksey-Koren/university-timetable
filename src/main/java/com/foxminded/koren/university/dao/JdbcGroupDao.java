@@ -19,13 +19,7 @@ import com.foxminded.koren.university.dao.mappers.GroupMapper;
 import com.foxminded.koren.university.entity.Course;
 import com.foxminded.koren.university.entity.Group;
 
-import static com.foxminded.koren.university.dao.sql.GroupSql.SAVE;
-import static com.foxminded.koren.university.dao.sql.GroupSql.UPDATE;
-import static com.foxminded.koren.university.dao.sql.GroupSql.DELETE;
-import static com.foxminded.koren.university.dao.sql.GroupSql.GET_BY_ID;
-import static com.foxminded.koren.university.dao.sql.GroupSql.GET_ALL;
-import static com.foxminded.koren.university.dao.sql.GroupSql.ADD_COURSE;
-import static com.foxminded.koren.university.dao.sql.GroupSql.REMOVE_COURSE;
+import static com.foxminded.koren.university.dao.sql.GroupSql.*;
 
 @Repository
 public class JdbcGroupDao implements GroupDao {
@@ -82,7 +76,8 @@ public class JdbcGroupDao implements GroupDao {
             throw new DAOException("No such id in database", e);
         }
     }
-    
+
+    @Override
     public List<Group> getAll() {
         LOG.debug("Query to database. Get all groups. SQL: {}", GET_ALL);
         return jdbcTemplate.query(GET_ALL, new GroupMapper());
@@ -99,5 +94,11 @@ public class JdbcGroupDao implements GroupDao {
         LOG.debug("Update to database. Remove course from group. SQL: {} group.id = {} course.id = {}",
                 REMOVE_COURSE, group.getId(), course.getId());
         return jdbcTemplate.update(REMOVE_COURSE, group.getId(), course.getId()) > 0;
+    }
+
+    @Override
+    public List<Group> getGroupsByLectureId(Integer lectureId) {
+        LOG.debug("Query to database. Get groups by lecture id = {}. SQL: {}", "\n" + GET_BY_LECTURE_ID, lectureId);
+        return jdbcTemplate.query(GET_BY_LECTURE_ID, new GroupMapper(), lectureId);
     }
 }

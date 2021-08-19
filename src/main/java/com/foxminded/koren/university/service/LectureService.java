@@ -16,10 +16,14 @@ import com.foxminded.koren.university.service.exceptions.ServiceException;
 public class LectureService {
     
     private static final Logger LOG = LoggerFactory.getLogger(LectureService.class);
-    
-    @Autowired
+
     private LectureDao lectureDao;
-    
+
+    @Autowired
+    public LectureService(LectureDao lectureDao) {
+        this.lectureDao = lectureDao;
+    }
+
     public Lecture createNew(Lecture lecture) {
         try {
             LOG.debug("Create new lecture: {}", lecture);

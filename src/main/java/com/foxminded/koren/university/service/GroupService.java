@@ -61,4 +61,9 @@ public class GroupService {
         LOG.debug("Release group. {}", group);
         groupDao.deleteById(group.getId());
     }
+
+    public List<Group> getGroupsByLectureId(Integer id) {
+        LOG.debug("Retrieving groups by lecture id = {}", id);
+        return groupDao.getGroupsByLectureId(id);
+    }
 }

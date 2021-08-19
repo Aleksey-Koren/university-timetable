@@ -25,7 +25,8 @@ public class TestData {
                 "INSERT INTO group_table (name)\n"
               + "VALUES\n"
               + "('group name1'),\n"
-              + "('group name2');";    
+              + "('group name2')," +
+                "('group name3');";
         jdbcTemplate.update(insertGroups);
    
         String addCoursesToGroup = 
