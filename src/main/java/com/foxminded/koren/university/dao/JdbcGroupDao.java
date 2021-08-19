@@ -98,7 +98,7 @@ public class JdbcGroupDao implements GroupDao {
 
     @Override
     public List<Group> getGroupsByLectureId(Integer lectureId) {
-        LOG.debug("Query to database. Get groups by lecture id = {}. SQL: {}", "\n" + GET_BY_LECTURE_ID, lectureId);
+        LOG.debug("Query to database. Get groups by lecture id = {}. SQL: {}", "\n" + lectureId, GET_BY_LECTURE_ID);
         return jdbcTemplate.query(GET_BY_LECTURE_ID, new GroupMapper(), lectureId);
     }
 }

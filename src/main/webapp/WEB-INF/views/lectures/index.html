@@ -26,24 +26,30 @@
                     <th></th>
                 </tr>
                 <tr th:each="dto : ${dtos}"
-                    th:style="${lectures.indexOf(dto) % 2 != 0} ? 'background: gainsboro' : 'background : lightgrey'">
+                    th:style="${dtos.indexOf(dto) % 2 != 0} ? 'background: gainsboro' : 'background : lightgrey'">
                     <td>
                         <a th:href="@{lectures/{id}/edit (id=${dto.lecture.id})}" th:text="Edit"/>
                     </td>
                     <td th:text="${dto.lecture.course.name}">course</td>
-                    <td th:text="${#temporals.format(lecture.startTime, 'dd-MMMM HH:mm', new java.util.Locale('en', 'EN'))}">
+                    <td th:text="${#temporals.format(dto.lecture.startTime, 'dd-MMMM HH:mm', new java.util.Locale('en', 'EN'))}">
                         Start
                     </td>
-                    <td th:text="${#temporals.format(lecture.endTime, 'dd-MMMM HH:mm', new java.util.Locale('en', 'EN'))}">
+                    <td th:text="${#temporals.format(dto.lecture.endTime, 'dd-MMMM HH:mm', new java.util.Locale('en', 'EN'))}">
                         End
                     </td>
-                    <td th:text="${lecture.audience} != null ? ${lecture.audience.number} : '---'">audience</td>
-                    <td th:text="${lecture.teacher} != null ?
-                                |${lecture.teacher.firstName} ${lecture.teacher.lastName}| : '---'">
+                    <td th:switch="${dto.groups.isEmpty()}">
+                        <div th:case="false">
+                            <div th:each="group : ${dto.groups}" th:text="${group.name}"></div>
+                        </div>
+                        <div th:case="true">---</div>
+                    </td>
+                    <td th:text="${dto.lecture.audience} != null ? ${dto.lecture.audience.number} : '---'">audience</td>
+                    <td th:text="${dto.lecture.teacher} != null ?
+                                |${dto.lecture.teacher.firstName} ${dto.lecture.teacher.lastName}| : '---'">
                         teacher
                     </td>
                     <td>
-                        <form th:method="DELETE" th:action="@{/lectures/{id}(id = ${lecture.id})}">
+                        <form th:method="DELETE" th:action="@{/lectures/{id}(id = ${dto.lecture.id})}">
                             <input type="submit" value="Delete"/>
                         </form>
                     </td>

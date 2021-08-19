@@ -4,8 +4,7 @@ import com.foxminded.koren.university.controller.dto.LectureDTO;
 import com.foxminded.koren.university.controller.exceptions.NoEntitiesInDatabaseException;
 import com.foxminded.koren.university.entity.Group;
 import com.foxminded.koren.university.entity.Lecture;
-import com.foxminded.koren.university.service.GroupService;
-import com.foxminded.koren.university.service.LectureService;
+import com.foxminded.koren.university.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +26,26 @@ public class LecturesController extends BaseController {
 
     private LectureService lectureService;
     private GroupService groupService;
+    private CourseService courseService;
+    private AudienceService audienceService;
+    private TeacherService teacherService;
 
-    @Autowired
     public LecturesController(LectureService lectureService, GroupService groupService) {
         this.lectureService = lectureService;
         this.groupService = groupService;
+    }
+
+    @Autowired
+    public LecturesController(LectureService lectureService,
+                              GroupService groupService,
+                              CourseService courseService,
+                              AudienceService audienceService,
+                              TeacherService teacherService) {
+        this.lectureService = lectureService;
+        this.groupService = groupService;
+        this.courseService = courseService;
+        this.audienceService = audienceService;
+        this.teacherService = teacherService;
     }
 
     @GetMapping
@@ -56,9 +70,16 @@ public class LecturesController extends BaseController {
     @GetMapping("/{id}/edit")
     public String edit(Model model, @PathVariable("id") Integer id) {
         LOG.trace("Request for form to update lecture id = {}", id);
-        LectureDTO dto = new LectureDTO(lectureService.getById(id), groupService.getGroupsByLectureId(id));
-        model.addAttribute("lectureDTO", dto);
+        LectureDTO dto = new LectureDTO.Builder()
+                .lecture(lectureService.getById(id))
+                        .groups(groupService.getGroupsByLectureId(id))
+                                .allGroups(groupService.getAll())
+                                        .allCourses(courseService.getAll())
+                                                .allAudiences(audienceService.getAll())
+                                                        .allTeachers(teacherService.getAll())
+                                                                .build();
+        model.addAttribute("dto", dto);
         LOG.trace("Request for form to update lecture id = {} : success", id);
-        return "audiences/edit";
+        return "lectures/edit";
     }
 }

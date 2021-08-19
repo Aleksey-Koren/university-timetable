@@ -2,39 +2,38 @@
 <html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="'Edit audience number ' + ${lectureDTO.lecture.id}">Title</title>
+    <title th:text="'Edit lecture ' + ${dto.lecture.id}">Title</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
           integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 
 </head>
+
+<body>
 <div class="container-fluid">
     <div class="row" style="height: 100vh">
         <div th:replace="templates/sideMenu :: sideMenu"></div>
         <div class="col">
-            <h1 class="d-flex justify-content-center" th:text="|Edit lecture id ${lecture.id}|"></h1>
-            <form th:method="PATCH" , th:action="@{/lectures/{id}(id=${lecture.id})}" th:object="${lectureDTO.lecture}">
-<!--                //////////////////////////////////////////////////////////////////////////////-->
-                <br>
-                <div class="d-flex justify-content-center">
-                    <label for="number"><h3>Number </h3></label>
-                    <input type="text" th:field="*{number}" id="number"/>
-                </div>
-                <br>
-                <div class="d-flex justify-content-center">
-                    <label for="capacity"><h3>Capacity </h3></label>
-                    <input type="text" th:field="*{capacity}" id="capacity"/>
-                </div>
-                <br>
-                <div class="d-flex justify-content-center">
-                    <input type="submit" value="Save"/>
-                </div>
+            <h1 class="d-flex justify-content-center" th:text="|Edit lecture id ${dto.lecture.id}|"></h1>
+            <form th:method="PATCH" , th:action="@{/lectures/{id}(id=${dto.lecture.id})}" th:object="${dto}">
+                <select id="allCourses" name="allCourses">
+                    <option th:each="course : ${dto.allCourses}" th:value="${course.name}" th:text="${course.name}"
+                            th:selected="${dto.lecture.course.id == course.id}">
+                    </option>
+                </select>
+
+
+
+
             </form>
         </div>
     </div>
 </div>
-<body>
+
+
+
+
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
         crossorigin="anonymous"></script>
