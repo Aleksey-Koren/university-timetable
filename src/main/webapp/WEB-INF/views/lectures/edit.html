@@ -16,16 +16,29 @@
         <div th:replace="templates/sideMenu :: sideMenu"></div>
         <div class="col">
             <h1 class="d-flex justify-content-center" th:text="|Edit lecture id ${dto.lecture.id}|"></h1>
-            <form th:method="PATCH" , th:action="@{/lectures/{id}(id=${dto.lecture.id})}" th:object="${dto}">
-                <select id="allCourses" name="allCourses">
-                    <option th:each="course : ${dto.allCourses}" th:value="${course.name}" th:text="${course.name}"
-                            th:selected="${dto.lecture.course.id == course.id}">
-                    </option>
-                </select>
+            <form th:method="PATCH" , th:action="@{/lectures/{id}(id=${dto.lecture.id})}" th:object="${formDTO}">
+                <div class="d-flex justify-content-center">
+                    <label th:for="courseId"><h3>Course</h3></label>
+                    <select  th:field="*{courseId}">
+                        <option th:each="course : ${dto.allCourses}" th:value="${course.id}" th:text="${course.name}">
+                        </option>
+                    </select>
 
+                    <label th:for="audienceId"><h3>Audience</h3></label>
+                    <select  th:field="*{audienceId}">
+                        <option th:each="audience : ${dto.allAudiences}" th:value="${audience.id}" th:text="${audience.number}">
+                        </option>
+                    </select>
 
-
-
+                    <label th:for="teacherId"><h3>Teacher</h3></label>
+                    <select  th:field="*{teacherId}">
+                        <option th:each="teacher : ${dto.allTeachers}" th:value="${teacher.id}" th:text="|${teacher.firstName} ${teacher.lastName}|">
+                        </option>
+                    </select>
+                </div>
+                <div class="d-flex justify-content-end" style="margin: 20px">
+                    <input type="submit" value="Save"/>
+                </div>
             </form>
         </div>
     </div>

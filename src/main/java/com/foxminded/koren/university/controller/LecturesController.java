@@ -1,19 +1,20 @@
 package com.foxminded.koren.university.controller;
 
 import com.foxminded.koren.university.controller.dto.LectureDTO;
+import com.foxminded.koren.university.controller.dto.LectureFormDTO;
+import com.foxminded.koren.university.controller.exceptions.ControllerException;
 import com.foxminded.koren.university.controller.exceptions.NoEntitiesInDatabaseException;
-import com.foxminded.koren.university.entity.Group;
-import com.foxminded.koren.university.entity.Lecture;
+import com.foxminded.koren.university.entity.*;
 import com.foxminded.koren.university.service.*;
+import com.foxminded.koren.university.service.exceptions.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,7 +80,28 @@ public class LecturesController extends BaseController {
                                                         .allTeachers(teacherService.getAll())
                                                                 .build();
         model.addAttribute("dto", dto);
+        LectureFormDTO formDTO = new LectureFormDTO(dto.getLecture().getCourse().getId(),
+                                                    dto.getLecture().getAudience().getId(),
+                                                    dto.getLecture().getTeacher().getId());
+        model.addAttribute("formDTO", formDTO);
         LOG.trace("Request for form to update lecture id = {} : success", id);
         return "lectures/edit";
     }
+
+    @PatchMapping("/{id}")
+    public String update(@ModelAttribute("formDTO") LectureFormDTO formDTO, @PathVariable int id) {
+        LOG.trace("Updating lecture id = {}", id);
+        Lecture lecture = lectureService.getById(id);
+        lecture.getCourse().setId(formDTO.getCourseId());
+        lecture.getAudience().setId(formDTO.getAudienceId());
+        lecture.getTeacher().setId(formDTO.getTeacherId());
+        try {
+            lectureService.update(lecture);
+        } catch (ServiceException e) {
+            throw new ControllerException(e);
+        }
+        LOG.trace("Updating lecture id = {} : success", lecture.getId());
+        return String.format("redirect:/lectures/%s/edit", id);
+    }
+
 }

@@ -12,7 +12,6 @@ public class Lecture implements TimetableEvent {
     private Audience audience;
     private Teacher teacher;
     private Course course;
-    private List<Group> groups;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     
@@ -56,12 +55,6 @@ public class Lecture implements TimetableEvent {
     public void setCourse(Course course) {
         this.course = course;
     }
-    public List<Group> getGroups() {
-        return groups;
-    }
-    public void setGroups(List<Group> groups) {
-        this.groups = groups;
-    }
     public LocalDateTime getStartTime() {
         return startTime;
     }
@@ -75,17 +68,18 @@ public class Lecture implements TimetableEvent {
         this.endTime = endTime;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Lecture lecture = (Lecture) o;
-        return id == lecture.id && Objects.equals(audience, lecture.audience) && Objects.equals(teacher, lecture.teacher) && Objects.equals(course, lecture.course) && Objects.equals(groups, lecture.groups) && Objects.equals(startTime, lecture.startTime) && Objects.equals(endTime, lecture.endTime);
+        return id == lecture.id && Objects.equals(audience, lecture.audience) && Objects.equals(teacher, lecture.teacher) && Objects.equals(course, lecture.course) && Objects.equals(startTime, lecture.startTime) && Objects.equals(endTime, lecture.endTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, audience, teacher, course, groups, startTime, endTime);
+        return Objects.hash(id, audience, teacher, course, startTime, endTime);
     }
 
     @Override

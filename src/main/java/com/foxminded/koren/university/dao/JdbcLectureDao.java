@@ -72,8 +72,8 @@ public class JdbcLectureDao implements LectureDao {
         jdbcTemplate.update(UPDATE, entity.getCourse().getId(),
                         entity.getTeacher() != null ? entity.getTeacher().getId() : null,
                         entity.getAudience() != null ? entity.getAudience().getId() : null,
-                        Timestamp.valueOf(entity.getStartTime()).toString(),
-                        Timestamp.valueOf(entity.getEndTime()).toString(),
+                        entity.getStartTime(),
+                        entity.getEndTime(),
                         entity.getId());
     }
 
