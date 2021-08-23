@@ -66,4 +66,13 @@ public class GroupService {
         LOG.debug("Retrieving groups by lecture id = {}", id);
         return groupDao.getGroupsByLectureId(id);
     }
+
+    public List<Group> getAllExceptAddedToLecture(int lectureId) {
+        LOG.debug("Get all groups except added to lecture id ={}", lectureId);
+        try {
+            return groupDao.getAllGroupsExceptAddedToLecture(lectureId);
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
+    }
 }

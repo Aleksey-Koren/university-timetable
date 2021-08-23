@@ -63,7 +63,7 @@ public class LecturesController extends BaseController {
         List<LectureDTO> dtos = new ArrayList<>();
         for(Lecture lecture : lectures) {
             List<Group> groups = groupService.getGroupsByLectureId(lecture.getId());
-            dtos.add(new LectureDTO(lecture, groups));
+            dtos.add(new LectureDTO.Builder().lecture(lecture).groups(groups).build());
         }
         return  dtos;
     }
@@ -73,28 +73,33 @@ public class LecturesController extends BaseController {
         LOG.trace("Request for form to update lecture id = {}", id);
         LectureDTO dto = new LectureDTO.Builder()
                 .lecture(lectureService.getById(id))
-                        .groups(groupService.getGroupsByLectureId(id))
-                                .allGroups(groupService.getAll())
-                                        .allCourses(courseService.getAll())
-                                                .allAudiences(audienceService.getAll())
-                                                        .allTeachers(teacherService.getAll())
-                                                                .build();
+                .groups(groupService.getGroupsByLectureId(id))
+//                .allGroups(groupService.getAll())
+                .allCourses(courseService.getAll())
+                .allAudiences(audienceService.getAll())
+                .allTeachers(teacherService.getAll())
+                .allGroupsExceptAdded(groupService.getAllExceptAddedToLecture(id))
+                .build();
         model.addAttribute("dto", dto);
         LectureFormDTO formDTO = new LectureFormDTO(dto.getLecture().getCourse().getId(),
                                                     dto.getLecture().getAudience().getId(),
-                                                    dto.getLecture().getTeacher().getId());
+                                                    dto.getLecture().getTeacher().getId(),
+                                                    dto.getLecture().getStartTime(),
+                                                    dto.getLecture().getEndTime());
         model.addAttribute("formDTO", formDTO);
         LOG.trace("Request for form to update lecture id = {} : success", id);
         return "lectures/edit";
     }
 
     @PatchMapping("/{id}")
-    public String update(@ModelAttribute("formDTO") LectureFormDTO formDTO, @PathVariable int id) {
+    public String update(@ModelAttribute("formDTO") LectureFormDTO formDTO, @PathVariable("id") int id) {
         LOG.trace("Updating lecture id = {}", id);
-        Lecture lecture = lectureService.getById(id);
-        lecture.getCourse().setId(formDTO.getCourseId());
-        lecture.getAudience().setId(formDTO.getAudienceId());
-        lecture.getTeacher().setId(formDTO.getTeacherId());
+        Lecture lecture = new Lecture(id,
+                                      new Audience(formDTO.getAudienceId()),
+                                      new Teacher(formDTO.getTeacherId()),
+                                      new Course(formDTO.getCourseId()),
+                                      formDTO.getStartTime(),
+                                      formDTO.getEndTime());
         try {
             lectureService.update(lecture);
         } catch (ServiceException e) {
@@ -104,4 +109,68 @@ public class LecturesController extends BaseController {
         return String.format("redirect:/lectures/%s/edit", id);
     }
 
+    @PatchMapping("/{id}-remove-group")
+    public String removeGroup(@ModelAttribute("formDTO") LectureFormDTO formDTO, @PathVariable("id") int id) {
+        LOG.trace("Removing group id = {} from lecture id = {}", id, formDTO.getGroupId());
+        try {
+            lectureService.removeGroup(id, formDTO.getGroupId());
+        } catch (ServiceException e) {
+            throw new ControllerException(e.getMessage(), e);
+        }
+        LOG.trace("Removing group id = {} from lecture id = {} : success", id, formDTO.getGroupId());
+        return String.format("redirect:/lectures/%s/edit", id);
+    }
+
+    @PatchMapping("/{id}-add-group")
+    public String addGroup(@ModelAttribute("formDTO") LectureFormDTO formDTO, @PathVariable("id") int id) {
+        LOG.trace("Adding group id = {} to lecture id = {}", id, formDTO.getGroupId());
+        try {
+            lectureService.addGroup(id, formDTO.getGroupId());
+        } catch (ServiceException e) {
+            throw new ControllerException(e.getMessage(), e);
+        }
+        LOG.trace("Adding group id = {} to lecture id = {} : success", id, formDTO.getGroupId());
+        return String.format("redirect:/lectures/%s/edit", id);
+    }
+
+    @GetMapping("/new")
+    public String newLecture(Model model, @ModelAttribute("formDTO") LectureFormDTO formDTO) {
+        LOG.trace("Request for form to create new Lecture");
+        LectureDTO dto = new LectureDTO.Builder()
+                .allCourses(courseService.getAll())
+                .allAudiences(audienceService.getAll())
+                .allTeachers(teacherService.getAll())
+                .build();
+        model.addAttribute("dto", dto);
+        return "lectures/new";
+    }
+
+    @PostMapping
+    public String create(@ModelAttribute("formDTO") LectureFormDTO formDTO) {
+        LOG.trace("Creating new lecture");
+        Lecture lecture = new Lecture(new Audience(formDTO.getAudienceId()),
+                new Teacher(formDTO.getTeacherId()),
+                new Course(formDTO.getCourseId()),
+                formDTO.getStartTime(),
+                formDTO.getEndTime());
+        try {
+            lectureService.createNew(lecture);
+        } catch (ServiceException e) {
+            throw new ControllerException(e.getMessage(), e);
+        }
+        LOG.trace("Creating new lecture : success. lecture id = {}", lecture.getId());
+        return String.format("redirect:/lectures/%s/edit", lecture.getId());
+    }
+
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable("id") int id) {
+        LOG.trace("Deleting lecture id = {}", id);
+        try {
+            lectureService.deleteById(id);
+        } catch (ServiceException e) {
+            throw new ControllerException(e.getMessage(), e);
+        }
+        LOG.trace("Deleting lecture id = {} : success", id);
+        return "redirect:/lectures";
+    }
 }

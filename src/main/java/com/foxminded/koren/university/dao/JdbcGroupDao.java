@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -26,9 +27,14 @@ public class JdbcGroupDao implements GroupDao {
     
     private static final Logger LOG = LoggerFactory.getLogger(JdbcGroupDao.class);
     
-    @Autowired
+
     private JdbcTemplate jdbcTemplate;
-    
+
+    @Autowired
+    public JdbcGroupDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
     @Override
     public Group save(Group entity) {
         LOG.debug("Update database. Save new group SQL = {} group {}", 
@@ -100,5 +106,15 @@ public class JdbcGroupDao implements GroupDao {
     public List<Group> getGroupsByLectureId(Integer lectureId) {
         LOG.debug("Query to database. Get groups by lecture id = {}. SQL: {}", "\n" + lectureId, GET_BY_LECTURE_ID);
         return jdbcTemplate.query(GET_BY_LECTURE_ID, new GroupMapper(), lectureId);
+    }
+
+    @Override
+    public List<Group> getAllGroupsExceptAddedToLecture(int lectureId) {
+        LOG.debug("Query to database. Get all groups except added to current lecture id = {}", lectureId);
+        try {
+            return jdbcTemplate.query(GET_ALL_EXCEPT_ADDED, new GroupMapper(), lectureId);
+        } catch (DataAccessException e) {
+            throw new DAOException(e.getMessage(), e);
+        }
     }
 }

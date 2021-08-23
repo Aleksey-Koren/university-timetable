@@ -16,6 +16,7 @@
             <a class="d-flex justify-content-center" href="/lectures/new">Create new lecture</a>
             <table class="container-fluid">
                 <tr style="background: silver">
+                    <th>ID</th>
                     <th>Edit</th>
                     <th>Course</th>
                     <th>Start</th>
@@ -27,6 +28,7 @@
                 </tr>
                 <tr th:each="dto : ${dtos}"
                     th:style="${dtos.indexOf(dto) % 2 != 0} ? 'background: gainsboro' : 'background : lightgrey'">
+                    <td th:text="${dto.lecture.id}"/>
                     <td>
                         <a th:href="@{lectures/{id}/edit (id=${dto.lecture.id})}" th:text="Edit"/>
                     </td>

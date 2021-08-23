@@ -3,6 +3,7 @@ package com.foxminded.koren.university.dao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,18 +18,12 @@ import com.foxminded.koren.university.entity.Lecture;
 import com.foxminded.koren.university.entity.Student;
 import com.foxminded.koren.university.entity.Teacher;
 
-import static com.foxminded.koren.university.dao.sql.LectureSql.GET_BY_ID;
-import static com.foxminded.koren.university.dao.sql.LectureSql.GET_ALL;
-import static com.foxminded.koren.university.dao.sql.LectureSql.SAVE;
-import static com.foxminded.koren.university.dao.sql.LectureSql.UPDATE;
-import static com.foxminded.koren.university.dao.sql.LectureSql.DELETE;
-import static com.foxminded.koren.university.dao.sql.LectureSql.GET_BY_TEACHER_AND_TIME_PERIOD;
-import static com.foxminded.koren.university.dao.sql.LectureSql.GET_BY_STUDENT_AND_TIME_PERIOD;
-
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
+
+import static com.foxminded.koren.university.dao.sql.LectureSql.*;
 
 @Repository
 public class JdbcLectureDao implements LectureDao {
@@ -42,7 +37,7 @@ public class JdbcLectureDao implements LectureDao {
     public Lecture save(Lecture entity) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         
-        LOG.debug("Update database SQL = {} course = {} teacher = {} audience = {} start = {} finish = {}",
+        LOG.debug("Update database SQL = {} courseId = {} teacherId = {} audienceId = {} start = {} finish = {}",
                 SAVE, entity.getCourse(), entity.getTeacher(), entity.getAudience(),
                 entity.getStartTime(), entity.getEndTime());
         
@@ -52,8 +47,10 @@ public class JdbcLectureDao implements LectureDao {
                 statement.setInt(1, entity.getCourse().getId());
                 statement.setObject(2, entity.getTeacher() != null ? entity.getTeacher().getId() : null, 4);
                 statement.setObject(3, entity.getAudience() != null ? entity.getAudience().getId() : null, 4);
-                statement.setString(4, Timestamp.valueOf(entity.getStartTime()).toString());
-                statement.setString(5, Timestamp.valueOf(entity.getEndTime()).toString());
+                statement.setObject(4, entity.getStartTime());
+                statement.setObject(5, entity.getEndTime());
+//                statement.setString(4, Timestamp.valueOf(entity.getStartTime()).toString());
+//                statement.setString(5, Timestamp.valueOf(entity.getEndTime()).toString());
                 return statement;
             }, keyHolder);
         } catch (DuplicateKeyException e) {
@@ -68,25 +65,32 @@ public class JdbcLectureDao implements LectureDao {
     @Override
     public void update(Lecture entity) {
         LOG.debug("Update database SQL: {} lecture.id = {}", UPDATE, entity.getId());
-        
-        jdbcTemplate.update(UPDATE, entity.getCourse().getId(),
-                        entity.getTeacher() != null ? entity.getTeacher().getId() : null,
-                        entity.getAudience() != null ? entity.getAudience().getId() : null,
-                        entity.getStartTime(),
-                        entity.getEndTime(),
-                        entity.getId());
+
+        try {
+            jdbcTemplate.update(UPDATE, entity.getCourse().getId(),
+                            entity.getTeacher() != null ? entity.getTeacher().getId() : null,
+                            entity.getAudience() != null ? entity.getAudience().getId() : null,
+                            entity.getStartTime(),
+                            entity.getEndTime(),
+                            entity.getId());
+        } catch (DataAccessException e) {
+            throw new DAOException(e.getMessage(), e);
+        }
     }
 
     @Override
     public boolean deleteById(Integer id) {
         LOG.debug("Update database SQL: {} lecture.id = {}", DELETE, id);
-        return jdbcTemplate.update(DELETE, id) > 0;
+        try {
+            return jdbcTemplate.update(DELETE, id) > 0;
+        } catch (DataAccessException e) {
+            throw new DAOException(e.getMessage(), e);
+        }
     }
 
     @Override
     public Lecture getById(Integer id) {
         LOG.debug("Query to database SQL: {} lecture.id = {}", GET_BY_ID, id);
-        
         try {
             return jdbcTemplate.queryForObject(GET_BY_ID, new LectureMapper(), id);
         }catch(EmptyResultDataAccessException e){
@@ -120,5 +124,27 @@ public class JdbcLectureDao implements LectureDao {
                 new LectureMapper(), student.getId(),
                 start.atTime(0,0),
                 finish.atTime(23,59,59));
+    }
+
+    @Override
+    public boolean removeGroup(int lectureId, int groupId) {
+        LOG.debug("Update to database. Remove group from lecture. SQL: {} lecture.id = {}, group.id = {}",
+                "\n" + REMOVE_GROUP,lectureId, groupId);
+        try {
+            return jdbcTemplate.update(REMOVE_GROUP, lectureId, groupId) == 1;
+        } catch (DataAccessException e) {
+            throw new DAOException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public boolean addGroup(int lectureId, int groupId) {
+        LOG.debug("Update to database. Add group to lecture. SQL: {} lecture.id = {}, group.id = {}",
+                "\n" + ADD_GROUP,lectureId, groupId);
+        try {
+            return jdbcTemplate.update(ADD_GROUP, lectureId, groupId) == 1;
+        } catch (DataAccessException e) {
+            throw new DAOException(e.getMessage(), e);
+        }
     }
 }

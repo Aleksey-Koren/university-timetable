@@ -31,6 +31,20 @@ public class Lecture implements TimetableEvent {
         this.endTime = endTime;
     }
 
+    public Lecture(int id,
+                   Audience audience,
+                   Teacher teacher,
+                   Course course,
+                   LocalDateTime startTime,
+                   LocalDateTime endTime) {
+        this.id = id;
+        this.audience = audience;
+        this.teacher = teacher;
+        this.course = course;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
+
     public int getId() {
         return id;
     }

@@ -12,4 +12,6 @@ public interface GroupDao extends CrudDao<Integer, Group> {
     boolean removeCourse (Group group, Course course);
 
     List<Group> getGroupsByLectureId(Integer lectureId);
-}
+
+    List<Group> getAllGroupsExceptAddedToLecture(int lectureId);
+ }

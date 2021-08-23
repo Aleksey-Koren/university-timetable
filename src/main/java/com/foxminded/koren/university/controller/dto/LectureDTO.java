@@ -13,42 +13,66 @@ public class LectureDTO {
     private List<Group> allGroups;
     private List<Audience> allAudiences;
     private List<Teacher> allTeachers;
+    private List<Group> allGroupsExceptAdded;
 
     public LectureDTO() {
 
-    }
-
-    public LectureDTO(Lecture lecture, List<Group> groups) {
-        this.lecture = lecture;
-        this.groups = groups;
     }
 
     public Lecture getLecture() {
         return lecture;
     }
 
+    public void setLecture(Lecture lecture) {
+        this.lecture = lecture;
+    }
+
     public List<Group> getGroups() {
         return groups;
+    }
+
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
     }
 
     public List<Course> getAllCourses() {
         return allCourses;
     }
 
+    public void setAllCourses(List<Course> allCourses) {
+        this.allCourses = allCourses;
+    }
+
     public List<Group> getAllGroups() {
         return allGroups;
+    }
+
+    public void setAllGroups(List<Group> allGroups) {
+        this.allGroups = allGroups;
     }
 
     public List<Audience> getAllAudiences() {
         return allAudiences;
     }
 
+    public void setAllAudiences(List<Audience> allAudiences) {
+        this.allAudiences = allAudiences;
+    }
+
     public List<Teacher> getAllTeachers() {
         return allTeachers;
     }
 
-    public void setLecture(Lecture lecture) {
-        this.lecture = lecture;
+    public void setAllTeachers(List<Teacher> allTeachers) {
+        this.allTeachers = allTeachers;
+    }
+
+    public List<Group> getAllGroupsExceptAdded() {
+        return allGroupsExceptAdded;
+    }
+
+    public void setAllGroupsExceptAdded(List<Group> allGroupsExceptAdded) {
+        this.allGroupsExceptAdded = allGroupsExceptAdded;
     }
 
     @Override
@@ -56,12 +80,12 @@ public class LectureDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         LectureDTO that = (LectureDTO) o;
-        return Objects.equals(lecture, that.lecture) && Objects.equals(groups, that.groups) && Objects.equals(allCourses, that.allCourses) && Objects.equals(allGroups, that.allGroups) && Objects.equals(allAudiences, that.allAudiences) && Objects.equals(allTeachers, that.allTeachers);
+        return Objects.equals(lecture, that.lecture) && Objects.equals(groups, that.groups) && Objects.equals(allCourses, that.allCourses) && Objects.equals(allGroups, that.allGroups) && Objects.equals(allAudiences, that.allAudiences) && Objects.equals(allTeachers, that.allTeachers) && Objects.equals(allGroupsExceptAdded, that.allGroupsExceptAdded);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(lecture, groups, allCourses, allGroups, allAudiences, allTeachers);
+        return Objects.hash(lecture, groups, allCourses, allGroups, allAudiences, allTeachers, allGroupsExceptAdded);
     }
 
     public static class Builder {
@@ -99,6 +123,11 @@ public class LectureDTO {
 
         public Builder allTeachers(List<Teacher> allTeachers) {
             newDTO.allTeachers = allTeachers;
+            return this;
+        }
+
+        public Builder allGroupsExceptAdded(List<Group> allGroupsExceptAdded) {
+            newDTO.allGroupsExceptAdded = allGroupsExceptAdded;
             return this;
         }
 

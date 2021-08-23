@@ -11,6 +11,10 @@ public class Teacher implements TimetablePerson {
     public Teacher() {
         
     }
+
+    public Teacher(Integer id) {
+        this.id = id;
+    }
     
     public Teacher(String firstName, String lastName) {
         this.firstName = firstName;

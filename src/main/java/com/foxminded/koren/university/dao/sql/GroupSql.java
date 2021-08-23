@@ -41,4 +41,13 @@ public class GroupSql {
             "       JOIN lecture_group lg on group_table.id = lg.group_id\n" +
             "   WHERE lg.lecture_id = ?" +
             "ORDER BY group_name";
+
+    public static final String GET_ALL_EXCEPT_ADDED =
+            "SELECT id group_id, name group_name\n" +
+            "FROM group_table\n" +
+            "EXCEPT (SELECT id, name\n" +
+            "            FROM group_table\n" +
+            "                JOIN lecture_group lg on group_table.id = lg.group_id\n" +
+            "                WHERE lg.lecture_id = ?)\n" +
+            "ORDER BY group_id;";
 }

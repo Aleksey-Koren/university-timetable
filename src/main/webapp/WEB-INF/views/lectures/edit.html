@@ -7,7 +7,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
           integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-
+    <style>
+        .groupFormItem {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 5px 0;
+            padding: 5px;
+            background-color: silver;
+        }
+        input[type=submit]:hover {
+            transition-duration: .3s;
+            background-color: green;
+        }
+    </style>
 </head>
 
 <body>
@@ -17,34 +30,68 @@
         <div class="col">
             <h1 class="d-flex justify-content-center" th:text="|Edit lecture id ${dto.lecture.id}|"></h1>
             <form th:method="PATCH" , th:action="@{/lectures/{id}(id=${dto.lecture.id})}" th:object="${formDTO}">
-                <div class="d-flex justify-content-center">
-                    <label th:for="courseId"><h3>Course</h3></label>
-                    <select  th:field="*{courseId}">
+                <div class="d-flex justify-content-between" style="padding: 5px">
+                    <label th:for="courseId"><h3>Course:</h3></label>
+                    <select th:field="*{courseId}">
                         <option th:each="course : ${dto.allCourses}" th:value="${course.id}" th:text="${course.name}">
                         </option>
                     </select>
 
-                    <label th:for="audienceId"><h3>Audience</h3></label>
-                    <select  th:field="*{audienceId}">
-                        <option th:each="audience : ${dto.allAudiences}" th:value="${audience.id}" th:text="${audience.number}">
+                    <label th:for="audienceId"><h3>Audience:</h3></label>
+                    <select th:field="*{audienceId}">
+                        <option th:each="audience : ${dto.allAudiences}" th:value="${audience.id}"
+                                th:text="${audience.number}">
                         </option>
                     </select>
 
-                    <label th:for="teacherId"><h3>Teacher</h3></label>
-                    <select  th:field="*{teacherId}">
-                        <option th:each="teacher : ${dto.allTeachers}" th:value="${teacher.id}" th:text="|${teacher.firstName} ${teacher.lastName}|">
+                    <label th:for="teacherId"><h3>Teacher:</h3></label>
+                    <select th:field="*{teacherId}">
+                        <option th:each="teacher : ${dto.allTeachers}" th:value="${teacher.id}"
+                                th:text="|${teacher.firstName} ${teacher.lastName}|">
                         </option>
                     </select>
                 </div>
+
+                <div class="d-flex justify-content-center" style="padding: 5px">
+                    <label for="startTime"><h3>StartTime:</h3></label>
+                    <input type="datetime-local" th:field="*{startTime}" id="startTime"/>
+                </div>
+                <div class="d-flex justify-content-center" style="padding: 5px">
+                    <label for="endTime"><h3>EndTime:</h3></label>
+                    <input type="datetime-local" th:field="*{endTime}" id="endTime"/>
+                </div>
+
                 <div class="d-flex justify-content-end" style="margin: 20px">
-                    <input type="submit" value="Save"/>
+                    <input th:type="submit" value="Save"/>
                 </div>
             </form>
+            <h2 class="d-flex justify-content-center" th:text="'Groups added to lecture'">Groups added to lecture</h2>
+            <div class="d-block w-100" th:each="group : ${dto.groups}">
+                <form class="groupFormItem" th:method="PATCH"
+                      th:action="@{/lectures/{id}-remove-group(id = ${dto.lecture.id})}"
+                      th:object="${formDTO}">
+                    <span th:text="${group.name}"></span>
+                    <input type="hidden" name="groupId" th:value="${group.id}"/>
+                    <input type="submit" value="Remove"/>
+                </form>
+            </div>
+            <div th:if="${not dto.allGroupsExceptAdded.isEmpty()}">
+                <form class="groupFormItem" style="justify-content: start" th:method="PATCH" th:action="@{/lectures/{id}-add-group(id = ${dto.lecture.id})}"
+                      th:object="${formDTO}">
+                    <span th:text="'Add group'"></span>
+                    <select name="groupId" id="groupId">
+                        <!--                    <option th:value ="'0'">Select group</option>-->
+                        <option th:each="group : ${dto.allGroupsExceptAdded}" th:value="${group.id}"
+                                th:text="${group.name}">
+                        </option>
+                    </select>
+                    <input type="submit" value="Add"/>
+                </form>
+            </div>
+
         </div>
     </div>
 </div>
-
-
 
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
