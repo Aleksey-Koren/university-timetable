@@ -49,11 +49,9 @@ public class JdbcLectureDao implements LectureDao {
                 statement.setObject(3, entity.getAudience() != null ? entity.getAudience().getId() : null, 4);
                 statement.setObject(4, entity.getStartTime());
                 statement.setObject(5, entity.getEndTime());
-//                statement.setString(4, Timestamp.valueOf(entity.getStartTime()).toString());
-//                statement.setString(5, Timestamp.valueOf(entity.getEndTime()).toString());
                 return statement;
             }, keyHolder);
-        } catch (DuplicateKeyException e) {
+        } catch (DataAccessException e) {
             throw new DAOException(e.getMessage(), e);
         }
         

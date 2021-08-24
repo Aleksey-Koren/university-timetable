@@ -23,20 +23,23 @@
             <form th:method="POST" th:action="@{/lectures}" th:object="${formDTO}">
                 <div class="d-flex justify-content-between" style="padding: 5px">
                     <label th:for="courseId"><h3>Course:</h3></label>
-                    <select th:field="*{courseId}">
+                    <select name="courseId" id="courseId">
+                        <option disabled selected hidden>select course</option>
                         <option th:each="course : ${dto.allCourses}" th:value="${course.id}" th:text="${course.name}">
                         </option>
                     </select>
 
                     <label th:for="audienceId"><h3>Audience:</h3></label>
-                    <select th:field="*{audienceId}">
+                    <select name="audienceId" id="audienceId">
+                        <option disabled selected hidden>select audience</option>
                         <option th:each="audience : ${dto.allAudiences}" th:value="${audience.id}"
                                 th:text="${audience.number}">
                         </option>
                     </select>
 
                     <label th:for="teacherId"><h3>Teacher:</h3></label>
-                    <select th:field="*{teacherId}">
+                    <select name="teacherId" id="teacherId">
+                        <option selected disabled hidden>select teacher</option>
                         <option th:each="teacher : ${dto.allTeachers}" th:value="${teacher.id}"
                                 th:text="|${teacher.firstName} ${teacher.lastName}|">
                         </option>

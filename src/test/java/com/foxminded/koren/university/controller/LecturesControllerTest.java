@@ -1,7 +1,7 @@
 package com.foxminded.koren.university.controller;
 
 import com.foxminded.koren.university.config.SpringConfig;
-import com.foxminded.koren.university.controller.exceptions.NoEntitiesInDatabaseException;
+import com.foxminded.koren.university.controller.dto.LectureDTO;
 import com.foxminded.koren.university.entity.*;
 import com.foxminded.koren.university.service.GroupService;
 import com.foxminded.koren.university.service.LectureService;
@@ -18,8 +18,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -38,6 +38,8 @@ class LecturesControllerTest {
     @Mock
     @Autowired
     private LectureService mockedLectureService;
+    @Mock
+    @Autowired
     private GroupService mockedGroupService;
 
     @BeforeEach
@@ -47,32 +49,43 @@ class LecturesControllerTest {
 
     @Test
     void index_shouldAddExpectedListIntoModelAndSendItToRightView() throws Exception {
-        when(mockedLectureService.getAll()).thenReturn(retrieveTestLectures());
+        List<Lecture> testLectures = retrieveTestLectures();
+        when(mockedLectureService.getAll()).thenReturn(testLectures);
+        when(mockedGroupService.getGroupsByLectureId(any())).thenReturn(List.of(new Group(), new Group(), new Group()));
+        List<LectureDTO> testDtos = retrieveTestLectureDTOs(testLectures);
         MvcResult mvcResult = mockMvc.perform(get("/lectures"))
                 .andExpect(model().attributeHasNoErrors())
                 .andReturn();
-        assertEquals(retrieveTestLectures(), mvcResult.getModelAndView().getModel().get("lectures"));
+        assertEquals(testDtos, mvcResult.getModelAndView().getModel().get("dtos"));
         assertEquals("lectures/index", mvcResult.getModelAndView().getViewName());
     }
 
     @Test
     void index_shouldCallGetAllMethodOfService() throws Exception {
         when(mockedLectureService.getAll()).thenReturn(retrieveTestLectures());
-        InOrder inOrder = inOrder(mockedLectureService);
+        InOrder inOrder = inOrder(mockedLectureService,mockedGroupService);
         mockMvc.perform(get("/lectures"));
         inOrder.verify(mockedLectureService, times(1)).getAll();
+        inOrder.verify(mockedGroupService,times(retrieveTestLectures().size())).getGroupsByLectureId(any());
+        inOrder.verifyNoMoreInteractions();
     }
 
-    @Test
-    void index_shouldThrowAnException_IfServiceReturnsEmptyList() throws Exception {
-        when(mockedLectureService.getAll()).thenReturn(new ArrayList<Lecture>());
-        mockMvc.perform(get("/lectures"))
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof NoEntitiesInDatabaseException))
-                .andExpect(result -> assertTrue(result.getResolvedException().
-                        getMessage().equals("There is no any lectures in database")));
-    }
 
     private List<Lecture> retrieveTestLectures() {
-        return List.of(new Lecture(), new Lecture(), new Lecture());
+        Lecture lecture1 = new Lecture();
+        lecture1.setId(1);
+        Lecture lecture2 = new Lecture();
+        lecture1.setId(2);
+        Lecture lecture3 = new Lecture();
+        lecture1.setId(3);
+        return List.of(lecture1, lecture2, lecture3);
     }
+
+    private List<LectureDTO> retrieveTestLectureDTOs(List<Lecture> lectures) {
+        List<LectureDTO> dtos = lectures.stream()
+                .map(s -> new LectureDTO.Builder().lecture(s).groups(List.of(new Group(), new Group(), new Group()))
+                .build()).collect(Collectors.toList());
+        return dtos;
+    }
+
 }

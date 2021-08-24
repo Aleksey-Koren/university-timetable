@@ -74,7 +74,6 @@ public class LecturesController extends BaseController {
         LectureDTO dto = new LectureDTO.Builder()
                 .lecture(lectureService.getById(id))
                 .groups(groupService.getGroupsByLectureId(id))
-//                .allGroups(groupService.getAll())
                 .allCourses(courseService.getAll())
                 .allAudiences(audienceService.getAll())
                 .allTeachers(teacherService.getAll())

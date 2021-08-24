@@ -37,4 +37,8 @@ public class GroupsController extends BaseController {
         LOG.trace("Retrieving all groups : success");
         return "groups/index";
     }
+
+    public String edit() {
+
+    }
 }
