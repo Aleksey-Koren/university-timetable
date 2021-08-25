@@ -20,6 +20,13 @@ public class Student implements TimetablePerson {
         this.lastName = lastName;
     }
 
+    public Student(int id, Group group, String firstName, String lastName) {
+        this.id = id;
+        this.group = group;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public int getId() {
         return id;
     }

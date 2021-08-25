@@ -32,7 +32,7 @@ public class LectureSql {
             + "   LEFT JOIN course c ON l.course_id = c.id\r\n"
             + "       LEFT JOIN teacher t ON l.teacher_id = t.id \r\n"
             + "           LEFT JOIN audience a ON l.audience_id = a.id\r\n"
-            + "ORDER BY l.id;";
+            + "ORDER BY l.start_time;";
     
     public static final String SAVE =
             "INSERT INTO lecture\r\n"

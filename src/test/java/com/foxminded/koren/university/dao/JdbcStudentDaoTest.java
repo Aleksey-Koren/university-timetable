@@ -125,11 +125,19 @@ class JdbcStudentDaoTest {
     }
     
     @Test
-    
     void deleteById_shouldWorkCorrectly() {
         int expectedId = 1;
         Student student = jdbcStudentDao.getById(expectedId);
         jdbcStudentDao.deleteById(student.getId());
         assertThrows(DAOException.class, () -> jdbcStudentDao.getById(student.getId()), "No such id in database");
     }
+
+    @Test
+    void getByGroupId_shouldReturnAllStudentsAttachedToArgumentGroup() {
+        Student student1 = new Student(2, new Group(2, "group name2", Year.SECOND), "first name2", "last name2");
+        Student student2 = new Student(3, new Group(2, "group name2", Year.SECOND), "first name3", "last name3");
+        List<Student> expected = List.of(student1, student2);
+        assertEquals(expected, jdbcStudentDao.getByGroupId(2));
+    }
+
 }

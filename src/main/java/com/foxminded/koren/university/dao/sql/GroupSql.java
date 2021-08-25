@@ -46,7 +46,7 @@ public class GroupSql {
     public static final String GET_ALL_EXCEPT_ADDED =
             "SELECT id group_id, name group_name, year group_year\n" +
             "FROM group_table\n" +
-            "EXCEPT (SELECT id, name\n" +
+            "EXCEPT (SELECT id group_id, name group_name, year group_year\n" +
             "            FROM group_table\n" +
             "                JOIN lecture_group lg on group_table.id = lg.group_id\n" +
             "                WHERE lg.lecture_id = ?)\n" +

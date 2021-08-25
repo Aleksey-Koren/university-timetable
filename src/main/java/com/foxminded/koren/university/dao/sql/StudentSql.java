@@ -28,7 +28,7 @@ public class StudentSql {
           + "       gt.year group_year\r\n"
           + "FROM student s\r\n"
           + "    LEFT JOIN group_table gt ON s.group_id = gt.id\r\n"
-          + "ORDER BY s.id;";
+          + "ORDER BY s.last_name;";
         
     public static final String UPDATE = 
             "UPDATE student \r\n"
@@ -44,4 +44,15 @@ public class StudentSql {
     public static final String DELETE_BY_GROUP_ID =
             "DELETE FROM student\r\n"
           + "WHERE group_id = ?;";
+
+    public static final String GET_BY_GROUP_ID =
+            "SELECT s.id, s.first_name, s.last_name,\n" +
+            "       gt.id   group_id,\n" +
+            "       gt.name group_name,\n" +
+            "       gt.year group_year\n" +
+            "FROM student s\n" +
+            "          JOIN group_table gt ON s.group_id = gt.id\n" +
+            "WHERE group_id = ?\n" +
+            "ORDER BY s.last_name;";
+
 }

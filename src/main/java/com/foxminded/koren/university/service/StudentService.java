@@ -10,32 +10,48 @@ import org.springframework.stereotype.Service;
 import com.foxminded.koren.university.dao.exceptions.DAOException;
 import com.foxminded.koren.university.dao.interfaces.StudentDao;
 import com.foxminded.koren.university.entity.Student;
-import com.foxminded.koren.university.entity.Year;
 import com.foxminded.koren.university.service.exceptions.ServiceException;
 
 @Service
 public class StudentService {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(StudentService.class);
-    
-    @Autowired
+
+
     private StudentDao studentDao;
-    
+
+    @Autowired
+    public StudentService(StudentDao studentDao) {
+        this.studentDao = studentDao;
+    }
+
     public Student createNew(Student student) {
         LOG.debug("Create new student: {}", student);
-        return studentDao.save(student);
+        try {
+            return studentDao.save(student);
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
     }
-    
+
     public void update(Student student) {
         LOG.debug("Update student: {}", student);
-        studentDao.update(student);
+        try {
+            studentDao.update(student);
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
     }
-    
+
     public boolean deleteById(int id) {
         LOG.debug("Delete student by id = {}", id);
-        return studentDao.deleteById(id);
+        try {
+            return studentDao.deleteById(id);
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
     }
-    
+
     public Student getById(int id) {
         try {
             LOG.debug("Get student by id = {}", id);
@@ -44,9 +60,22 @@ public class StudentService {
             throw new ServiceException(e.getMessage(), e);
         }
     }
-    
+
     public List<Student> getAll() {
         LOG.debug("Get all students");
-        return studentDao.getAll();
+        try {
+            return studentDao.getAll();
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
+    }
+
+    public List<Student> getByGroupId(int id) {
+        LOG.debug("Get all students by group id = {}", id);
+        try {
+            return studentDao.getByGroupId(id);
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
     }
 }

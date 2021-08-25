@@ -5,6 +5,7 @@ import com.foxminded.koren.university.controller.exceptions.NoEntitiesInDatabase
 import com.foxminded.koren.university.entity.Group;
 import com.foxminded.koren.university.entity.Year;
 import com.foxminded.koren.university.service.GroupService;
+import com.foxminded.koren.university.service.StudentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,16 +39,21 @@ public class GroupsControllerTest {
 
     @Mock
     @Autowired
-    private GroupService mockedService;
+    private GroupService mockedGroupService;
+
+    @Mock
+    @Autowired
+    private StudentService mockedStudentService;
 
     @BeforeEach
     private void setup() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new GroupsController(mockedService)).build();
+        this.mockMvc = MockMvcBuilders
+                .standaloneSetup(new GroupsController(mockedGroupService, mockedStudentService)).build();
     }
 
     @Test
     void index_shouldAddExpectedListIntoModelAndSendItToRightView() throws Exception {
-        when(mockedService.getAll()).thenReturn(retrieveTestGroups());
+        when(mockedGroupService.getAll()).thenReturn(retrieveTestGroups());
         MvcResult mvcResult = mockMvc.perform(get("/groups"))
                 .andExpect(model().attributeHasNoErrors())
                 .andReturn();
@@ -57,15 +63,15 @@ public class GroupsControllerTest {
 
     @Test
     void index_shouldCallGetAllMethodOfService() throws Exception {
-        when(mockedService.getAll()).thenReturn(retrieveTestGroups());
-        InOrder inOrder = inOrder(mockedService);
+        when(mockedGroupService.getAll()).thenReturn(retrieveTestGroups());
+        InOrder inOrder = inOrder(mockedGroupService);
         mockMvc.perform(get("/groups"));
-        inOrder.verify(mockedService, times(1)).getAll();
+        inOrder.verify(mockedGroupService, times(1)).getAll();
     }
 
     @Test
     void index_shouldThrowAnException_IfServiceReturnsEmptyList() throws Exception {
-        when(mockedService.getAll()).thenReturn(new ArrayList<Group>());
+        when(mockedGroupService.getAll()).thenReturn(new ArrayList<Group>());
         mockMvc.perform(get("/groups"))
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof NoEntitiesInDatabaseException))
                 .andExpect(result -> assertTrue(result.getResolvedException().
