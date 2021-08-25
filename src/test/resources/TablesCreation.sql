@@ -17,7 +17,8 @@ CREATE TABLE audience
 CREATE TABLE group_table
 (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(30) UNIQUE NOT NULL
+    name VARCHAR(30) UNIQUE NOT NULL,
+    year VARCHAR(15) NOT NULL
 );
 
 CREATE TABLE course
@@ -32,8 +33,7 @@ CREATE TABLE student
     id SERIAL PRIMARY KEY,
     group_id INT REFERENCES group_table(id) ON DELETE SET NULL,
     first_name VARCHAR(30) NOT NULL,
-    last_name VARCHAR(30) NOT NULL,
-    student_year VARCHAR(15) NOT NULL
+    last_name VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE teacher
@@ -67,3 +67,7 @@ CREATE TABLE group_course
     course_id INT REFERENCES course(id) ON DELETE CASCADE,
     UNIQUE (group_id, course_id)
 );
+
+
+
+

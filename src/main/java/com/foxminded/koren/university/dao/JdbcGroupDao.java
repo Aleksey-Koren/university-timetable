@@ -45,9 +45,10 @@ public class JdbcGroupDao implements GroupDao {
             jdbcTemplate.update(connection -> {
                 PreparedStatement statement = connection.prepareStatement(SAVE, new String[] { "id" });
                 statement.setString(1, entity.getName());
+                statement.setString(2, entity.getYear().toString());
                 return statement;
             }, keyHolder);
-        } catch (DuplicateKeyException e) {
+        } catch (DataAccessException e) {
             throw new DAOException(e.getMessage(), e);
         }
         
@@ -60,7 +61,7 @@ public class JdbcGroupDao implements GroupDao {
     public void update(Group entity) {
         LOG.debug("Update database. Update group SQL: {} group {}", UPDATE, entity);
         try {
-            jdbcTemplate.update(UPDATE, entity.getName(), entity.getId());
+            jdbcTemplate.update(UPDATE, entity.getName(), entity.getYear().toString(), entity.getId());
         } catch (DuplicateKeyException e) {
             throw new DAOException(e.getMessage(), e);
         }
@@ -89,18 +90,18 @@ public class JdbcGroupDao implements GroupDao {
         return jdbcTemplate.query(GET_ALL, new GroupMapper());
     }
     
-    @Override
-    public void addCourse(Group group, Course course) {
-        LOG.debug("Update to database. Add course to group. SQL: {} group.id = {} course.id = {}",
-                ADD_COURSE, group.getId(), course.getId());
-        jdbcTemplate.update(ADD_COURSE, group.getId(), course.getId());
-    }
-    @Override
-    public boolean removeCourse(Group group, Course course) {
-        LOG.debug("Update to database. Remove course from group. SQL: {} group.id = {} course.id = {}",
-                REMOVE_COURSE, group.getId(), course.getId());
-        return jdbcTemplate.update(REMOVE_COURSE, group.getId(), course.getId()) > 0;
-    }
+//    @Override
+//    public void addCourse(Group group, Course course) {
+//        LOG.debug("Update to database. Add course to group. SQL: {} group.id = {} course.id = {}",
+//                ADD_COURSE, group.getId(), course.getId());
+//        jdbcTemplate.update(ADD_COURSE, group.getId(), course.getId());
+//    }
+//    @Override
+//    public boolean removeCourse(Group group, Course course) {
+//        LOG.debug("Update to database. Remove course from group. SQL: {} group.id = {} course.id = {}",
+//                REMOVE_COURSE, group.getId(), course.getId());
+//        return jdbcTemplate.update(REMOVE_COURSE, group.getId(), course.getId()) > 0;
+//    }
 
     @Override
     public List<Group> getGroupsByLectureId(Integer lectureId) {

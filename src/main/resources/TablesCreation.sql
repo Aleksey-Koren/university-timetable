@@ -17,7 +17,8 @@ CREATE TABLE audience
 CREATE TABLE group_table
 (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(30) UNIQUE NOT NULL
+    name VARCHAR(30) UNIQUE NOT NULL,
+    year VARCHAR(15) NOT NULL
 );
 
 CREATE TABLE course
@@ -32,8 +33,7 @@ CREATE TABLE student
     id SERIAL PRIMARY KEY,
     group_id INT REFERENCES group_table(id) ON DELETE SET NULL,
     first_name VARCHAR(30) NOT NULL,
-    last_name VARCHAR(30) NOT NULL,
-    student_year VARCHAR(15) NOT NULL
+    last_name VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE teacher
@@ -74,12 +74,12 @@ VALUES
     (12, 30),
     (102, 150);
 
-INSERT INTO group_table (name)
+INSERT INTO group_table (name, year)
 VALUES
-    ('group_name1'),
-    ('group_name2'),
-    ('group_name3'),
-    ('group_name4');
+    ('group_name1', 'FIRST'),
+    ('group_name2', 'SECOND'),
+    ('group_name3', 'THIRD'),
+    ('group_name4', 'FOURTH');
 
 INSERT INTO course (name, description)
 VALUES
@@ -88,13 +88,13 @@ VALUES
     ('course_name3', 'description3'),
     ('course_name4', 'description4');
 
-INSERT INTO student (group_id, first_name, last_name, student_year)
+INSERT INTO student (group_id, first_name, last_name)
 VALUES
-    (1, 'first name 1', 'last name 1', 'FIRST'),
-    (2, 'first name 2', 'last name 2', 'SECOND'),
-    (3, 'first name 3', 'last name 3', 'THIRD'),
-    (4, 'first name 4', 'last name 4', 'FOURTH'),
-    (1, 'first name 5', 'last name 5', 'FIFTH');
+    (1, 'first name 1', 'last name 1'),
+    (2, 'first name 2', 'last name 2'),
+    (3, 'first name 3', 'last name 3'),
+    (4, 'first name 4', 'last name 4'),
+    (1, 'first name 5', 'last name 5');
 
 INSERT INTO teacher (first_name, last_name)
 VALUES

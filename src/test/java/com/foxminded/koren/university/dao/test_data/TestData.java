@@ -22,11 +22,11 @@ public class TestData {
         jdbcTemplate.update(insertCourses);
    
         String insertGroups = 
-                "INSERT INTO group_table (name)\n"
+                "INSERT INTO group_table (name, year)\n"
               + "VALUES\n"
-              + "('group name1'),\n"
-              + "('group name2')," +
-                "('group name3');";
+              + "('group name1', 'FIRST'),\n"
+              + "('group name2', 'SECOND')," +
+                "('group name3', 'THIRD');";
         jdbcTemplate.update(insertGroups);
    
         String addCoursesToGroup = 
@@ -47,12 +47,12 @@ public class TestData {
         jdbcTemplate.update(insertTeachers);
         
         String insertStudents =
-                "INSERT INTO student (id, group_id, first_name, last_name, student_year)\n"
+                "INSERT INTO student (id, group_id, first_name, last_name)\n"
               + "VALUES\n"
-              + "(1, 1, 'first name1', 'last name1', 'SECOND'),\n"
-              + "(2, 2, 'first name2', 'last name2', 'FIRST'),\n"
-              + "(3, 2, 'first name3', 'last name3', 'FIRST'),\n"
-              + "(4, NULL, 'first name4', 'last name4', 'SECOND');";
+              + "(1, 1, 'first name1', 'last name1'),\n"
+              + "(2, 2, 'first name2', 'last name2'),\n"
+              + "(3, 2, 'first name3', 'last name3'),\n"
+              + "(4, NULL, 'first name4', 'last name4');";
         jdbcTemplate.update(insertStudents);
         
         String insertAudience =

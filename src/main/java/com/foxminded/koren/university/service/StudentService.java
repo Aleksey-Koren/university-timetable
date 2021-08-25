@@ -49,10 +49,4 @@ public class StudentService {
         LOG.debug("Get all students");
         return studentDao.getAll();
     }
-    
-    public void changeYear(Student student, Year year) {
-        LOG.debug("Change student's year. student.id = {}, Year = {}", student.getId(), year);
-        student.setYear(year);
-        studentDao.update(student);
-    }
 }

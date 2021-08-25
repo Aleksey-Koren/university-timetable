@@ -1,22 +1,29 @@
 package com.foxminded.koren.university.entity;
 
+import java.util.Objects;
+
 public class Group {
     
     private int id;
     private String name;
+    private Year year;
 
     public Group() {
         
     }
 
-    public Group(String name) {
+    public Group(String name, Year year) {
         this.name = name;
+        this.year = year;
     }
 
-    public Group(int id, String name) {
+    public Group(int id, String name, Year year) {
         this.id = id;
         this.name = name;
+        this.year = year;
     }
+
+
 
     public int getId() {
         return id;
@@ -34,36 +41,33 @@ public class Group {
         this.name = name;
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + id;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        return result;
+    public Year getYear() {
+        return year;
+    }
+
+    public void setYear(Year year) {
+        this.year = year;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!(obj instanceof Group))
-            return false;
-        Group other = (Group) obj;
-        if (id != other.id)
-            return false;
-        if (name == null) {
-            if (other.name != null)
-                return false;
-        } else if (!name.equals(other.name))
-            return false;
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Group group = (Group) o;
+        return id == group.id && Objects.equals(name, group.name) && year == group.year;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, year);
     }
 
     @Override
     public String toString() {
-        return "Group [id=" + id + ", name=" + name + "]";
+        return "Group{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", year=" + year +
+                '}';
     }
-
-    
 }

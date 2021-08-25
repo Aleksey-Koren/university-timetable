@@ -79,17 +79,4 @@ class StudentServiceTest {
         studentService.getAll();
         Mockito.verify(mockStudentDao, Mockito.times(1)).getAll();
     }
-    
-    @Mock
-    Student mockStudent = new Student();
-    
-    @Test
-    void changeYear_shouldSetIncomingYearAndInvokeUpdateOnStudent() {
-        Year testYear = Year.FIRST;
-        InOrder inOrder = Mockito.inOrder(mockStudentDao, mockStudent);
-        studentService.changeYear(mockStudent, testYear);
-        inOrder.verify(mockStudent, Mockito.times(1)).setYear(testYear);
-        inOrder.verify(mockStudentDao, Mockito.times(1)).update(mockStudent);
-        inOrder.verifyNoMoreInteractions();
-    }
 }

@@ -9,5 +9,5 @@ public class GroupDTO {
 
     private Group group;
     private List<Student> groupStudents;
-    private
+
 }

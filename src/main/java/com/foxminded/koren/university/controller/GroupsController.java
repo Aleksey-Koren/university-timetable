@@ -39,6 +39,6 @@ public class GroupsController extends BaseController {
     }
 
     public String edit() {
-
+        return null;
     }
 }

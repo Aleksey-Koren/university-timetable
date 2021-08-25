@@ -21,10 +21,10 @@ public class TablesCreation {
     private JdbcTemplate jdbcTemplate;
     
     public void createTables() throws IOException {
-        jdbcTemplate.execute(retriveSql());
+        jdbcTemplate.execute(retrieveSql());
     }
     
-    private String retriveSql() throws IOException {
+    private String retrieveSql() throws IOException {
         try(Stream<String> stream = Files.lines(Path.of(tablesCreationUrl))){
             return stream.reduce("", (a,b) -> a + b);
         }

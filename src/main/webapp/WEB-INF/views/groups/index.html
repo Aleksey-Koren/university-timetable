@@ -14,15 +14,19 @@
         <div class="col">
             <h1 class="d-flex justify-content-center">Groups</h1>
             <a class="d-flex justify-content-center" href="/groups/new">Create new group</a>
-            <table class="container-fluid">
+            <table class="container-fluid justify-content-between">
                 <tr style="background: silver">
                     <th>Name</th>
+                    <th>Year</th>
                     <th></th>
                 </tr>
                 <tr th:each="group : ${groups}"
                     th:style="${groups.indexOf(group) % 2 != 0} ? 'background: gainsboro' : 'background : lightgrey'">
                     <td>
                         <a th:href="@{groups/{id}/edit (id=${group.id})}" th:text="${group.name}"/>
+                    </td>
+                    <td>
+                        <div th:text="${group.year}"></div>
                     </td>
                     <td>
                         <form th:method="DELETE" th:action="@{/groups/{id}(id = ${group.id})}">

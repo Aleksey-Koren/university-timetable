@@ -10,7 +10,7 @@ import org.springframework.core.env.Environment;
 @Configuration
 @ComponentScan("com.foxminded.koren.university")
 @PropertySource("classpath:application.properties")
-public class SpringConfigT /*implements WebMvcConfigurer*/ {
+public class SpringConfigT {
     
     @Autowired
     private Environment env;

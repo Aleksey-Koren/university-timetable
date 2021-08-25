@@ -37,8 +37,8 @@ public class JdbcStudentDao implements StudentDao {
     public Student save(Student entity) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         
-        LOG.debug("Update database. SQL = {} group: {}, first name: {}, last name: {}, year: {}",
-                SAVE, entity.getGroup(), entity.getFirstName(), entity.getLastName(), entity.getYear());
+        LOG.debug("Update database. SQL = {} group: {}, first name: {}, last name: {}",
+                SAVE, entity.getGroup(), entity.getFirstName(), entity.getLastName());
         
         jdbcTemplate.update(connection -> {
             PreparedStatement statement = connection.prepareStatement(SAVE, new String[]{"id"});
@@ -49,7 +49,6 @@ public class JdbcStudentDao implements StudentDao {
             }
             statement.setString(2, entity.getFirstName());
             statement.setString(3, entity.getLastName());
-            statement.setString(4, entity.getYear().toString());
             return statement;
         }, keyHolder);
         
@@ -65,7 +64,6 @@ public class JdbcStudentDao implements StudentDao {
                 entity.getGroup() != null ? entity.getGroup().getId() : null, 
                 entity.getFirstName(),
                 entity.getLastName(),
-                entity.getYear().toString(),
                 entity.getId());
     }
 

@@ -31,7 +31,7 @@
                     <td th:text="${student.firstName}">First name</td>
                     <td th:text="${student.lastName}">Last name</td>
                     <td th:text="${student.group} != null ? ${student.group.name} : '---'">group</td>
-                    <td th:text="${student.year}">year</td>
+                    <td th:text="${student.group} != null ? ${student.group.year} : '---'">year</td>
                     <td>
                         <form th:method="DELETE" th:action="@{/students/{id}(id = ${student.id})}">
                             <input type="submit" value="Delete"/>

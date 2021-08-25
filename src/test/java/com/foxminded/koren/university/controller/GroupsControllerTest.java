@@ -3,6 +3,7 @@ package com.foxminded.koren.university.controller;
 import com.foxminded.koren.university.config.SpringConfig;
 import com.foxminded.koren.university.controller.exceptions.NoEntitiesInDatabaseException;
 import com.foxminded.koren.university.entity.Group;
+import com.foxminded.koren.university.entity.Year;
 import com.foxminded.koren.university.service.GroupService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -72,6 +73,6 @@ public class GroupsControllerTest {
     }
 
     private List<Group> retrieveTestGroups() {
-        return List.of(new Group("name1"), new Group("name2"));
+        return List.of(new Group("name1", Year.FIRST), new Group("name2", Year.SECOND));
     }
 }
