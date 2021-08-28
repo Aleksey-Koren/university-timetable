@@ -23,8 +23,6 @@ public class Group {
         this.year = year;
     }
 
-
-
     public int getId() {
         return id;
     }

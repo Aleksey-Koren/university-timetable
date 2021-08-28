@@ -56,4 +56,6 @@ public class CourseService {
         LOG.debug("Get all courses");
         return courseDao.getAll();
     }
+
+
 }

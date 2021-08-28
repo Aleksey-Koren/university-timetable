@@ -22,7 +22,7 @@
                     <th></th>
                 </tr>
                 <tr th:each="course : ${courses}"
-                    th:style="${courses.indexOf(course) % 2 != 0} ? 'background: gainsboro' : 'background : lightgrey'">
+                    th:style="${courses.indexOf(course) % 2 != 0} ? 'background: gainsboro'">
                     <td>
                         <a th:href="@{courses/{id}/edit (id=${course.id})}" th:text="${course.name}"/>
                     </td>

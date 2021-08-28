@@ -78,4 +78,32 @@ public class StudentService {
             throw new ServiceException(e.getMessage(), e);
         }
     }
+
+    public List<Student> getAllWithoutGroup() {
+        LOG.debug("Get all students without group");
+        try {
+            return studentDao.getAllWithoutGroup();
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
+    }
+
+    public boolean addStudentToGroup(int studentId, int groupId) {
+        LOG.debug("Add student id = {} to group id = {}", studentId, groupId);
+        try {
+            return studentDao.addStudentToGroup(studentId, groupId);
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
+    }
+
+    public boolean removeStudentFromGroup(int studentId) {
+        LOG.debug("Remove student id = {} from group", studentId);
+        try {
+            return studentDao.removeStudentFromGroup(studentId);
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
+    }
+
 }

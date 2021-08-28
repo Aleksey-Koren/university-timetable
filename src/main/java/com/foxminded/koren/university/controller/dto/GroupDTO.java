@@ -13,6 +13,7 @@ public class GroupDTO {
     private List<Student> groupStudents;
     private List<TimetableEvent> events;
     private Year[] years;
+    private List<Student> studentsWithoutGroup;
 
     public Group getGroup() {
         return group;
@@ -46,6 +47,14 @@ public class GroupDTO {
         this.years = years;
     }
 
+    public List<Student> getStudentsWithoutGroup() {
+        return studentsWithoutGroup;
+    }
+
+    public void setStudentsWithoutGroup(List<Student> studentsWithoutGroup) {
+        this.studentsWithoutGroup = studentsWithoutGroup;
+    }
+
     public static class Builder {
 
         private GroupDTO dto = new GroupDTO();
@@ -67,6 +76,11 @@ public class GroupDTO {
 
         public Builder years() {
             dto.years = Year.values();
+            return this;
+        }
+
+        public Builder studentsWithoutGroup(List<Student> studentsWithoutGroup) {
+            dto.studentsWithoutGroup = studentsWithoutGroup;
             return this;
         }
 

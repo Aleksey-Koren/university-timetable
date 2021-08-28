@@ -1,8 +1,5 @@
 package com.foxminded.koren.university.dao;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -12,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.foxminded.koren.university.SpringConfigT;
 import com.foxminded.koren.university.dao.exceptions.DAOException;
@@ -23,11 +19,12 @@ import com.foxminded.koren.university.entity.Student;
 import com.foxminded.koren.university.entity.Year;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 @SpringJUnitWebConfig
 @ContextConfiguration(classes = {SpringConfigT.class})
 class JdbcStudentDaoTest {
-    
-    
+
     @Autowired
     private TablesCreation tablesCreation;
     @Autowired
@@ -140,4 +137,27 @@ class JdbcStudentDaoTest {
         assertEquals(expected, jdbcStudentDao.getByGroupId(2));
     }
 
+    @Test
+    void getALLWithoutGroup_shouldReturnAllStudentsWhereGroupIdIsNull() {
+        List<Student> expected = List.of(jdbcStudentDao.getById(4));
+        assertEquals(expected, jdbcStudentDao.getAllWithoutGroup());
+    }
+
+    @Test
+    void addStudentToGroup_shouldSetArgsGroupIdToArgsStudent() {
+        int studentId = 4;
+        int groupId = 2;
+        assertNull(jdbcStudentDao.getById(studentId).getGroup());
+        jdbcStudentDao.addStudentToGroup(studentId, groupId);
+        assertNotNull(jdbcStudentDao.getById(studentId).getGroup());
+        assertTrue(jdbcStudentDao.getById(studentId).getGroup().getId() == groupId);
+    }
+
+    @Test
+    void removeStudentFromGroup_shouldSetGroupIdAsNullInArgumentStudent() {
+        int testStudentId = 3;
+        assertNotNull(jdbcStudentDao.getById(testStudentId).getGroup());
+        assertTrue(jdbcStudentDao.removeStudentFromGroup(testStudentId));
+        assertNull(jdbcStudentDao.getById(testStudentId).getGroup());
+    }
 }

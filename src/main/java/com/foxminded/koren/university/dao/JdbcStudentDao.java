@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -34,7 +33,7 @@ public class JdbcStudentDao implements StudentDao {
     public Student save(Student entity) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         
-        LOG.debug("Update database. SQL = {} group: {}, first name: {}, last name: {}",
+        LOG.debug("Update database. SQL:\n {} group: {}, first name: {}, last name: {}",
                 SAVE, entity.getGroup(), entity.getFirstName(), entity.getLastName());
 
         try {
@@ -60,7 +59,7 @@ public class JdbcStudentDao implements StudentDao {
 
     @Override
     public void update(Student entity) {
-        LOG.debug("Update database SQL: {} student {}", UPDATE, entity);
+        LOG.debug("Update database SQL:\n {} student {}", UPDATE, entity);
         try {
             jdbcTemplate.update(UPDATE,
                     entity.getGroup() != null ? entity.getGroup().getId() : null,
@@ -74,7 +73,7 @@ public class JdbcStudentDao implements StudentDao {
 
     @Override
     public boolean deleteById(Integer id) {
-        LOG.debug("Update database SQL: {} student.id = {}", DELETE, id);
+        LOG.debug("Update database SQL:\n {} student.id = {}", DELETE, id);
         try {
             return jdbcTemplate.update(DELETE, id) > 0;
         } catch (DataAccessException e) {
@@ -84,7 +83,7 @@ public class JdbcStudentDao implements StudentDao {
 
     @Override
     public Student getById(Integer id) {
-        LOG.debug("Query to database SQL: {} student.id = {}", GET_BY_ID, id);
+        LOG.debug("Query to database SQL:\n {} student.id = {}", GET_BY_ID, id);
 
         try {
             return jdbcTemplate.queryForObject(GET_BY_ID, new StudentMapper(), id);
@@ -95,7 +94,7 @@ public class JdbcStudentDao implements StudentDao {
 
     @Override
     public void deleteByGroupId(int id) {
-        LOG.debug("Update database SQL: {} group.id {}", DELETE_BY_GROUP_ID, id);
+        LOG.debug("Update database SQL:\n {} group.id {}", DELETE_BY_GROUP_ID, id);
         try {
             jdbcTemplate.update(DELETE_BY_GROUP_ID, id);
         } catch (DataAccessException e) {
@@ -105,7 +104,7 @@ public class JdbcStudentDao implements StudentDao {
 
     @Override
     public List<Student> getAll() {
-        LOG.debug("Query to database SQL: {}", GET_ALL);
+        LOG.debug("Query to database SQL:\n {}", GET_ALL);
         try {
             return jdbcTemplate.query(GET_ALL, new StudentMapper());
         } catch (DataAccessException e) {
@@ -115,9 +114,39 @@ public class JdbcStudentDao implements StudentDao {
 
     @Override
     public List<Student> getByGroupId(int id) {
-        LOG.debug("Query to database SQL: {}", GET_BY_GROUP_ID);
+        LOG.debug("Query to database SQL:\n {}", GET_BY_GROUP_ID);
         try {
             return jdbcTemplate.query(GET_BY_GROUP_ID, new StudentMapper(), id);
+        } catch (DataAccessException e) {
+            throw new DAOException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public List<Student> getAllWithoutGroup() {
+        LOG.debug("Query to database SQL:\n {}", GET_ALL_WITHOUT_GROUP);
+        try {
+            return jdbcTemplate.query(GET_ALL_WITHOUT_GROUP, new StudentMapper());
+        } catch (DataAccessException e) {
+            throw new DAOException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public boolean addStudentToGroup(int studentId, int groupId) {
+        LOG.debug("Query to database SQL:\n {}, studentId = {}, groupId = {}", ADD_STUDENT_TO_GROUP, studentId, groupId);
+        try {
+            return jdbcTemplate.update(ADD_STUDENT_TO_GROUP, groupId, studentId) == 1;
+        } catch (DataAccessException e) {
+            throw new DAOException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public boolean removeStudentFromGroup(int studentId) {
+        LOG.debug("Query to database SQL:\n {}, studentId = {}", REMOVE_STUDENT_FROM_GROUP, studentId);
+        try {
+            return jdbcTemplate.update(REMOVE_STUDENT_FROM_GROUP, studentId) == 1;
         } catch (DataAccessException e) {
             throw new DAOException(e.getMessage(), e);
         }

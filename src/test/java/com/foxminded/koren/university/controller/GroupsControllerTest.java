@@ -69,15 +69,6 @@ public class GroupsControllerTest {
         inOrder.verify(mockedGroupService, times(1)).getAll();
     }
 
-    @Test
-    void index_shouldThrowAnException_IfServiceReturnsEmptyList() throws Exception {
-        when(mockedGroupService.getAll()).thenReturn(new ArrayList<Group>());
-        mockMvc.perform(get("/groups"))
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof NoEntitiesInDatabaseException))
-                .andExpect(result -> assertTrue(result.getResolvedException().
-                        getMessage().equals("There is no any groups in database")));
-    }
-
     private List<Group> retrieveTestGroups() {
         return List.of(new Group("name1", Year.FIRST), new Group("name2", Year.SECOND));
     }

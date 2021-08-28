@@ -94,7 +94,11 @@ VALUES
     (2, 'first name 2', 'last name 2'),
     (3, 'first name 3', 'last name 3'),
     (4, 'first name 4', 'last name 4'),
-    (1, 'first name 5', 'last name 5');
+    (1, 'first name 5', 'last name 5'),
+    (NULL, 'Andrey', 'Ivanov'),
+    (NULL, 'Petr', 'Petrov'),
+    (NULL, 'Anna', 'Savitskaya'),
+    (NULL, 'Evgeniy', 'Sokolov');
 
 INSERT INTO teacher (first_name, last_name)
 VALUES

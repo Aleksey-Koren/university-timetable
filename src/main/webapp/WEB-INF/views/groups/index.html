@@ -21,7 +21,7 @@
                     <th></th>
                 </tr>
                 <tr th:each="group : ${groups}"
-                    th:style="${groups.indexOf(group) % 2 != 0} ? 'background: gainsboro' : 'background : lightgrey'">
+                    th:style="${groups.indexOf(group) % 2 != 0} ? 'background: gainsboro'">
                     <td>
                         <a th:href="@{groups/{id}/edit (id=${group.id})}" th:text="${group.name}"/>
                     </td>

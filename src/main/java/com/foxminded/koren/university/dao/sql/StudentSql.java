@@ -55,4 +55,18 @@ public class StudentSql {
             "WHERE group_id = ?\n" +
             "ORDER BY s.last_name;";
 
+    public static final String GET_ALL_WITHOUT_GROUP =
+            "SELECT id , group_id, first_name, last_name\n" +
+            "FROM student\n" +
+            "WHERE group_id IS NULL;";
+
+    public static final String ADD_STUDENT_TO_GROUP =
+            "UPDATE student\n" +
+            "SET group_id = ?\n" +
+            "WHERE id = ?;";
+
+    public static final String REMOVE_STUDENT_FROM_GROUP =
+            "UPDATE student\n" +
+            "SET group_id = NULL\n" +
+            "WHERE id = ?;";
 }

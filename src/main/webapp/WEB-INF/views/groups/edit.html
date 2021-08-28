@@ -28,7 +28,7 @@
         <div th:replace="templates/sideMenu :: sideMenu"></div>
         <div class="col">
             <h1 class="d-flex justify-content-center" th:text="|Edit group ${dto.group.name}|"></h1>
-            <form th:method="PATCH" , th:action="@{/groups/{id}(id=${dto.group.id})}" th:object="${formDTO}">
+            <form th:method="POST" , th:action="@{/groups/{id}(id=${dto.group.id})}" th:object="${formDTO}">
                 <div class="d-flex justify-content-between" style="padding: 5px">
                     <label th:for="groupName"><h3>Group name: </h3></label>
                     <input type="text" th:field="*{groupName}" id="groupName"/>
@@ -37,17 +37,19 @@
                         <option th:each="year : ${dto.years}" th:value="${year}" th:text="${year}">
                         </option>
                     </select>
+                    <input type="hidden" th:field="*{groupId}" th:value="${dto.group.id}">
                     <input type="submit" value="Save"/>
                 </div>
             </form>
             <h2 class="d-flex justify-content-center" th:text="'Students of this group'">Students of this group</h2>
+            <a class="d-flex justify-content-center" th:text="'Add students'"
+               th:href="@{/groups/{id}/select(id=${dto.group.id})}"></a>
             <div class="d-block w-100" th:each="student : ${dto.groupStudents}">
-                <form class="groupFormItem" th:method="PATCH"
-                      th:action="@{/groups/{id}-remove-student(id = ${dto.group.id})}"
-                      th:object="${formDTO}">
+                <form class="groupFormItem" th:method="POST"
+                      th:action="@{/groups/{id}-remove(id = ${dto.group.id})}" th:object="${formDTO}">
                     <span th:text="|ID: ${student.id}|"></span>
                     <span th:text="|${student.firstName} ${student.lastName}|"></span>
-                    <input type="hidden" name="studentToRemoveId" th:value="${student.id}"/>
+                    <input type="text" hidden name="studentId" th:value="${student.id}"/>
                     <input type="submit" value="Remove"/>
                 </form>
             </div>

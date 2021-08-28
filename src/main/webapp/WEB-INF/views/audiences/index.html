@@ -17,12 +17,12 @@
             <a class="d-flex justify-content-center" href="/audiences/new">Create new audience</a>
             <table class="container-fluid">
                 <tr style="background: silver">
-                    <th class>Number</th>
-                    <th class>Capacity</th>
+                    <th>Number</th>
+                    <th>Capacity</th>
                     <th></th>
                 </tr>
                 <tr th:each="audience : ${audiences}"
-                    th:style="${audiences.indexOf(audience) % 2 != 0} ? 'background: gainsboro' : 'background : lightgrey'">
+                    th:style="${audiences.indexOf(audience) % 2 != 0} ? 'background: gainsboro'">
                     <td>
                         <a th:href="@{/audiences/{id}/edit (id = ${audience.id})}"
                            th:text="${audience.number}">Number</a>

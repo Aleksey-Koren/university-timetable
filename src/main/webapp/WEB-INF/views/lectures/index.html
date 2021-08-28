@@ -27,7 +27,7 @@
                     <th></th>
                 </tr>
                 <tr th:each="dto : ${dtos}"
-                    th:style="${dtos.indexOf(dto) % 2 != 0} ? 'background: gainsboro' : 'background : lightgrey'">
+                    th:style="${dtos.indexOf(dto) % 2 != 0} ? 'background: gainsboro'">
                     <td th:text="${dto.lecture.id}"/>
                     <td>
                         <a th:href="@{lectures/{id}/edit (id=${dto.lecture.id})}" th:text="Edit"/>

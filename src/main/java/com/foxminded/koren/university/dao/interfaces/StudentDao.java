@@ -10,4 +10,9 @@ public interface StudentDao extends CrudDao<Integer, Student> {
 
     List<Student> getByGroupId(int id);
 
+    List<Student> getAllWithoutGroup();
+
+    boolean addStudentToGroup(int studentId, int groupId);
+
+    boolean removeStudentFromGroup(int studentId);
 }
