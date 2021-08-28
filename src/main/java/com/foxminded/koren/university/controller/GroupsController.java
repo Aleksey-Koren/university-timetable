@@ -137,4 +137,16 @@ public class GroupsController extends BaseController {
             throw new ControllerException(e.getMessage(),e);
         }
     }
+
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable("id") int id) {
+        LOG.trace("Deleting group id = {}", id);
+        try {
+            groupService.deleteById(id);
+        } catch (ServiceException e) {
+            throw new ControllerException(e.getMessage(), e);
+        }
+        LOG.trace("Deleting group id = {} : success", id);
+        return "redirect:/groups";
+    }
 }

@@ -40,7 +40,11 @@ public class GroupService {
     
     public boolean deleteById(int id) {
         LOG.debug("Delete group by id = {}", id);
-        return groupDao.deleteById(id);
+        try {
+            return groupDao.deleteById(id);
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
     }
     
     public Group getById(int id) {
@@ -63,7 +67,7 @@ public class GroupService {
     }
 
     public List<Group> getGroupsByLectureId(Integer id) {
-        LOG.debug("Retrieving groups by lecture id = {}", id);
+        LOG.debug("Retrieve groups by lecture id = {}", id);
         return groupDao.getGroupsByLectureId(id);
     }
 

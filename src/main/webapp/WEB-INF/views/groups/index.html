@@ -29,7 +29,7 @@
                         <div th:text="${group.year}"></div>
                     </td>
                     <td>
-                        <form th:method="DELETE" th:action="@{/groups/{id}(id = ${group.id})}">
+                        <form th:method="POST" th:action="@{/groups/{id}/delete(id = ${group.id})}">
                             <input type="submit" value="Delete"/>
                         </form>
                     </td>

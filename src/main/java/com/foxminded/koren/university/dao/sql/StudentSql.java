@@ -58,7 +58,8 @@ public class StudentSql {
     public static final String GET_ALL_WITHOUT_GROUP =
             "SELECT id , group_id, first_name, last_name\n" +
             "FROM student\n" +
-            "WHERE group_id IS NULL;";
+            "WHERE group_id IS NULL\n" +
+            "ORDER BY last_name;";
 
     public static final String ADD_STUDENT_TO_GROUP =
             "UPDATE student\n" +

@@ -70,7 +70,11 @@ public class JdbcGroupDao implements GroupDao {
     @Override
     public boolean deleteById(Integer id) {
         LOG.debug("Update database. Delete group by id. SQL: {} group.id = {}", DELETE, id);
-        return jdbcTemplate.update(DELETE, id) > 0;
+        try {
+            return jdbcTemplate.update(DELETE, id) > 0;
+        } catch (DataAccessException e) {
+            throw new DAOException(e.getMessage(),e);
+        }
     }
 
     @Override
