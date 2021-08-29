@@ -30,7 +30,7 @@
                         <p th:text="${course.description}"/>
                     </td>
                     <td>
-                        <form th:method="DELETE" th:action="@{/courses/{id}(id = ${course.id})}">
+                        <form th:method="POST" th:action="@{/courses/{id}/delete(id = ${course.id})}">
                             <input type="submit" value="Delete"/>
                         </form>
                     </td>

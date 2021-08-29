@@ -65,7 +65,7 @@ public class GroupsController extends BaseController {
         return "groups/edit";
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("/{id}/edit")
     public String update(@ModelAttribute("formDTO") GroupFormDTO dto, @PathVariable("id") int id) {
         try {
             groupService.update(new Group(dto.getGroupId(), dto.getGroupName(), dto.getYear()));
@@ -75,7 +75,7 @@ public class GroupsController extends BaseController {
         return "redirect:/groups";
     }
 
-    @GetMapping("/{id}/select")
+    @GetMapping("/{id}/edit-select")
     public String selectStudent(Model model, @PathVariable("id") int id) {
         LOG.trace("Getting form to add student(s) to group id = {}", id);
         try {
@@ -92,10 +92,10 @@ public class GroupsController extends BaseController {
             throw new ControllerException(e.getMessage(), e);
         }
         LOG.trace("Getting form to add student(s) to group id = {} : success", id);
-        return "groups/select";
+        return "groups/edit-select";
     }
 
-    @PostMapping("/{id}-add")
+    @PostMapping("/{id}/edit-add")
     public String addStudents(@ModelAttribute("formDTO") GroupFormDTO dto,  @PathVariable("id") int id) {
         LOG.trace("Add student(s) to group id = {} student(s) ID = {}", id, dto.getStudentsIds());
         try {
@@ -107,7 +107,7 @@ public class GroupsController extends BaseController {
         return String.format("redirect:/groups/%s/edit", id);
     }
 
-    @PostMapping("/{id}-remove")
+    @PostMapping("/{id}/edit-remove")
     public String removeStudent(@ModelAttribute GroupFormDTO dto, @PathVariable("id") int id) {
         LOG.trace("Remove student id = {} from group id = {}", dto.getStudentId(), id);
         studentService.removeStudentFromGroup(dto.getStudentId());

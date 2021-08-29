@@ -29,7 +29,7 @@
         <div class="col">
             <h1 class="d-flex justify-content-center" th:text="|Select students to add to group ${dto.group.name}|"></h1>
             <a th:href="@{/groups/{id}/edit(id=${dto.group.id})}">Back to group</a>
-            <form th:method="POST" th:action="@{/groups/{id}-add(id=${dto.group.id})}" th:object="${formDTO}">
+            <form th:method="POST" th:action="@{/groups/{id}/edit-add(id=${dto.group.id})}" th:object="${formDTO}">
                 <table class="container-fluid">
                     <tr style="background: silver">
                         <th></th>

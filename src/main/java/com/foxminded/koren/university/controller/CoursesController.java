@@ -32,9 +32,11 @@ public class CoursesController extends BaseController {
     @GetMapping()
     public String index(Model model) {
         LOG.trace("Retrieving all courses");
-        List<Course> courses = courseService.getAll();
-        if (courses.isEmpty()) {
-            throw new NoEntitiesInDatabaseException("There is no any courses in database");
+        List<Course> courses = null;
+        try {
+            courses = courseService.getAll();
+        } catch (ServiceException e) {
+            throw new ControllerException(e.getMessage(), e);
         }
         model.addAttribute("courses", courses);
         LOG.trace("Retrieving all students: success");
@@ -44,27 +46,31 @@ public class CoursesController extends BaseController {
     @GetMapping("/{id}")
     public String getById(@PathVariable("id") Integer id, Model model) {
         LOG.trace("Retrieving course by id = {}", id);
-        model.addAttribute("audience", courseService.getById(id));
+        try {
+            model.addAttribute("audience", courseService.getById(id));
+        } catch (ServiceException e) {
+            throw new ControllerException(e.getMessage(), e);
+        }
         LOG.trace("Retrieving course by id = {} : success", id);
         return "courses/getById";
     }
 
     @GetMapping("/new")
-    public String newAudience(@ModelAttribute("course") Course audience) {
+    public String newAudience(@ModelAttribute("course") Course course) {
         LOG.trace("Request for form to create new course");
         return "courses/new";
     }
 
-    @PostMapping
+    @PostMapping("/new-create")
     public String create(@ModelAttribute("course") Course course) {
-        LOG.trace("Creating new course");
+        LOG.trace("Creating new course name = {}", course.getName());
         try {
             courseService.createNew(course);
         } catch (ServiceException e) {
             throw new ControllerException(e);
         }
         LOG.trace("Creating new course : success");
-        return "/courses/createSuccess";
+        return "redirect:/courses";
     }
 
     @GetMapping("/{id}/edit")
@@ -74,7 +80,7 @@ public class CoursesController extends BaseController {
         return "courses/edit";
     }
 
-    @PatchMapping("/{id}")
+    @PostMapping("/{id}/update")
     public String update(@ModelAttribute("course") Course course) {
         LOG.trace("Updating course id = {}", course.getId());
         try {
@@ -85,4 +91,15 @@ public class CoursesController extends BaseController {
         LOG.trace("Updating course id = {} : success", course.getId());
         return "redirect:/courses";
     }
-}
+
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable("id") int id) {
+        LOG.trace("Delete course id = {}", id);
+        try {
+            courseService.deleteById(id);
+        } catch (ServiceException e) {
+            throw new ControllerException(e.getMessage(), e);
+        }
+        return "redirect:/courses";
+    }
+ }
