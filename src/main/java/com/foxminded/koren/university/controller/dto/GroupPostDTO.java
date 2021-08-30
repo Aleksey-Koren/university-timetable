@@ -4,7 +4,7 @@ import com.foxminded.koren.university.entity.Year;
 
 import java.util.List;
 
-public class GroupFormDTO {
+public class GroupPostDTO {
 
     private Integer groupId;
     private String groupName;
@@ -12,16 +12,16 @@ public class GroupFormDTO {
     private int studentId;
     private List<Integer> studentsIds;
 
-    public GroupFormDTO() {
+    public GroupPostDTO() {
 
     }
 
-    public GroupFormDTO(String groupName, Year year) {
+    public GroupPostDTO(String groupName, Year year) {
         this.groupName = groupName;
         this.year = year;
     }
 
-    public GroupFormDTO(Integer groupId, String groupName, Year year, int studentId, List<Integer> studentsIds) {
+    public GroupPostDTO(Integer groupId, String groupName, Year year, int studentId, List<Integer> studentsIds) {
         this.groupId = groupId;
         this.groupName = groupName;
         this.year = year;
@@ -71,7 +71,7 @@ public class GroupFormDTO {
 
     public static class Builder {
 
-        private GroupFormDTO dto = new GroupFormDTO();
+        private GroupPostDTO dto = new GroupPostDTO();
 
         public Builder groupId(int groupId) {
             dto.groupId = groupId;
@@ -98,7 +98,7 @@ public class GroupFormDTO {
             return this;
         }
 
-        public GroupFormDTO build() {
+        public GroupPostDTO build() {
             return dto;
         }
     }

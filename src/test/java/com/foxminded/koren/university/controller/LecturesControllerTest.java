@@ -1,7 +1,7 @@
 package com.foxminded.koren.university.controller;
 
 import com.foxminded.koren.university.config.SpringConfig;
-import com.foxminded.koren.university.controller.dto.LectureDTO;
+import com.foxminded.koren.university.controller.dto.LectureGetDTO;
 import com.foxminded.koren.university.entity.*;
 import com.foxminded.koren.university.service.GroupService;
 import com.foxminded.koren.university.service.LectureService;
@@ -52,7 +52,7 @@ class LecturesControllerTest {
         List<Lecture> testLectures = retrieveTestLectures();
         when(mockedLectureService.getAll()).thenReturn(testLectures);
         when(mockedGroupService.getGroupsByLectureId(any())).thenReturn(List.of(new Group(), new Group(), new Group()));
-        List<LectureDTO> testDtos = retrieveTestLectureDTOs(testLectures);
+        List<LectureGetDTO> testDtos = retrieveTestLectureDTOs(testLectures);
         MvcResult mvcResult = mockMvc.perform(get("/lectures"))
                 .andExpect(model().attributeHasNoErrors())
                 .andReturn();
@@ -81,9 +81,9 @@ class LecturesControllerTest {
         return List.of(lecture1, lecture2, lecture3);
     }
 
-    private List<LectureDTO> retrieveTestLectureDTOs(List<Lecture> lectures) {
-        List<LectureDTO> dtos = lectures.stream()
-                .map(s -> new LectureDTO.Builder().lecture(s).groups(List.of(new Group(), new Group(), new Group()))
+    private List<LectureGetDTO> retrieveTestLectureDTOs(List<Lecture> lectures) {
+        List<LectureGetDTO> dtos = lectures.stream()
+                .map(s -> new LectureGetDTO.Builder().lecture(s).groups(List.of(new Group(), new Group(), new Group()))
                 .build()).collect(Collectors.toList());
         return dtos;
     }

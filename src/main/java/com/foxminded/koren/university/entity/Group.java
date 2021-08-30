@@ -12,6 +12,10 @@ public class Group {
         
     }
 
+    public Group(int id) {
+        this.id = id;
+    }
+
     public Group(String name, Year year) {
         this.name = name;
         this.year = year;

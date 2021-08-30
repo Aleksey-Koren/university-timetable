@@ -1,9 +1,8 @@
 package com.foxminded.koren.university.controller;
 
-import com.foxminded.koren.university.controller.dto.LectureDTO;
-import com.foxminded.koren.university.controller.dto.LectureFormDTO;
+import com.foxminded.koren.university.controller.dto.LectureGetDTO;
+import com.foxminded.koren.university.controller.dto.LecturePostDTO;
 import com.foxminded.koren.university.controller.exceptions.ControllerException;
-import com.foxminded.koren.university.controller.exceptions.NoEntitiesInDatabaseException;
 import com.foxminded.koren.university.entity.*;
 import com.foxminded.koren.university.service.*;
 import com.foxminded.koren.university.service.exceptions.ServiceException;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,17 +51,17 @@ public class LecturesController extends BaseController {
     public String index(Model model) {
         LOG.trace("Retrieving all lectures");
         List<Lecture> lectures = lectureService.getAll();
-        List<LectureDTO> dtos = generateLectureDTO(lectures);
+        List<LectureGetDTO> dtos = generateLectureDTO(lectures);
         model.addAttribute("dtos", dtos);
         LOG.trace("Retrieving all lectures : success");
         return "lectures/index";
     }
 
-    private List<LectureDTO> generateLectureDTO(List<Lecture> lectures) {
-        List<LectureDTO> dtos = new ArrayList<>();
+    private List<LectureGetDTO> generateLectureDTO(List<Lecture> lectures) {
+        List<LectureGetDTO> dtos = new ArrayList<>();
         for(Lecture lecture : lectures) {
             List<Group> groups = groupService.getGroupsByLectureId(lecture.getId());
-            dtos.add(new LectureDTO.Builder().lecture(lecture).groups(groups).build());
+            dtos.add(new LectureGetDTO.Builder().lecture(lecture).groups(groups).build());
         }
         return  dtos;
     }
@@ -71,7 +69,7 @@ public class LecturesController extends BaseController {
     @GetMapping("/{id}/edit")
     public String edit(Model model, @PathVariable("id") Integer id) {
         LOG.trace("Request for form to update lecture id = {}", id);
-        LectureDTO dto = new LectureDTO.Builder()
+        LectureGetDTO dto = new LectureGetDTO.Builder()
                 .lecture(lectureService.getById(id))
                 .groups(groupService.getGroupsByLectureId(id))
                 .allCourses(courseService.getAll())
@@ -80,7 +78,7 @@ public class LecturesController extends BaseController {
                 .allGroupsExceptAdded(groupService.getAllExceptAddedToLecture(id))
                 .build();
         model.addAttribute("dto", dto);
-        LectureFormDTO formDTO = new LectureFormDTO(dto.getLecture().getCourse().getId(),
+        LecturePostDTO formDTO = new LecturePostDTO(dto.getLecture().getCourse().getId(),
                                                     dto.getLecture().getAudience().getId(),
                                                     dto.getLecture().getTeacher().getId(),
                                                     dto.getLecture().getStartTime(),
@@ -91,7 +89,7 @@ public class LecturesController extends BaseController {
     }
 
     @PatchMapping("/{id}")
-    public String update(@ModelAttribute("formDTO") LectureFormDTO formDTO, @PathVariable("id") int id) {
+    public String update(@ModelAttribute("formDTO") LecturePostDTO formDTO, @PathVariable("id") int id) {
         LOG.trace("Updating lecture id = {}", id);
         Lecture lecture = new Lecture(id,
                                       new Audience(formDTO.getAudienceId()),
@@ -109,7 +107,7 @@ public class LecturesController extends BaseController {
     }
 
     @PatchMapping("/{id}-remove-group")
-    public String removeGroup(@ModelAttribute("formDTO") LectureFormDTO formDTO, @PathVariable("id") int id) {
+    public String removeGroup(@ModelAttribute("formDTO") LecturePostDTO formDTO, @PathVariable("id") int id) {
         LOG.trace("Removing group id = {} from lecture id = {}", id, formDTO.getGroupId());
         try {
             lectureService.removeGroup(id, formDTO.getGroupId());
@@ -121,7 +119,7 @@ public class LecturesController extends BaseController {
     }
 
     @PatchMapping("/{id}-add-group")
-    public String addGroup(@ModelAttribute("formDTO") LectureFormDTO formDTO, @PathVariable("id") int id) {
+    public String addGroup(@ModelAttribute("formDTO") LecturePostDTO formDTO, @PathVariable("id") int id) {
         LOG.trace("Adding group id = {} to lecture id = {}", id, formDTO.getGroupId());
         try {
             lectureService.addGroup(id, formDTO.getGroupId());
@@ -133,9 +131,9 @@ public class LecturesController extends BaseController {
     }
 
     @GetMapping("/new")
-    public String newLecture(Model model, @ModelAttribute("formDTO") LectureFormDTO formDTO) {
+    public String newLecture(Model model, @ModelAttribute("formDTO") LecturePostDTO formDTO) {
         LOG.trace("Request for form to create new Lecture");
-        LectureDTO dto = new LectureDTO.Builder()
+        LectureGetDTO dto = new LectureGetDTO.Builder()
                 .allCourses(courseService.getAll())
                 .allAudiences(audienceService.getAll())
                 .allTeachers(teacherService.getAll())
@@ -145,7 +143,7 @@ public class LecturesController extends BaseController {
     }
 
     @PostMapping
-    public String create(@ModelAttribute("formDTO") LectureFormDTO formDTO) {
+    public String create(@ModelAttribute("formDTO") LecturePostDTO formDTO) {
         LOG.trace("Creating new lecture");
         Lecture lecture = new Lecture(new Audience(formDTO.getAudienceId()),
                 new Teacher(formDTO.getTeacherId()),

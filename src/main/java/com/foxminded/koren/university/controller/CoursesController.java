@@ -2,8 +2,6 @@ package com.foxminded.koren.university.controller;
 
 ;
 import com.foxminded.koren.university.controller.exceptions.ControllerException;
-import com.foxminded.koren.university.controller.exceptions.NoEntitiesInDatabaseException;
-import com.foxminded.koren.university.entity.Audience;
 import com.foxminded.koren.university.entity.Course;
 import com.foxminded.koren.university.service.CourseService;
 import com.foxminded.koren.university.service.exceptions.ServiceException;
@@ -69,7 +67,7 @@ public class CoursesController extends BaseController {
         } catch (ServiceException e) {
             throw new ControllerException(e);
         }
-        LOG.trace("Creating new course : success");
+        LOG.trace("Creating new course : success. course id = {}", course.getId());
         return "redirect:/courses";
     }
 
@@ -100,6 +98,7 @@ public class CoursesController extends BaseController {
         } catch (ServiceException e) {
             throw new ControllerException(e.getMessage(), e);
         }
+        LOG.trace("Delete course id = {} : success", id);
         return "redirect:/courses";
     }
  }

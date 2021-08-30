@@ -1,7 +1,7 @@
 package com.foxminded.koren.university.controller;
 
-import com.foxminded.koren.university.controller.dto.GroupDTO;
-import com.foxminded.koren.university.controller.dto.GroupFormDTO;
+import com.foxminded.koren.university.controller.dto.GroupGetDTO;
+import com.foxminded.koren.university.controller.dto.GroupPostDTO;
 import com.foxminded.koren.university.controller.exceptions.ControllerException;
 import com.foxminded.koren.university.entity.Group;
 import com.foxminded.koren.university.service.GroupService;
@@ -50,13 +50,13 @@ public class GroupsController extends BaseController {
     public String edit(Model model, @PathVariable("id") int id) {
         LOG.trace("Getting form to edit group id = {}", id);
         try {
-            GroupDTO dto = new GroupDTO.Builder()
+            GroupGetDTO dto = new GroupGetDTO.Builder()
                     .group(groupService.getById(id))
                     .students(studentService.getByGroupId(id))
                     .years()
                     .build();
             model.addAttribute("dto", dto);
-            model.addAttribute("formDTO", new GroupFormDTO(dto.getGroup().getName(),
+            model.addAttribute("formDTO", new GroupPostDTO(dto.getGroup().getName(),
                     dto.getGroup().getYear()));
         } catch (ServiceException e) {
             throw new ControllerException(e.getMessage(), e);
@@ -66,7 +66,7 @@ public class GroupsController extends BaseController {
     }
 
     @PostMapping("/{id}/edit")
-    public String update(@ModelAttribute("formDTO") GroupFormDTO dto, @PathVariable("id") int id) {
+    public String update(@ModelAttribute("formDTO") GroupPostDTO dto, @PathVariable("id") int id) {
         try {
             groupService.update(new Group(dto.getGroupId(), dto.getGroupName(), dto.getYear()));
         } catch (ServiceException e) {
@@ -79,12 +79,12 @@ public class GroupsController extends BaseController {
     public String selectStudent(Model model, @PathVariable("id") int id) {
         LOG.trace("Getting form to add student(s) to group id = {}", id);
         try {
-            model.addAttribute("dto", new GroupDTO.Builder()
+            model.addAttribute("dto", new GroupGetDTO.Builder()
                     .group(groupService.getById(id))
                     .studentsWithoutGroup(studentService.getAllWithoutGroup())
                     .build());
 
-            model.addAttribute("formDTO", new GroupFormDTO.Builder()
+            model.addAttribute("formDTO", new GroupPostDTO.Builder()
                     .groupId(id)
                     .studentsIds(new ArrayList<>())
                     .build());
@@ -96,7 +96,7 @@ public class GroupsController extends BaseController {
     }
 
     @PostMapping("/{id}/edit-add")
-    public String addStudents(@ModelAttribute("formDTO") GroupFormDTO dto,  @PathVariable("id") int id) {
+    public String addStudents(@ModelAttribute("formDTO") GroupPostDTO dto, @PathVariable("id") int id) {
         LOG.trace("Add student(s) to group id = {} student(s) ID = {}", id, dto.getStudentsIds());
         try {
             dto.getStudentsIds().forEach(s -> studentService.addStudentToGroup(s, id));
@@ -108,7 +108,7 @@ public class GroupsController extends BaseController {
     }
 
     @PostMapping("/{id}/edit-remove")
-    public String removeStudent(@ModelAttribute GroupFormDTO dto, @PathVariable("id") int id) {
+    public String removeStudent(@ModelAttribute GroupPostDTO dto, @PathVariable("id") int id) {
         LOG.trace("Remove student id = {} from group id = {}", dto.getStudentId(), id);
         studentService.removeStudentFromGroup(dto.getStudentId());
         LOG.trace("Remove student id = {} from group id = {} : success", dto.getStudentId(), id);
@@ -119,8 +119,8 @@ public class GroupsController extends BaseController {
     public String newGroup (Model model) {
         LOG.trace("Getting form to new Group");
         try {
-            model.addAttribute("dto", new GroupDTO.Builder().years().build());
-            model.addAttribute("formDTO", new GroupFormDTO());
+            model.addAttribute("dto", new GroupGetDTO.Builder().years().build());
+            model.addAttribute("formDTO", new GroupPostDTO());
         } catch (ServiceException e) {
             throw new ControllerException(e.getMessage(), e);
         }
@@ -128,7 +128,7 @@ public class GroupsController extends BaseController {
     }
 
     @PostMapping("/new-create")
-    public String create(@ModelAttribute("formDTO") GroupFormDTO dto) {
+    public String create(@ModelAttribute("formDTO") GroupPostDTO dto) {
         LOG.trace("Creating new group");
         try {
             Group newGroup = groupService.createNew(new Group(dto.getGroupName(), dto.getYear()));

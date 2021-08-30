@@ -5,7 +5,7 @@ import com.foxminded.koren.university.entity.*;
 import java.util.List;
 import java.util.Objects;
 
-public class LectureDTO {
+public class LectureGetDTO {
 
     private Lecture lecture;
     private List<Group> groups;
@@ -15,7 +15,7 @@ public class LectureDTO {
     private List<Teacher> allTeachers;
     private List<Group> allGroupsExceptAdded;
 
-    public LectureDTO() {
+    public LectureGetDTO() {
 
     }
 
@@ -79,7 +79,7 @@ public class LectureDTO {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        LectureDTO that = (LectureDTO) o;
+        LectureGetDTO that = (LectureGetDTO) o;
         return Objects.equals(lecture, that.lecture) && Objects.equals(groups, that.groups) && Objects.equals(allCourses, that.allCourses) && Objects.equals(allGroups, that.allGroups) && Objects.equals(allAudiences, that.allAudiences) && Objects.equals(allTeachers, that.allTeachers) && Objects.equals(allGroupsExceptAdded, that.allGroupsExceptAdded);
     }
 
@@ -90,10 +90,10 @@ public class LectureDTO {
 
     public static class Builder {
 
-        private LectureDTO newDTO;
+        private LectureGetDTO newDTO;
 
         public Builder() {
-            newDTO = new LectureDTO();
+            newDTO = new LectureGetDTO();
         }
 
         public Builder lecture(Lecture lecture) {
@@ -131,7 +131,7 @@ public class LectureDTO {
             return this;
         }
 
-        public LectureDTO build() {
+        public LectureGetDTO build() {
             return newDTO;
         }
     }

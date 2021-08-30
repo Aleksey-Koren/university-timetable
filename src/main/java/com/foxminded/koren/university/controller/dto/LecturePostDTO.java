@@ -3,8 +3,9 @@ package com.foxminded.koren.university.controller.dto;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
-public class LectureFormDTO {
+public class LecturePostDTO {
 
     private Integer courseId;
     private Integer audienceId;
@@ -16,11 +17,11 @@ public class LectureFormDTO {
     private Integer groupId;
 
 
-    public LectureFormDTO() {
+    public LecturePostDTO() {
 
     }
 
-    public LectureFormDTO(Integer courseId,
+    public LecturePostDTO(Integer courseId,
                           Integer audienceId,
                           Integer teacherId,
                           LocalDateTime startTime,
@@ -78,5 +79,18 @@ public class LectureFormDTO {
 
     public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LecturePostDTO that = (LecturePostDTO) o;
+        return Objects.equals(courseId, that.courseId) && Objects.equals(audienceId, that.audienceId) && Objects.equals(teacherId, that.teacherId) && Objects.equals(startTime, that.startTime) && Objects.equals(endTime, that.endTime) && Objects.equals(groupId, that.groupId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(courseId, audienceId, teacherId, startTime, endTime, groupId);
     }
 }

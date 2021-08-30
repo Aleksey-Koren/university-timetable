@@ -7,7 +7,7 @@ import com.foxminded.koren.university.entity.interfaces.TimetableEvent;
 
 import java.util.List;
 
-public class GroupDTO {
+public class GroupGetDTO {
 
     private Group group;
     private List<Student> groupStudents;
@@ -57,7 +57,7 @@ public class GroupDTO {
 
     public static class Builder {
 
-        private GroupDTO dto = new GroupDTO();
+        private GroupGetDTO dto = new GroupGetDTO();
 
         public Builder group(Group group) {
             dto.group = group;
@@ -84,7 +84,7 @@ public class GroupDTO {
             return this;
         }
 
-        public GroupDTO build() {
+        public GroupGetDTO build() {
             return dto;
         }
     }

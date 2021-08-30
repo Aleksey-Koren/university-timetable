@@ -20,10 +20,10 @@ public class BaseController {
         return "exception";
     }
 
-    @ExceptionHandler(ControllerException.class)
-    private String controllerException(ControllerException e, Model model) {
-        LOG.trace(e.getClass().getSimpleName() + " in " + e.getStackTrace()[0] + " : because "+ e.getMessage());
-        model.addAttribute("message", e.getMessage());
-        return "exception";
-    }
+//    @ExceptionHandler(ControllerException.class)
+//    private String controllerException(ControllerException e, Model model) {
+//        LOG.trace(e.getClass().getSimpleName() + " in " + e.getStackTrace()[0] + " : because "+ e.getMessage());
+//        model.addAttribute("message", e.getMessage());
+//        return "exception";
+//    }
 }
