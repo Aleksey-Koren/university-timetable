@@ -1,7 +1,6 @@
 package com.foxminded.koren.university.controller;
 
-import com.foxminded.koren.university.config.SpringConfig;
-import com.foxminded.koren.university.controller.exceptions.NoEntitiesInDatabaseException;
+import com.foxminded.koren.university.SpringConfigT;
 import com.foxminded.koren.university.entity.Course;
 import com.foxminded.koren.university.service.CourseService;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,20 +14,21 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
 @SpringJUnitWebConfig
-@ContextConfiguration(classes = {SpringConfig.class})
+@ContextConfiguration(classes = {SpringConfigT.class})
 @ExtendWith(MockitoExtension.class)
 class CoursesControllerTest {
 
@@ -62,15 +62,52 @@ class CoursesControllerTest {
     }
 
     @Test
-    void index_shouldThrowAnException_IfServiceReturnsEmptyList() throws Exception {
-        when(mockedService.getAll()).thenReturn(new ArrayList<Course>());
-        mockMvc.perform(get("/courses"))
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof NoEntitiesInDatabaseException))
-                .andExpect(result -> assertTrue(result.getResolvedException().
-                        getMessage().equals("There is no any courses in database")));
+    void newCourse_shouldReturnRightWViewAndAddEmptyCourseToModel() throws Exception {
+        Course expected = new Course();
+        MvcResult result = mockMvc.perform(get("/courses/new"))
+                .andExpect(model().attributeHasNoErrors())
+                .andReturn();
+        ModelAndView mav = result.getModelAndView();
+        assertEquals("courses/new", mav.getViewName());
+        assertEquals(expected, mav.getModel().get("course"));
     }
 
-    private List<Course> retrieveTestCourses() {
+    @Test
+    void edit_shouldReturnCorrectViewAndInvokeGetByIdAndAddAttributesToModel() throws Exception {
+        Course expected = new Course (2, "test name", "test description");
+        when(mockedService.getById(expected.getId())).thenReturn(expected);
+        InOrder inOrder = inOrder(mockedService);
+        MvcResult result = mockMvc.perform(get("/courses/{id}/edit", expected.getId())).andReturn();
+        ModelAndView mav = result.getModelAndView();
+        assertEquals("courses/edit", mav.getViewName());
+        assertEquals(expected, mav.getModel().get("course"));
+    }
+
+    @Test
+    void update_shouldInvokeUpdateMethodOfServiceWithCorrectModelArgsAndRedirectToExpectedUrl() throws Exception {
+        InOrder inOrder = inOrder(mockedService);
+        Course expected = new Course (2, "test name", "test description");
+        MockHttpServletRequestBuilder request = post("/courses/{id}/edit-update", expected.getId())
+                .param("name", expected.getName())
+                .param("description", expected.getDescription());
+        MvcResult result = mockMvc.perform(request)
+                .andExpect(model().attributeHasNoErrors())
+                .andExpect(redirectedUrl("/courses"))
+                .andReturn();
+        assertEquals(expected, result.getModelAndView().getModel().get("course"));
+        inOrder.verify(mockedService).update(expected);
+        inOrder.verifyNoMoreInteractions();
+    }
+
+    @Test
+    void delete_shouldInvokeDeleteByIdOfServiceWithCorrectPathVariable() throws Exception {
+        Integer expectedId = 2;
+        MockHttpServletRequestBuilder request = post("/courses/{id}/delete", expectedId);
+        mockMvc.perform(request);
+        verify(mockedService, times(1)).deleteById(expectedId);
+    }
+
+        private List<Course> retrieveTestCourses() {
         return List.of(new Course("name1", "description1"),
                        new Course("name2", "description2"));
     }

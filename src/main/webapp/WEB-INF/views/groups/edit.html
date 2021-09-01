@@ -28,7 +28,7 @@
         <div th:replace="templates/sideMenu :: sideMenu"></div>
         <div class="col">
             <h1 class="d-flex justify-content-center" th:text="|Edit group ${dto.group.name}|"></h1>
-            <form th:method="POST" , th:action="@{/groups/{id}/edit(id=${dto.group.id})}" th:object="${formDTO}">
+            <form th:method="POST" , th:action="@{/groups/{id}/edit-update(id=${dto.group.id})}" th:object="${formDTO}">
                 <div class="d-flex justify-content-between" style="padding: 5px">
                     <label th:for="groupName"><h3>Group name: </h3></label>
                     <input type="text" th:field="*{groupName}" id="groupName"/>

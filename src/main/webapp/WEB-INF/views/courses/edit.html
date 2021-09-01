@@ -19,7 +19,7 @@
         <div th:replace="templates/sideMenu :: sideMenu"></div>
         <div class="col">
             <h1 class="d-flex justify-content-center" th:text="'Edit course ' + ${course.name}"></h1>
-            <form id="edit course" th:method="POST" th:action="@{/courses/{id}/update(id = ${course.id})}"
+            <form id="edit course" th:method="POST" th:action="@{/courses/{id}/edit-update(id = ${course.id})}"
                   th:object="${course}">
                 <label class="d-flex justify-content-center" for="name"><h2>Edit name:</h2></label>
 

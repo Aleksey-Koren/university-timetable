@@ -1,5 +1,6 @@
 package com.foxminded.koren.university.controller;
 
+import com.foxminded.koren.university.SpringConfigT;
 import com.foxminded.koren.university.config.SpringConfig;
 import com.foxminded.koren.university.controller.exceptions.NoEntitiesInDatabaseException;
 import com.foxminded.koren.university.entity.Student;
@@ -28,7 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 @SpringJUnitWebConfig
-@ContextConfiguration(classes = {SpringConfig.class})
+@ContextConfiguration(classes = {SpringConfigT.class})
 @ExtendWith(MockitoExtension.class)
 public class StudentsControllerTest {
 
@@ -59,15 +60,6 @@ public class StudentsControllerTest {
         InOrder inOrder = inOrder(mockedService);
         mockMvc.perform(get("/students"));
         inOrder.verify(mockedService, times(1)).getAll();
-    }
-
-    @Test
-    void index_shouldThrowAnException_IfServiceReturnsEmptyList() throws Exception {
-        when(mockedService.getAll()).thenReturn(new ArrayList<Student>());
-        mockMvc.perform(get("/students"))
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof NoEntitiesInDatabaseException))
-                .andExpect(result -> assertTrue(result.getResolvedException().
-                        getMessage().equals("There is no any students in database")));
     }
 
     private List<Student> retrieveTestStudents() {

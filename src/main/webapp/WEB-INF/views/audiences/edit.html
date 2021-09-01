@@ -14,7 +14,7 @@
         <div th:replace="templates/sideMenu :: sideMenu"></div>
         <div class="col">
             <h1 class="d-flex justify-content-center" th:text="|Edit audience number ${audience.number}|"></h1>
-            <form th:method="PATCH" , th:action="@{/audiences/{id}(id=${audience.id})}" th:object="${audience}">
+            <form th:method="POST" , th:action="@{/audiences/{id}/edit-update(id=${audience.id})}" th:object="${audience}">
                 <br>
                 <div class="d-flex justify-content-center">
                     <label for="number"><h3>Number  </h3></label>

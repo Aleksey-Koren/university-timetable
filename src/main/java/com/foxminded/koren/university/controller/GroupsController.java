@@ -46,6 +46,29 @@ public class GroupsController extends BaseController {
         return "groups/index";
     }
 
+    @GetMapping("/new")
+    public String newGroup (Model model) {
+        LOG.trace("Getting form to new Group");
+        try {
+            model.addAttribute("dto", new GroupGetDTO.Builder().years().build());
+            model.addAttribute("formDTO", new GroupPostDTO());
+        } catch (ServiceException e) {
+            throw new ControllerException(e.getMessage(), e);
+        }
+        return "groups/new";
+    }
+
+    @PostMapping("/new-create")
+    public String create(@ModelAttribute("formDTO") GroupPostDTO dto) {
+        LOG.trace("Creating new group");
+        try {
+            Group newGroup = groupService.createNew(new Group(dto.getGroupName(), dto.getYear()));
+            return String.format("redirect:/groups/%s/edit", newGroup.getId());
+        } catch (ServiceException e) {
+            throw new ControllerException(e.getMessage(),e);
+        }
+    }
+
     @GetMapping("{id}/edit")
     public String edit(Model model, @PathVariable("id") int id) {
         LOG.trace("Getting form to edit group id = {}", id);
@@ -65,7 +88,7 @@ public class GroupsController extends BaseController {
         return "groups/edit";
     }
 
-    @PostMapping("/{id}/edit")
+    @PostMapping("/{id}/edit-update")
     public String update(@ModelAttribute("formDTO") GroupPostDTO dto, @PathVariable("id") int id) {
         try {
             groupService.update(new Group(dto.getGroupId(), dto.getGroupName(), dto.getYear()));
@@ -76,7 +99,7 @@ public class GroupsController extends BaseController {
     }
 
     @GetMapping("/{id}/edit-select")
-    public String selectStudent(Model model, @PathVariable("id") int id) {
+    public String selectStudents(Model model, @PathVariable("id") int id) {
         LOG.trace("Getting form to add student(s) to group id = {}", id);
         try {
             model.addAttribute("dto", new GroupGetDTO.Builder()
@@ -113,29 +136,6 @@ public class GroupsController extends BaseController {
         studentService.removeStudentFromGroup(dto.getStudentId());
         LOG.trace("Remove student id = {} from group id = {} : success", dto.getStudentId(), id);
         return String.format("redirect:/groups/%s/edit", id);
-    }
-
-    @GetMapping("/new")
-    public String newGroup (Model model) {
-        LOG.trace("Getting form to new Group");
-        try {
-            model.addAttribute("dto", new GroupGetDTO.Builder().years().build());
-            model.addAttribute("formDTO", new GroupPostDTO());
-        } catch (ServiceException e) {
-            throw new ControllerException(e.getMessage(), e);
-        }
-        return "groups/new";
-    }
-
-    @PostMapping("/new-create")
-    public String create(@ModelAttribute("formDTO") GroupPostDTO dto) {
-        LOG.trace("Creating new group");
-        try {
-            Group newGroup = groupService.createNew(new Group(dto.getGroupName(), dto.getYear()));
-            return String.format("redirect:/groups/%s/edit", newGroup.getId());
-        } catch (ServiceException e) {
-            throw new ControllerException(e.getMessage(),e);
-        }
     }
 
     @PostMapping("/{id}/delete")

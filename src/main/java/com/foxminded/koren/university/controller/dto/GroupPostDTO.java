@@ -3,6 +3,7 @@ package com.foxminded.koren.university.controller.dto;
 import com.foxminded.koren.university.entity.Year;
 
 import java.util.List;
+import java.util.Objects;
 
 public class GroupPostDTO {
 
@@ -67,6 +68,30 @@ public class GroupPostDTO {
 
     public void setStudentsIds(List<Integer> studentsIds) {
         this.studentsIds = studentsIds;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GroupPostDTO that = (GroupPostDTO) o;
+        return studentId == that.studentId && Objects.equals(groupId, that.groupId) && Objects.equals(groupName, that.groupName) && year == that.year && Objects.equals(studentsIds, that.studentsIds);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(groupId, groupName, year, studentId, studentsIds);
+    }
+
+    @Override
+    public String toString() {
+        return "GroupPostDTO{" +
+                "groupId=" + groupId +
+                ", groupName='" + groupName + '\'' +
+                ", year=" + year +
+                ", studentId=" + studentId +
+                ", studentsIds=" + studentsIds +
+                '}';
     }
 
     public static class Builder {

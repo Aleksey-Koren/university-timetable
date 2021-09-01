@@ -1,8 +1,7 @@
 package com.foxminded.koren.university.controller;
 
 
-import com.foxminded.koren.university.config.SpringConfig;
-import com.foxminded.koren.university.controller.exceptions.NoEntitiesInDatabaseException;
+import com.foxminded.koren.university.SpringConfigT;
 import com.foxminded.koren.university.entity.Audience;
 import com.foxminded.koren.university.service.AudienceService;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,21 +15,21 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static java.lang.Integer.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringJUnitWebConfig
-@ContextConfiguration(classes = {SpringConfig.class})
+@ContextConfiguration(classes = {SpringConfigT.class})
 @ExtendWith(MockitoExtension.class)
 class AudiencesControllerTest {
 
@@ -65,12 +64,61 @@ class AudiencesControllerTest {
     }
 
     @Test
-    void index_shouldThrowAnException_IfServiceReturnsEmptyList() throws Exception {
-        when(mockedService.getAll()).thenReturn(new ArrayList<Audience>());
-        mockMvc.perform(get("/audiences"))
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof NoEntitiesInDatabaseException))
-                .andExpect(result -> assertTrue(result.getResolvedException().
-                        getMessage().equals("There is no any audiences in database")));
+    void newAudience_shouldAddNewAudienceIntoModelAndSendItWithRightView() throws Exception {
+        MvcResult result = mockMvc.perform(get("/audiences/new"))
+                .andExpect(model().attributeHasNoErrors())
+                .andReturn();
+        ModelAndView mav = result.getModelAndView();
+        assertEquals("audiences/new", mav.getViewName());
+        assertEquals(new Audience(), mav.getModel().get("audience"));
+    }
+
+    @Test
+    void create_shouldInvokeCreateNewMethodInServiceAndRedirectCorrectly() throws Exception {
+        String number = "42";
+        String capacity = "35";
+        Audience expected = new Audience(parseInt(number), parseInt(capacity));
+        InOrder inOrder = inOrder(mockedService);
+        MockHttpServletRequestBuilder request = post("/audiences/new-create")
+                .param("number", number).param("capacity", capacity);
+        MvcResult result =  mockMvc.perform(request).andExpect(redirectedUrl("/audiences")).andReturn();
+        assertEquals(expected, result.getModelAndView().getModel().get("audience"));
+        inOrder.verify(mockedService, times(1)).createNew(any());
+    }
+    @Test
+    void edit_shouldReturnCorrectViewAndInvokeGetByIdAndAddAttributesToModel () throws Exception {
+        int testId = 8;
+        Audience expected = new Audience(132, 35);
+        when(mockedService.getById(8)).thenReturn(expected);
+        InOrder inOrder = inOrder(mockedService);
+        MvcResult result = mockMvc.perform(get("/audiences/8/edit")).andReturn();
+        ModelAndView mav = result.getModelAndView();
+        assertEquals("audiences/edit", mav.getViewName());
+        assertEquals(expected, mav.getModel().get("audience"));
+        inOrder.verify(mockedService, times(1)).getById(8);
+        inOrder.verifyNoMoreInteractions();
+    }
+
+    @Test
+    void update_shouldInvokeUpdateMethodOfServiceWithCorrectModelArgsAndRedirectToExpectedUrl() throws Exception {
+        Audience expected = new Audience(1, 10, 10);
+        MockHttpServletRequestBuilder request = post("/audiences/1/edit-update")
+                .param("id", "1")
+                .param("number", "10")
+                .param("capacity", "10");
+        InOrder inOrder = inOrder(mockedService);
+        MvcResult result = mockMvc.perform(request).andExpect(redirectedUrl("/audiences")).andReturn();
+        assertEquals(expected, result.getModelAndView().getModel().get("audience"));
+        inOrder.verify(mockedService).update(expected);
+        inOrder.verifyNoMoreInteractions();
+    }
+
+    @Test
+    void delete_shouldInvokeDeleteByIdOfServiceWithCorrectPathVariable() throws Exception {
+        Integer expectedId = 2;
+        MockHttpServletRequestBuilder request = post("/audiences/{id}/delete", expectedId);
+        mockMvc.perform(request);
+        verify(mockedService, times(1)).deleteById(expectedId);
     }
 
     private List<Audience> retrieveTestAudiences() {

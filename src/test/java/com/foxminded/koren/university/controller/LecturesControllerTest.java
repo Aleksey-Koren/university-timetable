@@ -1,8 +1,9 @@
 package com.foxminded.koren.university.controller;
 
-import com.foxminded.koren.university.config.SpringConfig;
+import com.foxminded.koren.university.SpringConfigT;
 import com.foxminded.koren.university.controller.dto.LectureGetDTO;
-import com.foxminded.koren.university.entity.*;
+import com.foxminded.koren.university.entity.Group;
+import com.foxminded.koren.university.entity.Lecture;
 import com.foxminded.koren.university.service.GroupService;
 import com.foxminded.koren.university.service.LectureService;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,15 +22,13 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 @SpringJUnitWebConfig
-@ContextConfiguration(classes = {SpringConfig.class})
+@ContextConfiguration(classes = {SpringConfigT.class})
 @ExtendWith(MockitoExtension.class)
 class LecturesControllerTest {
 

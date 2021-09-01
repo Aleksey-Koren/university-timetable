@@ -19,6 +19,12 @@ public class Audience {
         this.capacity = capacity;
     }
 
+    public Audience(int id, int number, int capacity) {
+        this.id = id;
+        this.number = number;
+        this.capacity = capacity;
+    }
+
     public int getId() {
         return id;
     }

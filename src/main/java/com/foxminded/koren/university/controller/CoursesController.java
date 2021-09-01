@@ -41,20 +41,8 @@ public class CoursesController extends BaseController {
         return "courses/index";
     }
 
-    @GetMapping("/{id}")
-    public String getById(@PathVariable("id") Integer id, Model model) {
-        LOG.trace("Retrieving course by id = {}", id);
-        try {
-            model.addAttribute("audience", courseService.getById(id));
-        } catch (ServiceException e) {
-            throw new ControllerException(e.getMessage(), e);
-        }
-        LOG.trace("Retrieving course by id = {} : success", id);
-        return "courses/getById";
-    }
-
     @GetMapping("/new")
-    public String newAudience(@ModelAttribute("course") Course course) {
+    public String newCourse(@ModelAttribute("course") Course course) {
         LOG.trace("Request for form to create new course");
         return "courses/new";
     }
@@ -78,7 +66,7 @@ public class CoursesController extends BaseController {
         return "courses/edit";
     }
 
-    @PostMapping("/{id}/update")
+    @PostMapping("/{id}/edit-update")
     public String update(@ModelAttribute("course") Course course) {
         LOG.trace("Updating course id = {}", course.getId());
         try {

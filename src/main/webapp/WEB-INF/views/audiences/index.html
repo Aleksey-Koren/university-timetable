@@ -29,7 +29,7 @@
                     </td>
                     <td th:text="${audience.capacity}">capacity</td>
                     <td>
-                        <form th:method="DELETE" th:action="@{/audiences/{id}(id = ${audience.id})}">
+                        <form th:method="POST" th:action="@{/audiences/{id}/delete (id = ${audience.id})}">
                             <input type="submit" value="Delete"/>
                         </form>
                     </td>

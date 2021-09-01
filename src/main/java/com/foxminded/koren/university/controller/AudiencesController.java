@@ -31,20 +31,9 @@ public class AudiencesController extends BaseController {
     public String index(Model model) {
         LOG.trace("Retrieving all audiences");
         List<Audience> audiences = audienceService.getAll();
-        if (audiences.isEmpty()) {
-            throw new NoEntitiesInDatabaseException("There is no any audiences in database");
-        }
         model.addAttribute("audiences", audiences);
         LOG.trace("Retrieving all audiences: success");
         return "audiences/index";
-    }
-
-    @GetMapping("/{id}")
-    public String getById(@PathVariable("id") Integer id, Model model) {
-        LOG.trace("Retrieving audience by id = {}", id);
-        model.addAttribute("audience", audienceService.getById(id));
-        LOG.trace("Retrieving audience by id = {} : success", id);
-        return "audiences/getById";
     }
 
     @GetMapping("/new")
@@ -53,7 +42,7 @@ public class AudiencesController extends BaseController {
         return "audiences/new";
     }
 
-    @PostMapping
+    @PostMapping("new-create")
     public String create(@ModelAttribute("audience") Audience audience) {
         LOG.trace("Creating new audience");
         try {
@@ -62,7 +51,7 @@ public class AudiencesController extends BaseController {
             throw new ControllerException(e);
         }
         LOG.trace("Creating new audience : success");
-        return "/audiences/createSuccess";
+        return "redirect:/audiences";
     }
 
 
@@ -73,7 +62,7 @@ public class AudiencesController extends BaseController {
         return "audiences/edit";
     }
 
-    @PatchMapping("/{id}")
+    @PostMapping("/{id}/edit-update")
     public String update(@ModelAttribute("audience") Audience audience) {
         LOG.trace("Updating audience id = {}", audience.getId());
         try {
@@ -85,7 +74,7 @@ public class AudiencesController extends BaseController {
         return "redirect:/audiences";
     }
 
-    @DeleteMapping("/{id}")
+    @PostMapping("/{id}/delete")
     public String delete(@PathVariable("id") Integer id) {
         LOG.trace("Deleting audience id = {}", id);
         audienceService.deleteById(id);
