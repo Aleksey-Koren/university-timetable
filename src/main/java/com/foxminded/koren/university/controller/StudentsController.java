@@ -3,7 +3,6 @@ package com.foxminded.koren.university.controller;
 import com.foxminded.koren.university.controller.dto.StudentGetDTO;
 import com.foxminded.koren.university.controller.dto.StudentPostDTO;
 import com.foxminded.koren.university.controller.exceptions.ControllerException;
-import com.foxminded.koren.university.controller.exceptions.NoEntitiesInDatabaseException;
 import com.foxminded.koren.university.entity.Group;
 import com.foxminded.koren.university.entity.Student;
 import com.foxminded.koren.university.service.GroupService;
@@ -15,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/students")
@@ -70,17 +67,18 @@ public class StudentsController extends BaseController {
         LOG.trace("Retrieving form to edit student");
         Student student = studentService.getById(id);
         StudentPostDTO formDTO = new StudentPostDTO(student.getId(),
+                student.getGroup() != null ? student.getGroup().getId() : null,
                 student.getFirstName(),
-                student.getLastName(),
-                student.getGroup() != null ? student.getGroup().getId() : null);
+                student.getLastName());
         model.addAttribute("student", student);
         model.addAttribute("formDTO", formDTO);
         return "students/edit";
     }
 
     @PostMapping("/{id}/edit-update")
-    public String update(@ModelAttribute("formDTO") StudentPostDTO formDTO) {
-        LOG.trace("Updating student id = {}", formDTO.getId());
+    public String update(@ModelAttribute("formDTO") StudentPostDTO formDTO, @PathVariable("id") int id) {
+        LOG.trace("Updating student id = {}", formDTO.getStudentId());
+        formDTO.setStudentId(id);
         Student student = createStudent(formDTO);
         try {
             studentService.update(student);
@@ -92,7 +90,7 @@ public class StudentsController extends BaseController {
 
     private Student createStudent(StudentPostDTO formDTO) {
         Student result = new Student();
-        result.setId(formDTO.getId());
+        result.setId(formDTO.getStudentId());
         result.setFirstName(formDTO.getFirstName());
         result.setLastName(formDTO.getLastName());
         result.setGroup(formDTO.getGroupId() != null ? new Group(formDTO.getGroupId()) : null);
@@ -136,7 +134,7 @@ public class StudentsController extends BaseController {
         return String.format("redirect:/students/%s/edit", id);
     }
 
-    @PostMapping("/{id}-delete")
+    @PostMapping("/{id}/delete")
     public String delete(@PathVariable("id") int id) {
         LOG.trace("Deleting student id = {}", id);
         try {

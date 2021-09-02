@@ -20,7 +20,7 @@
         <div th:replace="templates/sideMenu :: sideMenu"></div>
         <div class="col">
             <h1 class="d-flex justify-content-center" th:text="'Create new lecture'"></h1>
-            <form th:method="POST" th:action="@{/lectures}" th:object="${formDTO}">
+            <form th:method="POST" th:action="@{/lectures/new-create}" th:object="${formDTO}">
                 <div class="d-flex justify-content-between" style="padding: 5px">
                     <label th:for="courseId"><h3>Course:</h3></label>
                     <select name="courseId" id="courseId">

@@ -1,13 +1,17 @@
 package com.foxminded.koren.university.controller;
 
 import com.foxminded.koren.university.SpringConfigT;
-import com.foxminded.koren.university.config.SpringConfig;
-import com.foxminded.koren.university.controller.exceptions.NoEntitiesInDatabaseException;
+import com.foxminded.koren.university.controller.dto.StudentGetDTO;
+import com.foxminded.koren.university.controller.dto.StudentPostDTO;
+import com.foxminded.koren.university.entity.Group;
 import com.foxminded.koren.university.entity.Student;
+import com.foxminded.koren.university.service.GroupService;
 import com.foxminded.koren.university.service.StudentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -16,17 +20,17 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringJUnitWebConfig
 @ContextConfiguration(classes = {SpringConfigT.class})
@@ -37,16 +41,25 @@ public class StudentsControllerTest {
 
     @Mock
     @Autowired
-    private StudentService mockedService;
+    private StudentService mockedStudentService;
+    @Mock
+    @Autowired
+    private GroupService mockedGroupService;
 
     @BeforeEach
     private void setup() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new StudentsController(mockedService)).build();
+        this.mockMvc = MockMvcBuilders
+                .standaloneSetup(new StudentsController(mockedStudentService, mockedGroupService)).build();
     }
 
+    @Captor
+    ArgumentCaptor<Student> studentCaptor;
+
+    @Captor
+    ArgumentCaptor<Integer> integerArgumentCaptor;
     @Test
     void index_shouldAddExpectedListIntoModelAndSendItToRightView() throws Exception {
-        when(mockedService.getAll()).thenReturn(retrieveTestStudents());
+        when(mockedStudentService.getAll()).thenReturn(retrieveTestStudents());
         MvcResult mvcResult = mockMvc.perform(get("/students"))
                 .andExpect(model().attributeHasNoErrors())
                 .andReturn();
@@ -56,11 +69,137 @@ public class StudentsControllerTest {
 
     @Test
     void index_shouldCallGetAllMethodOfService() throws Exception {
-        when(mockedService.getAll()).thenReturn(retrieveTestStudents());
-        InOrder inOrder = inOrder(mockedService);
+        when(mockedStudentService.getAll()).thenReturn(retrieveTestStudents());
+        InOrder inOrder = inOrder(mockedStudentService);
         mockMvc.perform(get("/students"));
-        inOrder.verify(mockedService, times(1)).getAll();
+        inOrder.verify(mockedStudentService, times(1)).getAll();
     }
+
+    @Test
+    void newStudent_shouldReturnRightWViewAndAddStudentToModel() throws Exception {
+        Student student = new Student();
+        MvcResult result = mockMvc.perform(get("/students/new"))
+                .andExpect(model().attributeHasNoErrors())
+                .andReturn();
+        ModelAndView mav = result.getModelAndView();
+        assertEquals(student, mav.getModel().get("student"));
+        assertEquals("students/new", mav.getViewName());
+    }
+
+    @Test
+    void create_shouldInvokeCreateNewMethodInServiceWithExpectedParamAndRedirectCorrectly() throws Exception {
+        Student expected = new Student("firstName", "lastName");
+        int expectedId = 0;
+        MockHttpServletRequestBuilder request = post("/students/new-create")
+                .param("firstName", expected.getFirstName())
+                .param("lastName",expected.getLastName());
+        MvcResult result = mockMvc.perform(request)
+                .andExpect(model().attributeHasNoErrors())
+                .andExpect(redirectedUrlTemplate("/students/{id}/edit", expectedId))
+                .andReturn();
+        verify(mockedStudentService).createNew(studentCaptor.capture());
+        assertEquals(expected, result.getModelAndView().getModel().get("student"));
+        expected.setId(studentCaptor.getValue().getId());
+        assertEquals(expected, studentCaptor.getValue());
+    }
+
+    @Test
+    void edit_shouldReturnCorrectViewAndAddAttributesToModelAndInvokeServicesMethodsCorrectly() throws Exception {
+        int testId = 1;
+        Student expected = new Student(testId, new Group(1), "firstName", "lastName");
+        StudentPostDTO formDTO = new StudentPostDTO(expected.getId(), expected.getGroup().getId(),
+                expected.getFirstName(), expected.getLastName());
+        when(mockedStudentService.getById(testId)).thenReturn(expected);
+        MvcResult result = mockMvc.perform(get("/students/{id}/edit", testId))
+                .andExpect(model().attributeHasNoErrors())
+                .andReturn();
+        verify(mockedStudentService).getById(testId);
+        ModelAndView mav = result.getModelAndView();
+        assertEquals("students/edit", mav.getViewName());
+        assertEquals(expected, mav.getModel().get("student"));
+        assertEquals(formDTO, mav.getModel().get("formDTO"));
+    }
+
+    @Test
+    void update_shouldInvokeUpdateMethodOfServiceWithCorrectModelArgsAndRedirectToExpectedUrl() throws Exception {
+        int testId = 1;
+        Student expected = new Student(testId, new Group(1), "firstName", "lastName");
+        StudentPostDTO formDTO = new StudentPostDTO(expected.getId(), expected.getGroup().getId(),
+                expected.getFirstName(), expected.getLastName());
+        MockHttpServletRequestBuilder request = post("/students/{id}/edit-update", testId)
+                .param("groupId", String.valueOf(expected.getGroup().getId()))
+                .param("firstName", expected.getFirstName())
+                .param("lastName", expected.getLastName());
+        MvcResult result = mockMvc.perform(request)
+                .andExpect(model().attributeHasNoErrors())
+                .andExpect(redirectedUrl("/students"))
+                .andReturn();
+        verify(mockedStudentService).update(studentCaptor.capture());
+        assertEquals(expected, studentCaptor.getValue());
+        assertEquals(formDTO, result.getModelAndView().getModel().get("formDTO"));
+    }
+
+    @Test
+    void selectGroup_shouldAddAttributesToModelAndReturnExpectedView() throws Exception {
+        int testId = 5;
+        Student expected = new Student(testId, new Group(1), "firstName", "lastName");
+        List<Group> testGroups = List.of(new Group(1), new Group(2), new Group(3));
+        StudentGetDTO dto = new StudentGetDTO(expected, testGroups);
+        when(mockedStudentService.getById(testId)).thenReturn(expected);
+        when(mockedGroupService.getAll()).thenReturn(testGroups);
+        MvcResult result = mockMvc.perform(get("/students/{id}/edit-select", testId))
+                .andExpect(model().attributeHasNoErrors())
+                .andReturn();
+        ModelAndView mav = result.getModelAndView();
+        assertEquals("students/edit-select", mav.getViewName());
+        assertEquals(dto, mav.getModel().get("dto"));
+        assertEquals(new StudentPostDTO(), mav.getModel().get("formDTO"));
+    }
+
+    @Test
+    void addStudentToGroup_shouldInvokeServiceMethodWithCorrectArgs() throws Exception {
+        int testStudentId = 2;
+        int testGroupId = 4;
+        StudentPostDTO formDTO = new StudentPostDTO();
+        formDTO.setGroupId(testGroupId);
+        MockHttpServletRequestBuilder request = post("/students/{id}/edit-add", testStudentId)
+                .param("groupId", String.valueOf(testGroupId));
+        MvcResult result = mockMvc.perform(request)
+                .andExpect(model().attributeHasNoErrors())
+                .andExpect(redirectedUrlTemplate("/students/{id}/edit", testStudentId))
+                .andReturn();
+        verify(mockedStudentService).addStudentToGroup(integerArgumentCaptor.capture(),
+                integerArgumentCaptor.capture());
+        assertEquals(testStudentId, integerArgumentCaptor.getAllValues().get(0));
+        assertEquals(testGroupId, integerArgumentCaptor.getAllValues().get(1));
+        assertEquals(formDTO, result.getModelAndView().getModel().get("formDTO"));
+    }
+
+    @Test
+    void removeStudentFromGroup_shouldInvokeServiceMethodWithCorrectArgs() throws Exception {
+        int testStudentId = 2;
+        int testGroupId = 4;
+        StudentPostDTO formDTO = new StudentPostDTO();
+        formDTO.setGroupId(testGroupId);
+        MockHttpServletRequestBuilder request = post("/students/{id}/edit-remove", testStudentId)
+                .param("groupId", String.valueOf(testGroupId));
+        MvcResult result = mockMvc.perform(request)
+                .andExpect(model().attributeHasNoErrors())
+                .andExpect(redirectedUrlTemplate("/students/{id}/edit", testStudentId))
+                .andReturn();
+        verify(mockedStudentService).removeStudentFromGroup(integerArgumentCaptor.capture());
+        assertEquals(testStudentId, integerArgumentCaptor.getValue());
+        assertEquals(formDTO, result.getModelAndView().getModel().get("formDTO"));
+    }
+
+    @Test
+    void delete_shouldInvokeDeleteByIdOfServiceWithCorrectPathVariable() throws Exception {
+        Integer expectedId = 2;
+        MockHttpServletRequestBuilder request = post("/students/{id}/delete", expectedId);
+        mockMvc.perform(request);
+        verify(mockedStudentService).deleteById(expectedId);
+    }
+
 
     private List<Student> retrieveTestStudents() {
         return List.of(new Student(), new Student(), new Student());

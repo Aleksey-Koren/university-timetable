@@ -19,6 +19,10 @@ public class Lecture implements TimetableEvent {
         
     }
 
+    public Lecture(int id) {
+        this.id = id;
+    }
+
     public Lecture(Audience audience,
                    Teacher teacher,
                    Course course,

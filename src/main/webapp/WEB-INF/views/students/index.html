@@ -35,7 +35,7 @@
                     <td th:text="${student.group} != null ? ${student.group.name} : '---'">group</td>
                     <td th:text="${student.group} != null ? ${student.group.year} : '---'">year</td>
                     <td>
-                        <form th:method="POST" th:action="@{/students/{id}-delete(id = ${student.id})}">
+                        <form th:method="POST" th:action="@{/students/{id}/delete(id = ${student.id})}">
                             <input type="submit" value="Delete"/>
                         </form>
                     </td>

@@ -66,6 +66,35 @@ public class LecturesController extends BaseController {
         return  dtos;
     }
 
+    @GetMapping("/new")
+    public String newLecture(Model model, @ModelAttribute("formDTO") LecturePostDTO formDTO) {
+        LOG.trace("Request for form to create new Lecture");
+        LectureGetDTO dto = new LectureGetDTO.Builder()
+                .allCourses(courseService.getAll())
+                .allAudiences(audienceService.getAll())
+                .allTeachers(teacherService.getAll())
+                .build();
+        model.addAttribute("dto", dto);
+        return "lectures/new";
+    }
+
+    @PostMapping("new-create")
+    public String create(@ModelAttribute("formDTO") LecturePostDTO formDTO) {
+        LOG.trace("Creating new lecture");
+        Lecture lecture = new Lecture(new Audience(formDTO.getAudienceId()),
+                new Teacher(formDTO.getTeacherId()),
+                new Course(formDTO.getCourseId()),
+                formDTO.getStartTime(),
+                formDTO.getEndTime());
+        try {
+            lectureService.createNew(lecture);
+        } catch (ServiceException e) {
+            throw new ControllerException(e.getMessage(), e);
+        }
+        LOG.trace("Creating new lecture : success. lecture id = {}", lecture.getId());
+        return String.format("redirect:/lectures/%s/edit", lecture.getId());
+    }
+
     @GetMapping("/{id}/edit")
     public String edit(Model model, @PathVariable("id") Integer id) {
         LOG.trace("Request for form to update lecture id = {}", id);
@@ -88,7 +117,7 @@ public class LecturesController extends BaseController {
         return "lectures/edit";
     }
 
-    @PatchMapping("/{id}")
+    @PostMapping("/{id}/edit-update")
     public String update(@ModelAttribute("formDTO") LecturePostDTO formDTO, @PathVariable("id") int id) {
         LOG.trace("Updating lecture id = {}", id);
         Lecture lecture = new Lecture(id,
@@ -103,10 +132,10 @@ public class LecturesController extends BaseController {
             throw new ControllerException(e);
         }
         LOG.trace("Updating lecture id = {} : success", lecture.getId());
-        return String.format("redirect:/lectures/%s/edit", id);
+        return "redirect:/lectures";
     }
 
-    @PatchMapping("/{id}-remove-group")
+    @PostMapping("/{id}-remove-group")
     public String removeGroup(@ModelAttribute("formDTO") LecturePostDTO formDTO, @PathVariable("id") int id) {
         LOG.trace("Removing group id = {} from lecture id = {}", id, formDTO.getGroupId());
         try {
@@ -118,7 +147,7 @@ public class LecturesController extends BaseController {
         return String.format("redirect:/lectures/%s/edit", id);
     }
 
-    @PatchMapping("/{id}-add-group")
+    @PostMapping("/{id}-add-group")
     public String addGroup(@ModelAttribute("formDTO") LecturePostDTO formDTO, @PathVariable("id") int id) {
         LOG.trace("Adding group id = {} to lecture id = {}", id, formDTO.getGroupId());
         try {
@@ -130,36 +159,7 @@ public class LecturesController extends BaseController {
         return String.format("redirect:/lectures/%s/edit", id);
     }
 
-    @GetMapping("/new")
-    public String newLecture(Model model, @ModelAttribute("formDTO") LecturePostDTO formDTO) {
-        LOG.trace("Request for form to create new Lecture");
-        LectureGetDTO dto = new LectureGetDTO.Builder()
-                .allCourses(courseService.getAll())
-                .allAudiences(audienceService.getAll())
-                .allTeachers(teacherService.getAll())
-                .build();
-        model.addAttribute("dto", dto);
-        return "lectures/new";
-    }
-
-    @PostMapping
-    public String create(@ModelAttribute("formDTO") LecturePostDTO formDTO) {
-        LOG.trace("Creating new lecture");
-        Lecture lecture = new Lecture(new Audience(formDTO.getAudienceId()),
-                new Teacher(formDTO.getTeacherId()),
-                new Course(formDTO.getCourseId()),
-                formDTO.getStartTime(),
-                formDTO.getEndTime());
-        try {
-            lectureService.createNew(lecture);
-        } catch (ServiceException e) {
-            throw new ControllerException(e.getMessage(), e);
-        }
-        LOG.trace("Creating new lecture : success. lecture id = {}", lecture.getId());
-        return String.format("redirect:/lectures/%s/edit", lecture.getId());
-    }
-
-    @DeleteMapping("/{id}")
+    @PostMapping("/{id}/delete")
     public String delete(@PathVariable("id") int id) {
         LOG.trace("Deleting lecture id = {}", id);
         try {

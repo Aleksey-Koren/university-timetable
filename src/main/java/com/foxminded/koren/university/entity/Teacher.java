@@ -21,6 +21,12 @@ public class Teacher implements TimetablePerson {
         this.lastName = lastName;
     }
 
+    public Teacher(int id, String firstName, String lastName) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public int getId() {
         return id;
     }

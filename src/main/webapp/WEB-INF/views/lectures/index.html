@@ -51,7 +51,7 @@
                         teacher
                     </td>
                     <td>
-                        <form th:method="DELETE" th:action="@{/lectures/{id}(id = ${dto.lecture.id})}">
+                        <form th:method="POST" th:action="@{/lectures/{id}/delete(id = ${dto.lecture.id})}">
                             <input type="submit" value="Delete"/>
                         </form>
                     </td>

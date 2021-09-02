@@ -4,6 +4,7 @@ import com.foxminded.koren.university.entity.Group;
 import com.foxminded.koren.university.entity.Student;
 
 import java.util.List;
+import java.util.Objects;
 
 public class StudentGetDTO {
 
@@ -51,5 +52,28 @@ public class StudentGetDTO {
 
     public void setAllGroups(List<Group> allGroups) {
         this.allGroups = allGroups;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StudentGetDTO that = (StudentGetDTO) o;
+        return Objects.equals(student, that.student)
+                && Objects.equals(group, that.group) && Objects.equals(allGroups, that.allGroups);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(student, group, allGroups);
+    }
+
+    @Override
+    public String toString() {
+        return "StudentGetDTO{" +
+                "student=" + student +
+                ", group=" + group +
+                ", allGroups=" + allGroups +
+                '}';
     }
 }

@@ -3,6 +3,7 @@ package com.foxminded.koren.university.controller.dto;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class LecturePostDTO {
@@ -92,5 +93,18 @@ public class LecturePostDTO {
     @Override
     public int hashCode() {
         return Objects.hash(courseId, audienceId, teacherId, startTime, endTime, groupId);
+    }
+
+    @Override
+    public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        return "LecturePostDTO{" +
+                "courseId=" + courseId +
+                ", audienceId=" + audienceId +
+                ", teacherId=" + teacherId +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", groupId=" + groupId +
+                '}';
     }
 }

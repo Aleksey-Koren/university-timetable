@@ -10,7 +10,6 @@ public class LectureGetDTO {
     private Lecture lecture;
     private List<Group> groups;
     private List<Course> allCourses;
-    private List<Group> allGroups;
     private List<Audience> allAudiences;
     private List<Teacher> allTeachers;
     private List<Group> allGroupsExceptAdded;
@@ -43,14 +42,6 @@ public class LectureGetDTO {
         this.allCourses = allCourses;
     }
 
-    public List<Group> getAllGroups() {
-        return allGroups;
-    }
-
-    public void setAllGroups(List<Group> allGroups) {
-        this.allGroups = allGroups;
-    }
-
     public List<Audience> getAllAudiences() {
         return allAudiences;
     }
@@ -80,12 +71,29 @@ public class LectureGetDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         LectureGetDTO that = (LectureGetDTO) o;
-        return Objects.equals(lecture, that.lecture) && Objects.equals(groups, that.groups) && Objects.equals(allCourses, that.allCourses) && Objects.equals(allGroups, that.allGroups) && Objects.equals(allAudiences, that.allAudiences) && Objects.equals(allTeachers, that.allTeachers) && Objects.equals(allGroupsExceptAdded, that.allGroupsExceptAdded);
+        return Objects.equals(lecture, that.lecture)
+                && Objects.equals(groups, that.groups)
+                && Objects.equals(allCourses, that.allCourses)
+                && Objects.equals(allAudiences, that.allAudiences)
+                && Objects.equals(allTeachers, that.allTeachers)
+                && Objects.equals(allGroupsExceptAdded, that.allGroupsExceptAdded);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(lecture, groups, allCourses, allGroups, allAudiences, allTeachers, allGroupsExceptAdded);
+        return Objects.hash(lecture, groups, allCourses, allAudiences, allTeachers, allGroupsExceptAdded);
+    }
+
+    @Override
+    public String toString() {
+        return "LectureGetDTO{" +
+                "lecture=" + lecture +
+                ", groups=" + groups +
+                ", allCourses=" + allCourses +
+                ", allAudiences=" + allAudiences +
+                ", allTeachers=" + allTeachers +
+                ", allGroupsExceptAdded=" + allGroupsExceptAdded +
+                '}';
     }
 
     public static class Builder {
@@ -108,11 +116,6 @@ public class LectureGetDTO {
 
         public Builder allCourses(List<Course> allCourses) {
             newDTO.allCourses = allCourses;
-            return this;
-        }
-
-        public Builder allGroups(List<Group> allGroups) {
-            newDTO.allGroups = allGroups;
             return this;
         }
 

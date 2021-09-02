@@ -76,10 +76,12 @@ public class GroupsControllerTest {
     }
 
     @Test
-    void newCourse_shouldReturnRightWViewAndAddDtosToModel() throws Exception {
+    void newGroup_shouldReturnRightWViewAndAddDtosToModel() throws Exception {
         GroupGetDTO dto = new GroupGetDTO.Builder().years().build();
         GroupPostDTO formDTO = new GroupPostDTO();
-        MvcResult result = mockMvc.perform(get("/groups/new")).andExpect(model().attributeHasNoErrors()).andReturn();
+        MvcResult result = mockMvc.perform(get("/groups/new"))
+                .andExpect(model().attributeHasNoErrors())
+                .andReturn();
         ModelAndView mav = result.getModelAndView();
         assertEquals(dto, mav.getModel().get("dto"));
         assertEquals(formDTO, mav.getModel().get("formDTO"));
@@ -127,10 +129,6 @@ public class GroupsControllerTest {
         assertEquals(testPostDTO, mav.getModel().get("formDTO"));
         inOrder.verify(mockedGroupService, times(1)).getById(testGroupId);
         inOrder.verify(mockedStudentService, times(1)).getByGroupId(testGroupId);
-    }
-
-    private List<Group> retrieveTestGroups() {
-        return List.of(new Group("name1", Year.FIRST), new Group("name2", Year.SECOND));
     }
 
     @Test
@@ -208,7 +206,11 @@ public class GroupsControllerTest {
         Integer expectedId = 2;
         MockHttpServletRequestBuilder request = post("/groups/{id}/delete", expectedId);
         mockMvc.perform(request);
-        verify(mockedGroupService, times(1)).deleteById(expectedId);
+        verify(mockedGroupService).deleteById(expectedId);
+    }
+
+    private List<Group> retrieveTestGroups() {
+        return List.of(new Group("name1", Year.FIRST), new Group("name2", Year.SECOND));
     }
 
     private Group retrieveTestGroup() {

@@ -13,7 +13,12 @@ public class Student implements TimetablePerson {
     public Student() {
         
     }
-    
+
+    public Student(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public Student(Group group, String firstName, String lastName) {
         this.group = group;
         this.firstName = firstName;
@@ -26,6 +31,7 @@ public class Student implements TimetablePerson {
         this.firstName = firstName;
         this.lastName = lastName;
     }
+
 
     public int getId() {
         return id;

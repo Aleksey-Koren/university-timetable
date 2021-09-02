@@ -2,10 +2,9 @@ package com.foxminded.koren.university.controller;
 
 import com.foxminded.koren.university.SpringConfigT;
 import com.foxminded.koren.university.controller.dto.LectureGetDTO;
-import com.foxminded.koren.university.entity.Group;
-import com.foxminded.koren.university.entity.Lecture;
-import com.foxminded.koren.university.service.GroupService;
-import com.foxminded.koren.university.service.LectureService;
+import com.foxminded.koren.university.controller.dto.LecturePostDTO;
+import com.foxminded.koren.university.entity.*;
+import com.foxminded.koren.university.service.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,15 +16,22 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
 @SpringJUnitWebConfig
 @ContextConfiguration(classes = {SpringConfigT.class})
@@ -40,10 +46,22 @@ class LecturesControllerTest {
     @Mock
     @Autowired
     private GroupService mockedGroupService;
+    @Mock
+    @Autowired
+    private CourseService mockedCourseService;
+    @Mock
+    @Autowired
+    private AudienceService mockedAudienceService;
+    @Mock
+    @Autowired
+    private TeacherService mockedTeacherService;
 
     @BeforeEach
     private void setup() {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(new LecturesController(mockedLectureService, mockedGroupService)).build();
+        this.mockMvc = MockMvcBuilders
+                .standaloneSetup(new LecturesController(mockedLectureService,
+                        mockedGroupService, mockedCourseService, mockedAudienceService,
+                                            mockedTeacherService)).build();
     }
 
     @Test
@@ -62,13 +80,162 @@ class LecturesControllerTest {
     @Test
     void index_shouldCallGetAllMethodOfService() throws Exception {
         when(mockedLectureService.getAll()).thenReturn(retrieveTestLectures());
-        InOrder inOrder = inOrder(mockedLectureService,mockedGroupService);
+        InOrder inOrder = inOrder(mockedLectureService, mockedGroupService);
         mockMvc.perform(get("/lectures"));
         inOrder.verify(mockedLectureService, times(1)).getAll();
-        inOrder.verify(mockedGroupService,times(retrieveTestLectures().size())).getGroupsByLectureId(any());
+        inOrder.verify(mockedGroupService, times(retrieveTestLectures().size())).getGroupsByLectureId(any());
         inOrder.verifyNoMoreInteractions();
     }
 
+    @Test
+    void newLecture_shouldAddAttributesToModelAndReturnCorrectView() throws Exception {
+        LectureGetDTO dto = retrieveGetDTONew();
+        when(mockedCourseService.getAll()).thenReturn(dto.getAllCourses());
+        when(mockedAudienceService.getAll()).thenReturn(dto.getAllAudiences());
+        when(mockedTeacherService.getAll()).thenReturn(dto.getAllTeachers());
+        MvcResult result = mockMvc.perform(get("/lectures/new"))
+                .andExpect(model().attributeHasNoErrors())
+                .andReturn();
+        ModelAndView mav = result.getModelAndView();
+        assertEquals("lectures/new", mav.getViewName());
+        assertEquals(dto, mav.getModel().get("dto"));
+    }
+
+    @Test
+    void create_shouldAddAttributesToModelAndInvokeServiceMethodAndRedirectToCurrentURL() throws Exception {
+        int testId = 2;
+        when(mockedLectureService.createNew(any())).thenReturn(new Lecture(testId));
+        LecturePostDTO formDTO = retrievePostDTO(retrieveGetDTO());
+        MockHttpServletRequestBuilder request = post("/lectures/new-create")
+                .param("courseId", formDTO.getCourseId().toString())
+                .param("audienceId", formDTO.getAudienceId().toString())
+                .param("teacherId", formDTO.getTeacherId().toString())
+                .param("startTime", formDTO.getStartTime().toString())
+                .param("endTime", formDTO.getEndTime().toString());
+        MvcResult result = mockMvc.perform(request)
+                .andExpect(model().attributeHasNoErrors())
+                .andExpect(redirectedUrl(String.format("/lectures/%s/edit", 0)))
+                .andReturn();
+        ModelAndView mav = result.getModelAndView();
+        assertEquals(formDTO, mav.getModel().get("formDTO"));
+    }
+
+    @Test
+    void edit_shouldCallMethodsOfServiceAndReturnCorrectView() throws Exception {
+        int testId = 2;
+        LectureGetDTO dto = retrieveGetDTO();
+        LecturePostDTO formDTO = retrievePostDTO(dto);
+        when(mockedLectureService.getById(testId)).thenReturn(dto.getLecture());
+        when(mockedGroupService.getGroupsByLectureId(testId)).thenReturn(dto.getGroups());
+        when(mockedCourseService.getAll()).thenReturn(dto.getAllCourses());
+        when(mockedAudienceService.getAll()).thenReturn(dto.getAllAudiences());
+        when(mockedTeacherService.getAll()).thenReturn(dto.getAllTeachers());
+        when(mockedGroupService.getAllExceptAddedToLecture(testId)).thenReturn(dto.getAllGroupsExceptAdded());
+        MvcResult result = mockMvc.perform(get("/lectures/{id}/edit", testId))
+                .andExpect(model().attributeHasNoErrors()).andReturn();
+        ModelAndView mav = result.getModelAndView();
+        assertEquals("lectures/edit", mav.getViewName());
+        verify(mockedLectureService).getById(testId);
+        verify(mockedGroupService).getGroupsByLectureId(testId);
+        verify(mockedCourseService).getAll();
+        verify(mockedAudienceService).getAll();
+        verify(mockedTeacherService).getAll();
+        verify(mockedGroupService).getAllExceptAddedToLecture(testId);
+        assertEquals(dto, mav.getModel().get("dto"));
+        assertEquals(formDTO, mav.getModel().get("formDTO"));
+    }
+
+    @Test
+    void update_shouldInvokeUpdateMethodOfServiceWithCorrectModelArgsAndRedirectToExpectedUrl() throws Exception {
+        int testId = 2;
+        LecturePostDTO formDTO = retrievePostDTO(retrieveGetDTO());
+        MockHttpServletRequestBuilder request = post("/lectures/{id}/edit-update", testId)
+                .param("courseId", formDTO.getCourseId().toString())
+                .param("audienceId", formDTO.getAudienceId().toString())
+                .param("teacherId", formDTO.getTeacherId().toString())
+                .param("startTime", formDTO.getStartTime().toString())
+                .param("endTime", formDTO.getEndTime().toString());
+        MvcResult result = mockMvc.perform(request)
+                .andExpect(model().attributeHasNoErrors())
+                .andExpect(redirectedUrl("/lectures"))
+                .andReturn();
+        ModelAndView mav = result.getModelAndView();
+        assertEquals(formDTO, mav.getModel().get("formDTO"));
+        verify(mockedLectureService).update(new Lecture(testId,
+                new Audience(formDTO.getAudienceId()),
+                new Teacher(formDTO.getTeacherId()),
+                new Course(formDTO.getCourseId()),
+                formDTO.getStartTime(),
+                formDTO.getEndTime()));
+    }
+
+    @Test
+    void removeGroup_shouldInvokeRemoveMethodOfServiceWithCorrectModelArgsAndRedirectToExpectedUrl() throws Exception {
+        int testId = 2;
+        LecturePostDTO formDTO = new LecturePostDTO();
+        formDTO.setGroupId(testId);
+        MockHttpServletRequestBuilder request = post("/lectures/{id}-remove-group", testId)
+                .param("groupId", "2");
+        MvcResult result = mockMvc.perform(request)
+                .andExpect(model().attributeHasNoErrors())
+                .andExpect(redirectedUrl(String.format("/lectures/%s/edit", testId)))
+                .andReturn();
+        assertEquals(formDTO, result.getModelAndView().getModel().get("formDTO"));
+    }
+
+    @Test
+    void addGroup_shouldInvokeRemoveMethodOfServiceWithCorrectModelArgsAndRedirectToExpectedUrl() throws Exception {
+        int testId = 2;
+        LecturePostDTO formDTO = new LecturePostDTO();
+        formDTO.setGroupId(testId);
+        MockHttpServletRequestBuilder request = post("/lectures/{id}-add-group", testId)
+                .param("groupId", "2");
+        MvcResult result = mockMvc.perform(request)
+                .andExpect(model().attributeHasNoErrors())
+                .andExpect(redirectedUrl(String.format("/lectures/%s/edit", testId)))
+                .andReturn();
+        assertEquals(formDTO, result.getModelAndView().getModel().get("formDTO"));
+    }
+
+    @Test
+    void delete_shouldInvokeDeleteByIdOfServiceWithCorrectPathVariable() throws Exception {
+        Integer expectedId = 2;
+        MockHttpServletRequestBuilder request = post("/lectures/{id}/delete", expectedId);
+        mockMvc.perform(request);
+        verify(mockedLectureService).deleteById(expectedId);
+    }
+
+    private LecturePostDTO retrievePostDTO(LectureGetDTO dto) {
+        return new LecturePostDTO(dto.getLecture().getCourse().getId(),
+                dto.getLecture().getAudience().getId(),
+                dto.getLecture().getTeacher().getId(),
+                dto.getLecture().getStartTime(),
+                dto.getLecture().getEndTime());
+    }
+
+    private LectureGetDTO retrieveGetDTO() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        return new LectureGetDTO.Builder().lecture(new Lecture(2,
+                                                               new Audience(1, 20, 20),
+                                                               new Teacher(1, "fName1", "lName1"),
+                                                               new Course(1, "name", "description"),
+                                                                LocalDateTime.parse("2021-09-02T13:48", formatter),
+                                                                LocalDateTime.parse("2021-09-02T14:48", formatter)))
+                                          .groups(List.of(new Group(1, "name", Year.FIRST)))
+                                          .allCourses(List.of(new Course(1, "name", "description")))
+                                          .allAudiences(List.of(new Audience(1, 20, 20)))
+                                          .allTeachers(List.of(new Teacher(1, "fName1", "lName1")))
+                                          .allGroupsExceptAdded(new ArrayList<>())
+                                          .build();
+    }
+
+    private LectureGetDTO retrieveGetDTONew() {
+        return new LectureGetDTO.Builder()
+                .allCourses(List.of(new Course(1, "name", "description")))
+                .allAudiences(List.of(new Audience(1, 20, 20)))
+                .allTeachers(List.of(new Teacher(1, "fName1", "lName1")))
+                .build();
+    }
 
     private List<Lecture> retrieveTestLectures() {
         Lecture lecture1 = new Lecture();
@@ -81,10 +248,8 @@ class LecturesControllerTest {
     }
 
     private List<LectureGetDTO> retrieveTestLectureDTOs(List<Lecture> lectures) {
-        List<LectureGetDTO> dtos = lectures.stream()
+        return lectures.stream()
                 .map(s -> new LectureGetDTO.Builder().lecture(s).groups(List.of(new Group(), new Group(), new Group()))
-                .build()).collect(Collectors.toList());
-        return dtos;
+                        .build()).collect(Collectors.toList());
     }
-
 }
