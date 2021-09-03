@@ -81,9 +81,9 @@ public class StudentsControllerTest {
         MvcResult result = mockMvc.perform(get("/students/new"))
                 .andExpect(model().attributeHasNoErrors())
                 .andReturn();
-        ModelAndView mav = result.getModelAndView();
-        assertEquals(student, mav.getModel().get("student"));
-        assertEquals("students/new", mav.getViewName());
+        ModelAndView modelAndView = result.getModelAndView();
+        assertEquals(student, modelAndView.getModel().get("student"));
+        assertEquals("students/new", modelAndView.getViewName());
     }
 
     @Test
@@ -114,10 +114,10 @@ public class StudentsControllerTest {
                 .andExpect(model().attributeHasNoErrors())
                 .andReturn();
         verify(mockedStudentService).getById(testId);
-        ModelAndView mav = result.getModelAndView();
-        assertEquals("students/edit", mav.getViewName());
-        assertEquals(expected, mav.getModel().get("student"));
-        assertEquals(formDTO, mav.getModel().get("formDTO"));
+        ModelAndView modelAndView = result.getModelAndView();
+        assertEquals("students/edit", modelAndView.getViewName());
+        assertEquals(expected, modelAndView.getModel().get("student"));
+        assertEquals(formDTO, modelAndView.getModel().get("formDTO"));
     }
 
     @Test
@@ -150,10 +150,10 @@ public class StudentsControllerTest {
         MvcResult result = mockMvc.perform(get("/students/{id}/edit-select", testId))
                 .andExpect(model().attributeHasNoErrors())
                 .andReturn();
-        ModelAndView mav = result.getModelAndView();
-        assertEquals("students/edit-select", mav.getViewName());
-        assertEquals(dto, mav.getModel().get("dto"));
-        assertEquals(new StudentPostDTO(), mav.getModel().get("formDTO"));
+        ModelAndView modelAndView = result.getModelAndView();
+        assertEquals("students/edit-select", modelAndView.getViewName());
+        assertEquals(dto, modelAndView.getModel().get("dto"));
+        assertEquals(new StudentPostDTO(), modelAndView.getModel().get("formDTO"));
     }
 
     @Test

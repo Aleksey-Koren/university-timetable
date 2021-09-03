@@ -82,10 +82,10 @@ public class GroupsControllerTest {
         MvcResult result = mockMvc.perform(get("/groups/new"))
                 .andExpect(model().attributeHasNoErrors())
                 .andReturn();
-        ModelAndView mav = result.getModelAndView();
-        assertEquals(dto, mav.getModel().get("dto"));
-        assertEquals(formDTO, mav.getModel().get("formDTO"));
-        assertEquals("groups/new", mav.getViewName());
+        ModelAndView modelAndView = result.getModelAndView();
+        assertEquals(dto, modelAndView.getModel().get("dto"));
+        assertEquals(formDTO, modelAndView.getModel().get("formDTO"));
+        assertEquals("groups/new", modelAndView.getViewName());
     }
 
     @Test
@@ -106,8 +106,8 @@ public class GroupsControllerTest {
                 .andReturn();
         verify(mockedGroupService, times(1)).createNew(groupArgumentCaptor.capture());
         assertEquals(expectedArgument, groupArgumentCaptor.getValue());
-        ModelAndView mav = result.getModelAndView();
-        assertEquals(postDTO, mav.getModel().get("formDTO"));
+        ModelAndView modelAndView = result.getModelAndView();
+        assertEquals(postDTO, modelAndView.getModel().get("formDTO"));
     }
 
     @Test
@@ -123,10 +123,10 @@ public class GroupsControllerTest {
         MvcResult result = mockMvc.perform(get("/groups/{id}/edit", testGroupId))
                 .andExpect(model().attributeHasNoErrors())
                 .andReturn();
-        ModelAndView mav = result.getModelAndView();
-        assertEquals("groups/edit", mav.getViewName());
-        assertEquals(testGetDTO, mav.getModel().get("dto"));
-        assertEquals(testPostDTO, mav.getModel().get("formDTO"));
+        ModelAndView modelAndView = result.getModelAndView();
+        assertEquals("groups/edit", modelAndView.getViewName());
+        assertEquals(testGetDTO, modelAndView.getModel().get("dto"));
+        assertEquals(testPostDTO, modelAndView.getModel().get("formDTO"));
         inOrder.verify(mockedGroupService, times(1)).getById(testGroupId);
         inOrder.verify(mockedStudentService, times(1)).getByGroupId(testGroupId);
     }
@@ -170,10 +170,10 @@ public class GroupsControllerTest {
         when(mockedGroupService.getById(testGroup.getId())).thenReturn(testGroup);
         MvcResult result = mockMvc.perform(get("/groups/{id}/edit-select", testGroup.getId()))
                 .andExpect(model().attributeHasNoErrors()).andReturn();
-        ModelAndView mav = result.getModelAndView();
-        assertEquals("groups/edit-select", mav.getViewName());
-        assertEquals(testGetDTO, mav.getModel().get("dto"));
-        assertEquals(testPostDTO, mav.getModel().get("formDTO"));
+        ModelAndView modelAndView = result.getModelAndView();
+        assertEquals("groups/edit-select", modelAndView.getViewName());
+        assertEquals(testGetDTO, modelAndView.getModel().get("dto"));
+        assertEquals(testPostDTO, modelAndView.getModel().get("formDTO"));
     }
 
     @Test

@@ -96,9 +96,9 @@ class LecturesControllerTest {
         MvcResult result = mockMvc.perform(get("/lectures/new"))
                 .andExpect(model().attributeHasNoErrors())
                 .andReturn();
-        ModelAndView mav = result.getModelAndView();
-        assertEquals("lectures/new", mav.getViewName());
-        assertEquals(dto, mav.getModel().get("dto"));
+        ModelAndView modelAndView = result.getModelAndView();
+        assertEquals("lectures/new", modelAndView.getViewName());
+        assertEquals(dto, modelAndView.getModel().get("dto"));
     }
 
     @Test
@@ -116,8 +116,8 @@ class LecturesControllerTest {
                 .andExpect(model().attributeHasNoErrors())
                 .andExpect(redirectedUrl(String.format("/lectures/%s/edit", 0)))
                 .andReturn();
-        ModelAndView mav = result.getModelAndView();
-        assertEquals(formDTO, mav.getModel().get("formDTO"));
+        ModelAndView modelAndView = result.getModelAndView();
+        assertEquals(formDTO, modelAndView.getModel().get("formDTO"));
     }
 
     @Test
@@ -133,16 +133,20 @@ class LecturesControllerTest {
         when(mockedGroupService.getAllExceptAddedToLecture(testId)).thenReturn(dto.getAllGroupsExceptAdded());
         MvcResult result = mockMvc.perform(get("/lectures/{id}/edit", testId))
                 .andExpect(model().attributeHasNoErrors()).andReturn();
-        ModelAndView mav = result.getModelAndView();
-        assertEquals("lectures/edit", mav.getViewName());
+        ModelAndView modelAndView
+                = result.getModelAndView();
+        assertEquals("lectures/edit", modelAndView
+                .getViewName());
         verify(mockedLectureService).getById(testId);
         verify(mockedGroupService).getGroupsByLectureId(testId);
         verify(mockedCourseService).getAll();
         verify(mockedAudienceService).getAll();
         verify(mockedTeacherService).getAll();
         verify(mockedGroupService).getAllExceptAddedToLecture(testId);
-        assertEquals(dto, mav.getModel().get("dto"));
-        assertEquals(formDTO, mav.getModel().get("formDTO"));
+        assertEquals(dto, modelAndView
+                .getModel().get("dto"));
+        assertEquals(formDTO, modelAndView
+                .getModel().get("formDTO"));
     }
 
     @Test
@@ -159,8 +163,9 @@ class LecturesControllerTest {
                 .andExpect(model().attributeHasNoErrors())
                 .andExpect(redirectedUrl("/lectures"))
                 .andReturn();
-        ModelAndView mav = result.getModelAndView();
-        assertEquals(formDTO, mav.getModel().get("formDTO"));
+        ModelAndView modelAndView = result.getModelAndView();
+        assertEquals(formDTO, modelAndView
+                .getModel().get("formDTO"));
         verify(mockedLectureService).update(new Lecture(testId,
                 new Audience(formDTO.getAudienceId()),
                 new Teacher(formDTO.getTeacherId()),

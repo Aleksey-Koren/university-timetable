@@ -50,9 +50,9 @@ class AudiencesControllerTest {
         MvcResult mvcResult = mockMvc.perform(get("/audiences"))
                 .andExpect(model().attributeHasNoErrors())
                 .andReturn();
-        ModelAndView mav = mvcResult.getModelAndView();
-        assertEquals("audiences/index", mav.getViewName());
-        assertEquals(retrieveTestAudiences(), mav.getModel().get("audiences"));
+        ModelAndView modelAndView = mvcResult.getModelAndView();
+        assertEquals("audiences/index", modelAndView.getViewName());
+        assertEquals(retrieveTestAudiences(), modelAndView.getModel().get("audiences"));
     }
 
     @Test
@@ -68,9 +68,9 @@ class AudiencesControllerTest {
         MvcResult result = mockMvc.perform(get("/audiences/new"))
                 .andExpect(model().attributeHasNoErrors())
                 .andReturn();
-        ModelAndView mav = result.getModelAndView();
-        assertEquals("audiences/new", mav.getViewName());
-        assertEquals(new Audience(), mav.getModel().get("audience"));
+        ModelAndView modelAndView = result.getModelAndView();
+        assertEquals("audiences/new", modelAndView.getViewName());
+        assertEquals(new Audience(), modelAndView.getModel().get("audience"));
     }
 
     @Test
@@ -92,9 +92,9 @@ class AudiencesControllerTest {
         when(mockedService.getById(8)).thenReturn(expected);
         InOrder inOrder = inOrder(mockedService);
         MvcResult result = mockMvc.perform(get("/audiences/8/edit")).andReturn();
-        ModelAndView mav = result.getModelAndView();
-        assertEquals("audiences/edit", mav.getViewName());
-        assertEquals(expected, mav.getModel().get("audience"));
+        ModelAndView modelAndView = result.getModelAndView();
+        assertEquals("audiences/edit", modelAndView.getViewName());
+        assertEquals(expected, modelAndView.getModel().get("audience"));
         inOrder.verify(mockedService, times(1)).getById(8);
         inOrder.verifyNoMoreInteractions();
     }

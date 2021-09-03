@@ -67,9 +67,9 @@ class CoursesControllerTest {
         MvcResult result = mockMvc.perform(get("/courses/new"))
                 .andExpect(model().attributeHasNoErrors())
                 .andReturn();
-        ModelAndView mav = result.getModelAndView();
-        assertEquals("courses/new", mav.getViewName());
-        assertEquals(expected, mav.getModel().get("course"));
+        ModelAndView modelAndView = result.getModelAndView();
+        assertEquals("courses/new", modelAndView.getViewName());
+        assertEquals(expected, modelAndView.getModel().get("course"));
     }
 
     @Test
@@ -78,9 +78,9 @@ class CoursesControllerTest {
         when(mockedService.getById(expected.getId())).thenReturn(expected);
         InOrder inOrder = inOrder(mockedService);
         MvcResult result = mockMvc.perform(get("/courses/{id}/edit", expected.getId())).andReturn();
-        ModelAndView mav = result.getModelAndView();
-        assertEquals("courses/edit", mav.getViewName());
-        assertEquals(expected, mav.getModel().get("course"));
+        ModelAndView modelAndView = result.getModelAndView();
+        assertEquals("courses/edit", modelAndView.getViewName());
+        assertEquals(expected, modelAndView.getModel().get("course"));
     }
 
     @Test
