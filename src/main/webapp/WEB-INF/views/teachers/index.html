@@ -31,7 +31,7 @@
                     <td th:text="${teacher.lastName}">Last name</td>
                     <td th:text="${teacher.firstName}">First name</td>
                     <td>
-                        <form th:method="POST" th:action="@{/teachers/{id}-delete(id = ${teacher.id})}">
+                        <form th:method="POST" th:action="@{/teachers/{id}/delete(id = ${teacher.id})}">
                             <input type="submit" value="Delete"/>
                         </form>
                     </td>

@@ -78,7 +78,7 @@ public class TeachersController extends BaseController {
         return "redirect:/teachers";
     }
 
-    @PostMapping("/{id}-delete")
+    @PostMapping("/{id}/delete")
     public String delete(@PathVariable("id") int id) {
         LOG.trace("Deleting teacher id = {}", id);
         try {
