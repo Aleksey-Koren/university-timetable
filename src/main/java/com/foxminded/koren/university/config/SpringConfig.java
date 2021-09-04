@@ -1,5 +1,7 @@
 package com.foxminded.koren.university.config;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
@@ -35,20 +37,27 @@ public class SpringConfig {
         this.env = env;
     }
 
+//    @Bean
+//    public DataSource dataSource() throws PropertyVetoException {
+//        ComboPooledDataSource dataSource = new ComboPooledDataSource();
+//        dataSource.setDriverClass(env.getProperty("db.driverClassName"));
+//        dataSource.setJdbcUrl(env.getProperty("db.url"));
+//        dataSource.setUser(env.getProperty("db.username"));
+//        dataSource.setPassword(env.getProperty("db.password"));
+//        dataSource.setInitialPoolSize(5);
+//        dataSource.setMaxPoolSize(20);
+//        return dataSource;
+//    }
+
     @Bean
-    public DataSource dataSource() throws PropertyVetoException {
-        ComboPooledDataSource dataSource = new ComboPooledDataSource();
-        dataSource.setDriverClass(env.getProperty("db.driverClassName"));
-        dataSource.setJdbcUrl(env.getProperty("db.url"));
-        dataSource.setUser(env.getProperty("db.username"));
-        dataSource.setPassword(env.getProperty("db.password"));
-        dataSource.setInitialPoolSize(5);
-        dataSource.setMaxPoolSize(20);
-        return dataSource;
+    public DataSource dataSource() throws NamingException {
+        InitialContext context = new InitialContext();
+        DataSource result = (DataSource) context.lookup("java:/comp/env/jdbc/datasource");
+        return result;
     }
 
     @Bean
-    public JdbcTemplate jdbcTemplate() throws PropertyVetoException {
+    public JdbcTemplate jdbcTemplate() throws PropertyVetoException, NamingException {
         return new JdbcTemplate(dataSource());
     }
     
