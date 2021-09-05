@@ -81,8 +81,8 @@ public class LecturesController extends BaseController {
     @PostMapping("new-create")
     public String create(@ModelAttribute("formDTO") LecturePostDTO formDTO) {
         LOG.trace("Creating new lecture");
-        Lecture lecture = new Lecture(new Audience(formDTO.getAudienceId()),
-                new Teacher(formDTO.getTeacherId()),
+        Lecture lecture = new Lecture(formDTO.getAudienceId() !=null ? new Audience(formDTO.getAudienceId()) : null,
+                formDTO.getTeacherId() != null ? new Teacher(formDTO.getTeacherId()) : null,
                 new Course(formDTO.getCourseId()),
                 formDTO.getStartTime(),
                 formDTO.getEndTime());
@@ -108,8 +108,8 @@ public class LecturesController extends BaseController {
                 .build();
         model.addAttribute("dto", dto);
         LecturePostDTO formDTO = new LecturePostDTO(dto.getLecture().getCourse().getId(),
-                                                    dto.getLecture().getAudience().getId(),
-                                                    dto.getLecture().getTeacher().getId(),
+                                                    dto.getLecture().getAudience() != null ? dto.getLecture().getAudience().getId() : null,
+                                                    dto.getLecture().getTeacher() != null ? dto.getLecture().getTeacher().getId() : null,
                                                     dto.getLecture().getStartTime(),
                                                     dto.getLecture().getEndTime());
         model.addAttribute("formDTO", formDTO);

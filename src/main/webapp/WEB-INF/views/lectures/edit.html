@@ -16,6 +16,7 @@
             padding: 5px;
             background-color: silver;
         }
+
         input[type=submit]:hover {
             transition-duration: .3s;
             background-color: green;
@@ -29,7 +30,8 @@
         <div th:replace="templates/sideMenu :: sideMenu"></div>
         <div class="col">
             <h1 class="d-flex justify-content-center" th:text="|Edit lecture id ${dto.lecture.id}|"></h1>
-            <form th:method="POST" , th:action="@{/lectures/{id}/edit-update(id=${dto.lecture.id})}" th:object="${formDTO}">
+            <form th:method="POST" , th:action="@{/lectures/{id}/edit-update(id=${dto.lecture.id})}"
+                  th:object="${formDTO}">
                 <div class="d-flex justify-content-between" style="padding: 5px">
                     <label th:for="courseId"><h3>Course:</h3></label>
                     <select th:field="*{courseId}">
@@ -38,16 +40,20 @@
                     </select>
 
                     <label th:for="audienceId"><h3>Audience:</h3></label>
-                    <select th:field="*{audienceId}">
+                    <select name="audienceId" id="audienceId">
+                        <option disabled selected hidden>select audience</option>
                         <option th:each="audience : ${dto.allAudiences}" th:value="${audience.id}"
-                                th:text="${audience.number}">
+                                th:text="${audience.number}"
+                                th:selected="${dto.lecture.audience != null and dto.lecture.audience.id == audience.id} ? 'true' : 'false'">
                         </option>
                     </select>
 
                     <label th:for="teacherId"><h3>Teacher:</h3></label>
-                    <select th:field="*{teacherId}">
+                    <select name="teacherId" id="teacherId">
+                        <option selected disabled hidden>select teacher</option>
                         <option th:each="teacher : ${dto.allTeachers}" th:value="${teacher.id}"
-                                th:text="|${teacher.firstName} ${teacher.lastName}|">
+                                th:text="|${teacher.firstName} ${teacher.lastName}|"
+                                th:selected="${dto.lecture.teacher != null and dto.lecture.teacher.id == teacher.id} ? 'true' : 'false'">
                         </option>
                     </select>
                 </div>
@@ -76,7 +82,8 @@
                 </form>
             </div>
             <div th:if="${not dto.allGroupsExceptAdded.isEmpty()}">
-                <form class="groupFormItem" style="justify-content: start" th:method="POST" th:action="@{/lectures/{id}-add-group(id = ${dto.lecture.id})}"
+                <form class="groupFormItem" style="justify-content: start" th:method="POST"
+                      th:action="@{/lectures/{id}-add-group(id = ${dto.lecture.id})}"
                       th:object="${formDTO}">
                     <span th:text="'Add group'"></span>
                     <select name="groupId" id="groupId">
