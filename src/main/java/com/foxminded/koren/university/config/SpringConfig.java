@@ -2,6 +2,7 @@ package com.foxminded.koren.university.config;
 
 import javax.sql.DataSource;
 
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
+import java.beans.PropertyVetoException;
+
 @Configuration
 @ComponentScan("com.foxminded.koren.university")
 @PropertySource("classpath:application.properties")
@@ -32,22 +35,30 @@ public class SpringConfig {
         this.env = env;
     }
 
-    public DataSource dataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(env.getProperty("db.driverClassName"));
-        dataSource.setUrl(env.getProperty("db.url"));
-        dataSource.setUsername(env.getProperty("db.username"));
+    @Bean
+    public DataSource dataSource() throws PropertyVetoException {
+        ComboPooledDataSource dataSource = new ComboPooledDataSource();
+        dataSource.setDriverClass(env.getProperty("db.driverClassName"));
+        dataSource.setJdbcUrl(env.getProperty("db.url"));
+        dataSource.setUser(env.getProperty("db.username"));
         dataSource.setPassword(env.getProperty("db.password"));
+        dataSource.setInitialPoolSize(5);
+        dataSource.setMaxPoolSize(20);
         return dataSource;
     }
 
     @Bean
-    public JdbcTemplate jdbcTemplate() {
+    public JdbcTemplate jdbcTemplate() throws PropertyVetoException {
         return new JdbcTemplate(dataSource());
     }
     
     @Bean
     public Logger rootLogger() {
         return LoggerFactory.getLogger("root");
+    }
+
+    @Bean
+    public String tablesCreationUrl() {
+        return env.getProperty("tables.creation.url");
     }
 }

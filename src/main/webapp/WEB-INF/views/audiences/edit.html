@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'Edit audience number ' + ${audience.number}">Title</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+          integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+</head>
+<div class="container-fluid">
+    <div class="row" style="height: 100vh">
+        <div th:replace="templates/sideMenu :: sideMenu"></div>
+        <div class="col">
+            <h1 class="d-flex justify-content-center" th:text="|Edit audience number ${audience.number}|"></h1>
+            <form th:method="POST" , th:action="@{/audiences/{id}/edit-update(id=${audience.id})}" th:object="${audience}">
+                <br>
+                <div class="d-flex justify-content-center">
+                    <label for="number"><h3>Number  </h3></label>
+                    <input type="text" th:field="*{number}" id="number"/>
+                </div>
+                <br>
+                <div class="d-flex justify-content-center">
+                    <label for="capacity"><h3>Capacity </h3></label>
+                    <input type="text" th:field="*{capacity}" id="capacity"/>
+                </div>
+                <br>
+                <div class="d-flex justify-content-center">
+                    <input type="submit" value="Save"/>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+<body>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+        crossorigin="anonymous"></script>
+</body>
+</html>

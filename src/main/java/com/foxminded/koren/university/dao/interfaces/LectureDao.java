@@ -12,4 +12,8 @@ public interface LectureDao extends CrudDao<Integer, Lecture> {
     List<Lecture> getTeacherLecturesByTimePeriod(Teacher teacher, LocalDate start, LocalDate finish);
 
     List<Lecture> getStudentLecturesByTimePeriod(Student student, LocalDate start, LocalDate finish);
+
+    boolean removeGroup(int lectureId, int groupId);
+
+    boolean addGroup(int lectureId, int groupId);
 }

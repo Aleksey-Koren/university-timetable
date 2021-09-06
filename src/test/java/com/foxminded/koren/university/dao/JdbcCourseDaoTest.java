@@ -88,16 +88,16 @@ class JdbcCourseDaoTest {
     }
     
 
-    @Test 
-    void getByGroup_shouldWorkCorrectly() {
-       Course course1 = new Course("name1", "desc1");
-       course1.setId(1);
-       Course course2 = new Course("name2", "desc2");
-       course2.setId(2);
-       Course course3 = new Course("name4", "desc4");
-       course3.setId(4);
-       Group group = new Group(" ");
-       group.setId(2);
-       assertEquals(List.of(course1, course2, course3), jdbcCourseDao.getByGroup(group));
-    }
+//    @Test
+//    void getByGroup_shouldWorkCorrectly() {
+//       Course course1 = new Course("name1", "desc1");
+//       course1.setId(1);
+//       Course course2 = new Course("name2", "desc2");
+//       course2.setId(2);
+//       Course course3 = new Course("name4", "desc4");
+//       course3.setId(4);
+//       Group group = new Group(" ");
+//       group.setId(2);
+//       assertEquals(List.of(course1, course2, course3), jdbcCourseDao.getByGroup(group));
+//    }
 }

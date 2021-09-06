@@ -2,6 +2,7 @@ package com.foxminded.koren.university.entity;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import com.foxminded.koren.university.entity.interfaces.TimetableEvent;
 
@@ -17,10 +18,14 @@ public class Lecture implements TimetableEvent {
     public Lecture() {
         
     }
-    
+
+    public Lecture(int id) {
+        this.id = id;
+    }
+
     public Lecture(Audience audience,
-                   Teacher teacher, 
-                   Course course, 
+                   Teacher teacher,
+                   Course course,
                    LocalDateTime startTime,
                    LocalDateTime endTime) {
         this.audience = audience;
@@ -29,9 +34,21 @@ public class Lecture implements TimetableEvent {
         this.startTime = startTime;
         this.endTime = endTime;
     }
-    
-    
-    
+
+    public Lecture(int id,
+                   Audience audience,
+                   Teacher teacher,
+                   Course course,
+                   LocalDateTime startTime,
+                   LocalDateTime endTime) {
+        this.id = id;
+        this.audience = audience;
+        this.teacher = teacher;
+        this.course = course;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
+
     public int getId() {
         return id;
     }
@@ -69,59 +86,66 @@ public class Lecture implements TimetableEvent {
         this.endTime = endTime;
     }
 
+
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((audience == null) ? 0 : audience.hashCode());
-        result = prime * result + ((course == null) ? 0 : course.hashCode());
-        result = prime * result + ((endTime == null) ? 0 : endTime.hashCode());
-        result = prime * result + id;
-        result = prime * result + ((startTime == null) ? 0 : startTime.hashCode());
-        result = prime * result + ((teacher == null) ? 0 : teacher.hashCode());
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Lecture lecture = (Lecture) o;
+        return id == lecture.id && Objects.equals(audience, lecture.audience) && Objects.equals(teacher, lecture.teacher) && Objects.equals(course, lecture.course) && Objects.equals(startTime, lecture.startTime) && Objects.equals(endTime, lecture.endTime);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!(obj instanceof Lecture))
-            return false;
-        Lecture other = (Lecture) obj;
-        if (audience == null) {
-            if (other.audience != null)
-                return false;
-        } else if (!audience.equals(other.audience))
-            return false;
-        if (course == null) {
-            if (other.course != null)
-                return false;
-        } else if (!course.equals(other.course))
-            return false;
-        if (endTime == null) {
-            if (other.endTime != null)
-                return false;
-        } else if (!endTime.equals(other.endTime))
-            return false;
-        if (id != other.id)
-            return false;
-        if (startTime == null) {
-            if (other.startTime != null)
-                return false;
-        } else if (!startTime.equals(other.startTime))
-            return false;
-        if (teacher == null) {
-            if (other.teacher != null)
-                return false;
-        } else if (!teacher.equals(other.teacher))
-            return false;
-        return true;
+    public int hashCode() {
+        return Objects.hash(id, audience, teacher, course, startTime, endTime);
     }
 
     @Override
     public String toString() {
         return "Lecture [id=" + id + ", audience=" + audience + ", teacher=" + teacher + ", course=" + course
                 + ", startTime=" + startTime + ", endTime=" + endTime + "]";
+    }
+
+    public static class Builder {
+
+        private Lecture lecture;
+
+        public Builder() {
+            lecture = new Lecture();
+        }
+
+        public Builder id(int id) {
+            lecture.setId(id);
+            return this;
+        }
+
+        public Builder audience(Audience audience) {
+            lecture.audience = audience;
+            return this;
+        }
+
+        public Builder teacher(Teacher teacher) {
+            lecture.teacher = teacher;
+            return this;
+        }
+
+        public Builder course(Course course) {
+            lecture.course = course;
+            return this;
+        }
+
+        public Builder startTime(LocalDateTime startTime) {
+            lecture.startTime = startTime;
+            return this;
+        }
+
+        public Builder endTime(LocalDateTime endTime) {
+            lecture.endTime = endTime;
+            return this;
+        }
+
+        public Lecture build() {
+            return lecture;
+        }
     }
 }

@@ -7,22 +7,22 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.foxminded.koren.university.SpringConfigT;
 import com.foxminded.koren.university.dao.interfaces.StudentDao;
 import com.foxminded.koren.university.dao.test_data.TablesCreation;
 import com.foxminded.koren.university.entity.Student;
-import com.foxminded.koren.university.entity.Year;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @SpringJUnitWebConfig
 @ContextConfiguration(classes = {SpringConfigT.class})
@@ -44,52 +44,63 @@ class StudentServiceTest {
     
     @InjectMocks
     @Autowired
-    private StudentService studentService;
+    private StudentService mockStudentService;
     
     @Test
     void createNew_shouldInvokeSaveInStudentDao() {
         Student testStudent = new Student();
-        studentService.createNew(testStudent);
-        Mockito.verify(mockStudentDao, Mockito.times(1)).save(testStudent);
+        mockStudentService.createNew(testStudent);
+        verify(mockStudentDao, times(1)).save(testStudent);
     }
     
     @Test
     void update_shouldInvokeUpdateInStudentDao() {
         Student testStudent = new Student();
-        studentService.update(testStudent);
-        Mockito.verify(mockStudentDao, Mockito.times(1)).update(testStudent);
+        mockStudentService.update(testStudent);
+        verify(mockStudentDao, times(1)).update(testStudent);
     }
     
     @Test
     void deleteById_shouldInvokeDeleteByIdInStudentDao() {
         int testId = 1;
-        studentService.deleteById(testId);
-        Mockito.verify(mockStudentDao, Mockito.times(1)).deleteById(testId);
+        mockStudentService.deleteById(testId);
+        verify(mockStudentDao, times(1)).deleteById(testId);
     }
     
     @Test
     void getById_shouldInvokeGetByIdInStudentDao() {
         int testId = 1;
-        studentService.getById(testId);
-        Mockito.verify(mockStudentDao, Mockito.times(1)).getById(testId);
+        mockStudentService.getById(testId);
+        verify(mockStudentDao, times(1)).getById(testId);
     }
     
     @Test
     void getAll_shouldInvokeGetAllInStudentDao() {
-        studentService.getAll();
-        Mockito.verify(mockStudentDao, Mockito.times(1)).getAll();
+        mockStudentService.getAll();
+        verify(mockStudentDao, times(1)).getAll();
     }
-    
-    @Mock
-    Student mockStudent = new Student();
-    
+
     @Test
-    void changeYear_shouldSetIncomingYearAndInvokeUpdateOnStudent() {
-        Year testYear = Year.FIRST;
-        InOrder inOrder = Mockito.inOrder(mockStudentDao, mockStudent);
-        studentService.changeYear(mockStudent, testYear);
-        inOrder.verify(mockStudent, Mockito.times(1)).setYear(testYear);
-        inOrder.verify(mockStudentDao, Mockito.times(1)).update(mockStudent);
-        inOrder.verifyNoMoreInteractions();
+    void getByGroupId_shouldInvokeGetByGroupIdOfStudentDao() {
+        mockStudentService.getByGroupId(1);
+        verify(mockStudentDao, times(1)).getByGroupId(1);
+    }
+
+    @Test
+    void getAllWithoutGroup_shouldInvokeGetAllWithoutStudentsOfStudentDao() {
+        mockStudentService.getAllWithoutGroup();
+        verify(mockStudentDao, times(1)).getAllWithoutGroup();
+    }
+
+    @Test
+    void addStudentToGroup_shouldInvokeAddStudentToGroupOfStudentDao() {
+        mockStudentService.addStudentToGroup(1, 2);
+        verify(mockStudentDao, times(1)).addStudentToGroup(1, 2);
+    }
+
+    @Test
+    void removeStudentFromGroup_shouldInvokeRemoveStudentFromGroupOfStudentDao() {
+        mockStudentService.removeStudentFromGroup(1);
+        verify(mockStudentDao, times(1)).removeStudentFromGroup(1);
     }
 }

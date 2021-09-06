@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="sideMenu" class="col-2" style="background: dimgray">
+    <a href="/groups" class="d-block w-100"
+       th:style="${#httpServletRequest.getRequestURI().contains('/groups')} ? 'background-color: white; color: black' : 'color: white'">Groups</a>
+    <a href="/students" class="d-block w-100"
+       th:style="${#httpServletRequest.getRequestURI().contains('/students')} ? 'background-color: white; color: black' : 'color: white'">Students</a>
+    <a href="/teachers" class="d-block w-100"
+       th:style="${#httpServletRequest.getRequestURI().contains('/teachers')} ? 'background-color: white; color: black' : 'color: white'">Teachers</a>
+    <a href="/lectures" class="d-block w-100"
+       th:style="${#httpServletRequest.getRequestURI().contains('/lectures')} ? 'background-color: white; color: black' : 'color: white'">Lectures</a>
+    <a href="/audiences" class="d-block w-100"
+       th:style="${#httpServletRequest.getRequestURI().contains('/audiences')} ? 'background-color: white; color: black' : 'color: white'">Audiences</a>
+    <a href="/courses" class="d-block w-100"
+       th:style="${#httpServletRequest.getRequestURI().contains('/courses')} ? 'background-color: white; color: black' : 'color: white'">Courses</a>
+    <br>
+    <a class="d-block w-100" style="color: white" href="/">Log out</a>
+</div>
+</body>
+</html>

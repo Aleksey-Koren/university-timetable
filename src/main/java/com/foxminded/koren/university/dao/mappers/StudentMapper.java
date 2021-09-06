@@ -17,7 +17,6 @@ public class StudentMapper implements RowMapper<Student> {
         student.setId(rs.getInt("id"));
         student.setFirstName(rs.getString("first_name"));
         student.setLastName(rs.getString("last_name"));
-        student.setYear(Year.valueOf(rs.getString("student_year")));
                 
         if(rs.getObject("group_id") != null ) {
             student.setGroup(new GroupMapper().mapRow(rs, rowNum));

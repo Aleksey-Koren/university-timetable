@@ -1,6 +1,6 @@
 package com.foxminded.koren.university.controller;
 
-import com.foxminded.koren.university.controller.exceptions.NoEntitiesInDatabaseException;
+import com.foxminded.koren.university.controller.exceptions.ControllerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -12,8 +12,8 @@ public class BaseController {
 
     private static final Logger LOG = LoggerFactory.getLogger(BaseController.class);
 
-    @ExceptionHandler(NoEntitiesInDatabaseException.class)
-    private String NoEntitiesInDatabaseException(NoEntitiesInDatabaseException e, Model model) {
+    @ExceptionHandler(ControllerException.class)
+    private String controllerException(ControllerException e, Model model) {
         LOG.trace(e.getClass().getSimpleName() + " in " + e.getStackTrace()[0] + " : because "+ e.getMessage());
         model.addAttribute("message", e.getMessage());
         return "exception";

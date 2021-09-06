@@ -5,14 +5,24 @@ public class Audience {
     private int id;
     private int number;
     private int capacity;
-    
+
+    public Audience() {
+
+    }
+
+    public Audience(Integer id) {
+        this.id = id;
+    }
+
     public Audience(int number, int capacity) {
         this.number = number;
         this.capacity = capacity;
     }
 
-    public Audience() {
-
+    public Audience(int id, int number, int capacity) {
+        this.id = id;
+        this.number = number;
+        this.capacity = capacity;
     }
 
     public int getId() {

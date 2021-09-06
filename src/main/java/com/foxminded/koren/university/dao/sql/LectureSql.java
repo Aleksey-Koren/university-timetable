@@ -32,7 +32,7 @@ public class LectureSql {
             + "   LEFT JOIN course c ON l.course_id = c.id\r\n"
             + "       LEFT JOIN teacher t ON l.teacher_id = t.id \r\n"
             + "           LEFT JOIN audience a ON l.audience_id = a.id\r\n"
-            + "ORDER BY l.id;";
+            + "ORDER BY l.start_time;";
     
     public static final String SAVE =
             "INSERT INTO lecture\r\n"
@@ -92,4 +92,13 @@ public class LectureSql {
             + "        LEFT JOIN course c ON l1.course_id = c.id\r\n"
             + "            LEFT JOIN teacher t ON l1.teacher_id = t.id \r\n"
             + "                LEFT JOIN audience a ON l1.audience_id = a.id;";
+
+    public static final String REMOVE_GROUP =
+            "DELETE FROM lecture_group\n" +
+            "WHERE lecture_id = ?\n" +
+            "AND group_id = ?;";
+
+    public static final String ADD_GROUP =
+            "INSERT INTO lecture_group (lecture_id, group_id)\n" +
+            "VALUES (?,?);";
 }

@@ -40,7 +40,11 @@ public class CourseService {
     
     public boolean deleteById(int id) {
         LOG.debug("Delete course by id = {}", id);
-        return courseDao.deleteById(id);
+        try {
+            return courseDao.deleteById(id);
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
     }
     
     public Course getById(int id) {
@@ -54,6 +58,10 @@ public class CourseService {
     
     public List<Course> getAll() {
         LOG.debug("Get all courses");
-        return courseDao.getAll();
+        try {
+            return courseDao.getAll();
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
     }
 }

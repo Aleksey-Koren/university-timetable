@@ -3,22 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <title>Audiences</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+          integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
 </head>
 <body>
-<a href="/">Back to main page</a>
-<br>
-<strong>List of all audiences</strong>
-<table>
-  <tr>
-    <th>Number</th>
-    <th>Capacity</th>
-  </tr>
-  <tr th:each = "audience : ${audiences}">
-    <td>
-        <a th:href="@{/audiences/{id}(id = ${audience.id})}" th:text="${audience.number}">Number</a>
-    </td>
-    <td th:text="${audience.capacity}">capacity</td>
-  </tr>
-</table>
+<div class="container-fluid">
+    <div class="row" style="height: 100vh">
+        <div th:replace="templates/sideMenu :: sideMenu"></div>
+        <div class="col">
+            <h1 class="d-flex justify-content-center">Audiences</h1>
+            <a class="d-flex justify-content-center" href="/audiences/new">Create new audience</a>
+            <table class="container-fluid">
+                <tr style="background: silver">
+                    <th>Number</th>
+                    <th>Capacity</th>
+                    <th></th>
+                </tr>
+                <tr th:each="audience : ${audiences}"
+                    th:style="${audiences.indexOf(audience) % 2 != 0} ? 'background: gainsboro'">
+                    <td>
+                        <a th:href="@{/audiences/{id}/edit (id = ${audience.id})}"
+                           th:text="${audience.number}">Number</a>
+                    </td>
+                    <td th:text="${audience.capacity}">capacity</td>
+                    <td>
+                        <form th:method="POST" th:action="@{/audiences/{id}/delete (id = ${audience.id})}">
+                            <input type="submit" value="Delete"/>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+        crossorigin="anonymous"></script>
 </body>
 </html>

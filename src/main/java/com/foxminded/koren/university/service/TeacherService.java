@@ -17,27 +17,44 @@ public class TeacherService {
     
     private static final Logger LOG = LoggerFactory.getLogger(TeacherService.class);
     
-    @Autowired
     private TeacherDao teacherDao;
-        
+
+    @Autowired
+    public TeacherService(TeacherDao teacherDao) {
+        this.teacherDao = teacherDao;
+    }
+
     public Teacher createNew(Teacher teacher) {
         LOG.debug("Create new teacher: {}", teacher);
-        return teacherDao.save(teacher);
+        try {
+            return teacherDao.save(teacher);
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
     }
     
     public void update(Teacher teacher) {
         LOG.debug("Update teacher: {}", teacher);
-        teacherDao.update(teacher);
+        try {
+            teacherDao.update(teacher);
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
     }
     
     public boolean deleteById(int id) {
         LOG.debug("Delete teacher by id = {}", id);
-        return teacherDao.deleteById(id);
+        try {
+            return teacherDao.deleteById(id);
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage(), e);
+
+        }
     }
     
     public Teacher getById(int id) {
+        LOG.debug("Get teacher by id = {}", id);
         try {
-            LOG.debug("Get teacher by id = {}", id);
             return teacherDao.getById(id);
         } catch (DAOException e) {
             throw new ServiceException(e.getMessage(), e);
@@ -46,6 +63,10 @@ public class TeacherService {
     
     public List<Teacher> getAll() {
         LOG.debug("Get all teachers");
-        return teacherDao.getAll();
+        try {
+            return teacherDao.getAll();
+        } catch (DAOException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
     }
 }

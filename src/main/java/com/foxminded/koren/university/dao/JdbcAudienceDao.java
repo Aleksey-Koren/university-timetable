@@ -1,6 +1,7 @@
 package com.foxminded.koren.university.dao;
 
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.slf4j.Logger;
