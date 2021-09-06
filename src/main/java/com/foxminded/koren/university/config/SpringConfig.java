@@ -37,18 +37,6 @@ public class SpringConfig {
         this.env = env;
     }
 
-//    @Bean
-//    public DataSource dataSource() throws PropertyVetoException {
-//        ComboPooledDataSource dataSource = new ComboPooledDataSource();
-//        dataSource.setDriverClass(env.getProperty("db.driverClassName"));
-//        dataSource.setJdbcUrl(env.getProperty("db.url"));
-//        dataSource.setUser(env.getProperty("db.username"));
-//        dataSource.setPassword(env.getProperty("db.password"));
-//        dataSource.setInitialPoolSize(5);
-//        dataSource.setMaxPoolSize(20);
-//        return dataSource;
-//    }
-
     @Bean
     public DataSource dataSource() throws NamingException {
         InitialContext context = new InitialContext();
