@@ -1,8 +1,5 @@
 package com.foxminded.koren.university.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
@@ -10,13 +7,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 public class DispatcherServletInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    @Qualifier("tablesCreationUrl")
-    private String tablesCreationSql;
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
