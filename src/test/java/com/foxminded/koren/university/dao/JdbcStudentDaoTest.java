@@ -3,6 +3,7 @@ package com.foxminded.koren.university.dao;
 import java.io.IOException;
 import java.util.List;
 
+import com.foxminded.koren.university.dao.jdbcDao.JdbcStudentDao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -38,10 +38,10 @@ public class CourseService {
         }
     }
     
-    public boolean deleteById(int id) {
+    public void deleteById(int id) {
         LOG.debug("Delete course by id = {}", id);
         try {
-            return courseDao.deleteById(id);
+            courseDao.deleteById(id);
         } catch (DAOException e) {
             throw new ServiceException(e.getMessage(), e);
         }

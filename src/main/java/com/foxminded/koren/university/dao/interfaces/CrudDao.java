@@ -8,7 +8,7 @@ public interface CrudDao <I, E> {
     
     void update (E entity);
     
-    boolean deleteById (I id);
+    void deleteById (I id);
     
     E getById (I id);
     

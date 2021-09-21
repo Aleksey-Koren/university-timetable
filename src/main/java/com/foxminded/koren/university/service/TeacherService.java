@@ -42,10 +42,10 @@ public class TeacherService {
         }
     }
     
-    public boolean deleteById(int id) {
+    public void deleteById(int id) {
         LOG.debug("Delete teacher by id = {}", id);
         try {
-            return teacherDao.deleteById(id);
+            teacherDao.deleteById(id);
         } catch (DAOException e) {
             throw new ServiceException(e.getMessage(), e);
 

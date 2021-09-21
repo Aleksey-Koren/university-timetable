@@ -42,10 +42,10 @@ public class LectureService {
         }
     }
     
-    public boolean deleteById(int id) {
+    public void deleteById(int id) {
         LOG.debug("Delete lecture by id = {}", id);
         try {
-            return lectureDao.deleteById(id);
+            lectureDao.deleteById(id);
         } catch (DAOException e) {
             throw new ServiceException(e.getMessage(), e);
         }

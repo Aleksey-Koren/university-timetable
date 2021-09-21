@@ -38,10 +38,10 @@ public class GroupService {
         }
     }
     
-    public boolean deleteById(int id) {
+    public void deleteById(int id) {
         LOG.debug("Delete group by id = {}", id);
         try {
-            return groupDao.deleteById(id);
+            groupDao.deleteById(id);
         } catch (DAOException e) {
             throw new ServiceException(e.getMessage(), e);
         }

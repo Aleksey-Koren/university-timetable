@@ -2,10 +2,10 @@ package com.foxminded.koren.university.dao;
 
 import com.foxminded.koren.university.SpringConfigT;
 import com.foxminded.koren.university.dao.exceptions.DAOException;
+import com.foxminded.koren.university.dao.jdbcDao.JdbcCourseDao;
 import com.foxminded.koren.university.dao.test_data.TablesCreation;
 import com.foxminded.koren.university.dao.test_data.TestData;
 import com.foxminded.koren.university.entity.Course;
-import com.foxminded.koren.university.entity.Group;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

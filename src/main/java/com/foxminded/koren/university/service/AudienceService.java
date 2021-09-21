@@ -40,9 +40,9 @@ public class AudienceService {
         }
     }
     
-    public boolean deleteById(int id) {
+    public void deleteById(int id) {
         LOG.debug("Delete audience by id = {}", id);
-        return audienceDao.deleteById(id);
+        audienceDao.deleteById(id);
     }
     
     public Audience getById(int id) {
