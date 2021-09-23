@@ -7,8 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.foxminded.koren.university.dao.exceptions.DAOException;
-import com.foxminded.koren.university.dao.interfaces.LectureDao;
+import com.foxminded.koren.university.repository.exceptions.RepositoryException;
+import com.foxminded.koren.university.repository.interfaces.LectureDao;
 import com.foxminded.koren.university.entity.Lecture;
 import com.foxminded.koren.university.service.exceptions.ServiceException;
 
@@ -28,7 +28,7 @@ public class LectureService {
         try {
             LOG.debug("Create new lecture");
             return lectureDao.save(lecture);
-        } catch (DAOException e) {
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
@@ -37,7 +37,7 @@ public class LectureService {
         LOG.debug("Update lecture id = {}", lecture.getId());
         try {
             lectureDao.update(lecture);
-        } catch (DAOException e) {
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
@@ -46,7 +46,7 @@ public class LectureService {
         LOG.debug("Delete lecture by id = {}", id);
         try {
             lectureDao.deleteById(id);
-        } catch (DAOException e) {
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
@@ -55,7 +55,7 @@ public class LectureService {
         try {
             LOG.debug("Get lecture by id = {}", id);
             return lectureDao.getById(id);
-        } catch (DAOException e) {
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
@@ -69,7 +69,7 @@ public class LectureService {
         LOG.debug("Remove group id = {} from lecture id = {}", groupId, lectureId);
         try {
             return lectureDao.removeGroup(lectureId, groupId);
-        } catch (DAOException e) {
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
@@ -78,7 +78,7 @@ public class LectureService {
         LOG.debug("Add group id = {} to lecture id = {}", groupId, lectureID);
         try {
             return lectureDao.addGroup(lectureID,groupId);
-        } catch (DAOException e) {
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }

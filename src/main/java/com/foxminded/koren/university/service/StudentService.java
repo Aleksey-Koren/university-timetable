@@ -7,8 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.foxminded.koren.university.dao.exceptions.DAOException;
-import com.foxminded.koren.university.dao.interfaces.StudentDao;
+import com.foxminded.koren.university.repository.exceptions.RepositoryException;
+import com.foxminded.koren.university.repository.interfaces.StudentDao;
 import com.foxminded.koren.university.entity.Student;
 import com.foxminded.koren.university.service.exceptions.ServiceException;
 
@@ -29,7 +29,7 @@ public class StudentService {
         LOG.debug("Create new student: {}", student);
         try {
             return studentDao.save(student);
-        } catch (DAOException e) {
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
@@ -38,7 +38,7 @@ public class StudentService {
         LOG.debug("Update student: {}", student);
         try {
             studentDao.update(student);
-        } catch (DAOException e) {
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
@@ -47,7 +47,7 @@ public class StudentService {
         LOG.debug("Delete student by id = {}", id);
         try {
             studentDao.deleteById(id);
-        } catch (DAOException e) {
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
@@ -56,7 +56,7 @@ public class StudentService {
         try {
             LOG.debug("Get student by id = {}", id);
             return studentDao.getById(id);
-        } catch (DAOException e) {
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
@@ -65,7 +65,7 @@ public class StudentService {
         LOG.debug("Get all students");
         try {
             return studentDao.getAll();
-        } catch (DAOException e) {
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
@@ -74,7 +74,7 @@ public class StudentService {
         LOG.debug("Get all students by group id = {}", id);
         try {
             return studentDao.getByGroupId(id);
-        } catch (DAOException e) {
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
@@ -83,7 +83,7 @@ public class StudentService {
         LOG.debug("Get all students without group");
         try {
             return studentDao.getAllWithoutGroup();
-        } catch (DAOException e) {
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
@@ -92,7 +92,7 @@ public class StudentService {
         LOG.debug("Add student id = {} to group id = {}", studentId, groupId);
         try {
             return studentDao.addStudentToGroup(studentId, groupId);
-        } catch (DAOException e) {
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
@@ -101,7 +101,7 @@ public class StudentService {
         LOG.debug("Remove student id = {} from group", studentId);
         try {
             return studentDao.removeStudentFromGroup(studentId);
-        } catch (DAOException e) {
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }

@@ -14,11 +14,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.foxminded.koren.university.SpringConfigT;
-import com.foxminded.koren.university.dao.interfaces.AudienceDao;
-import com.foxminded.koren.university.dao.test_data.TablesCreation;
+import com.foxminded.koren.university.repository.interfaces.AudienceRepository;
+import com.foxminded.koren.university.repository.test_data.TablesCreation;
 import com.foxminded.koren.university.entity.Audience;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
@@ -38,7 +37,7 @@ class AudienceServiceTest {
     
     @Autowired
     @Mock
-    private AudienceDao mockAudienceDao;
+    private AudienceRepository mockAudienceDao;
     
     @InjectMocks
     @Autowired

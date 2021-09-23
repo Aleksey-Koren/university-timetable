@@ -7,8 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.foxminded.koren.university.dao.exceptions.DAOException;
-import com.foxminded.koren.university.dao.interfaces.GroupDao;
+import com.foxminded.koren.university.repository.exceptions.RepositoryException;
+import com.foxminded.koren.university.repository.interfaces.GroupDao;
 import com.foxminded.koren.university.entity.Group;
 import com.foxminded.koren.university.service.exceptions.ServiceException;
 
@@ -24,7 +24,7 @@ public class GroupService {
         try {
             LOG.debug("Save new group: {}", group);
             return groupDao.save(group);
-        } catch (DAOException e) {
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
@@ -33,7 +33,7 @@ public class GroupService {
         try {
             LOG.debug("Update group: {}", group);
             groupDao.update(group);
-        } catch (DAOException e) {
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
@@ -42,7 +42,7 @@ public class GroupService {
         LOG.debug("Delete group by id = {}", id);
         try {
             groupDao.deleteById(id);
-        } catch (DAOException e) {
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
@@ -51,7 +51,7 @@ public class GroupService {
         try {
             LOG.debug("Get group by id = {}", id);
             return groupDao.getById(id);
-        } catch (DAOException e) {
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
@@ -75,7 +75,7 @@ public class GroupService {
         LOG.debug("Get all groups except added to lecture id ={}", lectureId);
         try {
             return groupDao.getAllGroupsExceptAddedToLecture(lectureId);
-        } catch (DAOException e) {
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }

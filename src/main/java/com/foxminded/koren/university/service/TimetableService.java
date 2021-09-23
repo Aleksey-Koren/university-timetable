@@ -10,15 +10,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.foxminded.koren.university.dao.interfaces.LectureDao;
+import com.foxminded.koren.university.repository.interfaces.LectureDao;
 import com.foxminded.koren.university.entity.Lecture;
 import com.foxminded.koren.university.entity.Student;
 import com.foxminded.koren.university.entity.Teacher;
 import com.foxminded.koren.university.entity.Timetable;
 import com.foxminded.koren.university.entity.interfaces.TimetableEvent;
-import com.foxminded.koren.university.entity.interfaces.TimetablePerson;
 import com.foxminded.koren.university.service.comporators.TimetableStartTimeComparator;
-import com.foxminded.koren.university.service.exceptions.ServiceException;
 
 @Service
 public class

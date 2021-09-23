@@ -1,9 +1,16 @@
 package com.foxminded.koren.university.entity;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "course")
 public class Course {
-    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name = "name")
     private String name;
+    @Column(name = "description")
     private String description;
     
     public Course() {
