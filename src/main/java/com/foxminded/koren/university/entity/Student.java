@@ -2,12 +2,21 @@ package com.foxminded.koren.university.entity;
 
 import com.foxminded.koren.university.entity.interfaces.TimetablePerson;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
+@Table(name = "student")
 public class Student implements TimetablePerson {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @ManyToOne(optional = true)
+    @JoinColumn(name ="group_id")
     private Group group;
+    @Column(name = "first_name")
     private String firstName;
+    @Column (name = "last_name")
     private String lastName;
 
     public Student() {

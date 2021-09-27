@@ -5,10 +5,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.foxminded.koren.university.repository.exceptions.RepositoryException;
-import com.foxminded.koren.university.repository.interfaces.LectureDao;
+import com.foxminded.koren.university.repository.interfaces.LectureRepository;
 import com.foxminded.koren.university.entity.Lecture;
 import com.foxminded.koren.university.service.exceptions.ServiceException;
 
@@ -17,17 +18,17 @@ public class LectureService {
     
     private static final Logger LOG = LoggerFactory.getLogger(LectureService.class);
 
-    private LectureDao lectureDao;
+    private LectureRepository lectureRepository;
 
     @Autowired
-    public LectureService(LectureDao lectureDao) {
-        this.lectureDao = lectureDao;
+    public LectureService(@Qualifier("lectureRepositoryImpl") LectureRepository lectureRepository) {
+        this.lectureRepository = lectureRepository;
     }
 
     public Lecture createNew(Lecture lecture) {
         try {
             LOG.debug("Create new lecture");
-            return lectureDao.save(lecture);
+            return lectureRepository.save(lecture);
         } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
@@ -36,7 +37,7 @@ public class LectureService {
     public void update(Lecture lecture) {
         LOG.debug("Update lecture id = {}", lecture.getId());
         try {
-            lectureDao.update(lecture);
+            lectureRepository.update(lecture);
         } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
@@ -45,7 +46,7 @@ public class LectureService {
     public void deleteById(int id) {
         LOG.debug("Delete lecture by id = {}", id);
         try {
-            lectureDao.deleteById(id);
+            lectureRepository.deleteById(id);
         } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
@@ -54,7 +55,7 @@ public class LectureService {
     public Lecture getById(int id) {
         try {
             LOG.debug("Get lecture by id = {}", id);
-            return lectureDao.getById(id);
+            return lectureRepository.getById(id);
         } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
@@ -62,13 +63,13 @@ public class LectureService {
     
     public List<Lecture> getAll() {
         LOG.debug("Get all lectures");
-        return lectureDao.getAll();
+        return lectureRepository.getAll();
     }
 
     public boolean removeGroup(int lectureId, int groupId) {
         LOG.debug("Remove group id = {} from lecture id = {}", groupId, lectureId);
         try {
-            return lectureDao.removeGroup(lectureId, groupId);
+            return lectureRepository.removeGroup(lectureId, groupId);
         } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
@@ -77,7 +78,7 @@ public class LectureService {
     public boolean addGroup(int lectureID, int groupId) {
         LOG.debug("Add group id = {} to lecture id = {}", groupId, lectureID);
         try {
-            return lectureDao.addGroup(lectureID,groupId);
+            return lectureRepository.addGroup(lectureID,groupId);
         } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }

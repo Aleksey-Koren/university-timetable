@@ -4,6 +4,7 @@ import com.foxminded.koren.university.SpringConfigT;
 import com.foxminded.koren.university.entity.Course;
 import com.foxminded.koren.university.repository.exceptions.RepositoryException;
 import com.foxminded.koren.university.repository.interfaces.CourseRepository;
+import com.foxminded.koren.university.repository.test_data.JpaTestData;
 import com.foxminded.koren.university.repository.test_data.TablesCreation;
 import com.foxminded.koren.university.repository.test_data.TestData;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,15 +29,13 @@ class CourseRepositoryImplTest {
     @Qualifier("courseRepositoryImpl")
     private CourseRepository courseDao;
     @Autowired
-    private TestData testData;
-    @Autowired
-    private TablesCreation tablesCreation;
+    private JpaTestData testData;
 
 
     @BeforeEach
     void createTables() throws DataAccessException, IOException {
-        tablesCreation.createTables();
-        testData.prepareTestData();
+        testData.createTables();
+        testData.loadTestData();
     }
 
     @Test

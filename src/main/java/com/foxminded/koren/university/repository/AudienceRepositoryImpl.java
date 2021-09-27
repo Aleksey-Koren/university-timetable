@@ -72,7 +72,7 @@ public class AudienceRepositoryImpl implements AudienceRepository {
         Audience audience = entityManager.find(Audience.class, id);
         if(audience == null) {
             throw new RepositoryException(String
-                    .format("Unable to delete audience with id = %s, cause: there is no audience with such id in database",
+                    .format("Unable to get audience with id = %s, cause: there is no audience with such id in database",
                     id));
         }
         entityManager.close();

@@ -11,7 +11,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.foxminded.koren.university.repository.exceptions.RepositoryException;
-import com.foxminded.koren.university.repository.interfaces.LectureDao;
+import com.foxminded.koren.university.repository.interfaces.LectureRepository;
 import com.foxminded.koren.university.repository.mappers.LectureMapper;
 import com.foxminded.koren.university.entity.Lecture;
 import com.foxminded.koren.university.entity.Student;
@@ -24,7 +24,7 @@ import java.util.List;
 import static com.foxminded.koren.university.repository.sql.LectureSql.*;
 
 @Repository
-public class JdbcLectureDao implements LectureDao {
+public class JdbcLectureDao implements LectureRepository {
     
     private static final Logger LOG = LoggerFactory.getLogger(JdbcLectureDao.class);
     

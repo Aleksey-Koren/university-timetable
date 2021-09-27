@@ -7,7 +7,7 @@ import com.foxminded.koren.university.entity.Lecture;
 import com.foxminded.koren.university.entity.Student;
 import com.foxminded.koren.university.entity.Teacher;
 
-public interface LectureDao extends CrudRepository<Integer, Lecture> {
+public interface LectureRepository extends CrudRepository<Integer, Lecture> {
     
     List<Lecture> getTeacherLecturesByTimePeriod(Teacher teacher, LocalDate start, LocalDate finish);
 

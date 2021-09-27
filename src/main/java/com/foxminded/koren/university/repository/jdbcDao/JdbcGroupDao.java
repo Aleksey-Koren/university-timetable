@@ -15,14 +15,14 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.foxminded.koren.university.repository.exceptions.RepositoryException;
-import com.foxminded.koren.university.repository.interfaces.GroupDao;
+import com.foxminded.koren.university.repository.interfaces.GroupRepository;
 import com.foxminded.koren.university.repository.mappers.GroupMapper;
 import com.foxminded.koren.university.entity.Group;
 
 import static com.foxminded.koren.university.repository.sql.GroupSql.*;
 
 @Repository
-public class JdbcGroupDao implements GroupDao {
+public class JdbcGroupDao implements GroupRepository {
     
     private static final Logger LOG = LoggerFactory.getLogger(JdbcGroupDao.class);
     
@@ -92,19 +92,6 @@ public class JdbcGroupDao implements GroupDao {
         LOG.debug("Query to database. Get all groups. SQL: {}", GET_ALL);
         return jdbcTemplate.query(GET_ALL, new GroupMapper());
     }
-    
-//    @Override
-//    public void addCourse(Group group, Course course) {
-//        LOG.debug("Update to database. Add course to group. SQL: {} group.id = {} course.id = {}",
-//                ADD_COURSE, group.getId(), course.getId());
-//        jdbcTemplate.update(ADD_COURSE, group.getId(), course.getId());
-//    }
-//    @Override
-//    public boolean removeCourse(Group group, Course course) {
-//        LOG.debug("Update to database. Remove course from group. SQL: {} group.id = {} course.id = {}",
-//                REMOVE_COURSE, group.getId(), course.getId());
-//        return jdbcTemplate.update(REMOVE_COURSE, group.getId(), course.getId()) > 0;
-//    }
 
     @Override
     public List<Group> getGroupsByLectureId(Integer lectureId) {

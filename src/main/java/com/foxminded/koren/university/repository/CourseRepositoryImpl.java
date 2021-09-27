@@ -56,12 +56,12 @@ public class CourseRepositoryImpl implements CourseRepository {
     public void deleteById(Integer id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         LOG.trace("Trying to delete course id = {}", id);
+        entityManager.getTransaction().begin();
         Course course = entityManager.find(Course.class, id);
         if (course == null) {
             throw new RepositoryException(String
-                    .format("Unable to delete course with id = %s, cause: there is no audience with such id in database", id));
+                    .format("Unable to delete course with id = %s, cause: there is no course with such id in database", id));
         }
-        entityManager.getTransaction().begin();
         entityManager.remove(course);
         entityManager.getTransaction().commit();
         entityManager.close();
@@ -70,11 +70,11 @@ public class CourseRepositoryImpl implements CourseRepository {
     @Override
     public Course getById(Integer id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        LOG.trace("Getting audience with id = {}", id);
+        LOG.trace("Getting course with id = {}", id);
         Course course = entityManager.find(Course.class, id);
         if(course == null) {
             throw new RepositoryException(String
-                    .format("Unable to delete course with id = %s, cause: there is no course with such id in database", id));
+                    .format("Unable to get course with id = %s, cause: there is no course with such id in database", id));
         }
         entityManager.close();
         return course;

@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
 import com.foxminded.koren.university.SpringConfigT;
-import com.foxminded.koren.university.repository.interfaces.LectureDao;
+import com.foxminded.koren.university.repository.interfaces.LectureRepository;
 import com.foxminded.koren.university.entity.Lecture;
 import com.foxminded.koren.university.entity.Student;
 import com.foxminded.koren.university.entity.Teacher;
@@ -33,7 +33,7 @@ class TimetableServiceTest {
     
     @Mock
     @Autowired
-    private LectureDao mockLectureDao;
+    private LectureRepository mockLectureDao;
     
     @Autowired
     @InjectMocks

@@ -16,7 +16,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 
 import com.foxminded.koren.university.SpringConfigT;
-import com.foxminded.koren.university.repository.interfaces.GroupDao;
+import com.foxminded.koren.university.repository.interfaces.GroupRepository;
 import com.foxminded.koren.university.repository.test_data.TablesCreation;
 import com.foxminded.koren.university.entity.Group;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
@@ -37,7 +37,7 @@ class GroupServiceTest {
     
     @Mock
     @Autowired
-    private GroupDao mockGroupDao;
+    private GroupRepository mockGroupDao;
     
     @Autowired
     @InjectMocks

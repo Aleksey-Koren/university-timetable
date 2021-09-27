@@ -1,5 +1,6 @@
 package com.foxminded.koren.university.entity;
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "audience")
@@ -12,7 +13,8 @@ public class Audience {
     private int number;
     @Column(name = "capacity")
     private int capacity;
-
+    @OneToMany(mappedBy = "audience", fetch = FetchType.EAGER)
+    private List<Lecture> lectures;
     public Audience() {
 
     }
@@ -54,6 +56,14 @@ public class Audience {
 
     public void setCapacity(int capacity) {
         this.capacity = capacity;
+    }
+
+    public List<Lecture> getLectures() {
+        return lectures;
+    }
+
+    public void setLectures(List<Lecture> lectures) {
+        this.lectures = lectures;
     }
 
     @Override

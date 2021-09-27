@@ -16,7 +16,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 
 import com.foxminded.koren.university.SpringConfigT;
-import com.foxminded.koren.university.repository.interfaces.LectureDao;
+import com.foxminded.koren.university.repository.interfaces.LectureRepository;
 import com.foxminded.koren.university.repository.test_data.TablesCreation;
 import com.foxminded.koren.university.entity.Lecture;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
@@ -37,7 +37,7 @@ class LectureServiceTest {
     
     @Mock
     @Autowired
-    private LectureDao mockLectureDao;
+    private LectureRepository mockLectureDao;
     
     @Autowired
     @InjectMocks

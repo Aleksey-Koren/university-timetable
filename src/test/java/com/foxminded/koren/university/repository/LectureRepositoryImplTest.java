@@ -1,27 +1,23 @@
 package com.foxminded.koren.university.repository;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.foxminded.koren.university.repository.jdbcDao.JdbcLectureDao;
+import com.foxminded.koren.university.repository.interfaces.LectureRepository;
+import com.foxminded.koren.university.repository.test_data.JpaTestData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 
 import com.foxminded.koren.university.SpringConfigT;
 import com.foxminded.koren.university.repository.exceptions.RepositoryException;
-import com.foxminded.koren.university.repository.test_data.TablesCreation;
-import com.foxminded.koren.university.repository.test_data.TestData;
 import com.foxminded.koren.university.entity.Audience;
 import com.foxminded.koren.university.entity.Course;
 import com.foxminded.koren.university.entity.Lecture;
@@ -30,34 +26,35 @@ import com.foxminded.koren.university.entity.Teacher;
 import com.foxminded.koren.university.entity.interfaces.TimetableEvent;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 @SpringJUnitWebConfig
 @ContextConfiguration(classes = {SpringConfigT.class})
-class JdbcLectureDaoTest {
+class LectureRepositoryImplTest {
 
+    @Autowired
+    @Qualifier("lectureRepositoryImpl")
+    private LectureRepository lectureRepository;
 
     @Autowired
-    private TablesCreation tablesCreation;
-    
-    @Autowired
-    private JdbcLectureDao jdbcLectureDao;
-    
-    @Autowired
-    private TestData testData;
-    
+    private JpaTestData testData;
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
     
     @BeforeEach
     void createTables() throws DataAccessException, IOException {
-        tablesCreation.createTables();
-        testData.prepareTestData();
+        testData.createTables();
+        testData.loadTestData();
     }
-    
+
     @Test
     void getById_shouldGetById() {
         int expectedId = 1;
-        TimetableEvent expected = prepareExpected(expectedId); 
-        assertEquals(expected, jdbcLectureDao.getById(expectedId));
+        TimetableEvent expected = prepareExpected(expectedId);
+        Lecture lecture = lectureRepository.getById(expectedId);
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" + lecture.getGroups().get(0).getLectures());
+        assertEquals(expectedId, lecture.getId());
     }
     
     @Test
@@ -68,13 +65,13 @@ class JdbcLectureDaoTest {
                            + "SET teacher_id = NULL;");
         
         expected.setTeacher(null);
-        assertEquals(expected, jdbcLectureDao.getById(expectedId));
+        assertEquals(expected, lectureRepository.getById(expectedId));
         
         jdbcTemplate.execute("UPDATE lecture\r\n"
                            + "SET audience_id = NULL;");
         
         expected.setAudience(null);
-        assertEquals(expected, jdbcLectureDao.getById(expectedId));
+        assertEquals(expected, lectureRepository.getById(expectedId));
     }
     
     @Test
@@ -89,34 +86,34 @@ class JdbcLectureDaoTest {
         Lecture lecture1 = prepareExpected(1);
         Lecture lecture2 = prepareExpected(2);
         List<TimetableEvent> expected = List.of(lecture1, lecture2);
-        assertEquals(expected, jdbcLectureDao.getAll());
+        assertEquals(expected, lectureRepository.getAll());
     }
     
     @Test
     void save_shouldSaveAndGetGeneratedKey() {
         int presentId = 1;
         int savedId = 10;
-        Lecture lecture = jdbcLectureDao.getById(presentId);
+        Lecture lecture = lectureRepository.getById(presentId);
         assertEquals(presentId, lecture.getId());
-        assertThrows(RepositoryException.class, () -> jdbcLectureDao.getById(savedId), "No such id in database");
-        jdbcLectureDao.save(lecture);
+        assertThrows(RepositoryException.class, () -> lectureRepository.getById(savedId), "No such id in database");
+        lectureRepository.save(lecture);
         assertEquals(savedId, lecture.getId());
-        assertEquals(lecture, jdbcLectureDao.getById(savedId));
+        assertEquals(lecture, lectureRepository.getById(savedId));
     }
     
     @Test
     void save_shouldSave_whenTeacherOrAudienceIsNull() {
         int presentId = 1;
         int savedId = 10;
-        Lecture lecture = jdbcLectureDao.getById(presentId); 
+        Lecture lecture = lectureRepository.getById(presentId);
         assertEquals(presentId, lecture.getId());
-        assertThrows(RepositoryException.class, () -> jdbcLectureDao.getById(savedId),
+        assertThrows(RepositoryException.class, () -> lectureRepository.getById(savedId),
                 "No such id in database");
         lecture.setTeacher(null);
         lecture.setAudience(null);
-        jdbcLectureDao.save(lecture);
+        lectureRepository.save(lecture);
         assertEquals(savedId, lecture.getId());
-        assertEquals(lecture, jdbcLectureDao.getById(savedId));
+        assertEquals(lecture, lectureRepository.getById(savedId));
     }
     
     @Test
@@ -124,17 +121,17 @@ class JdbcLectureDaoTest {
         int lectureId = 1;
         int presentId = 1;
         int updatedId = 2;
-        Lecture lecture = jdbcLectureDao.getById(lectureId);
+        Lecture lecture = lectureRepository.getById(lectureId);
         assertEquals(presentId, lecture.getCourse().getId());
         assertEquals(presentId, lecture.getTeacher().getId());
         assertEquals(presentId, lecture.getAudience().getId());
         lecture.getCourse().setId(updatedId);
         lecture.getTeacher().setId(updatedId);
         lecture.getAudience().setId(updatedId);
-        jdbcLectureDao.update(lecture);
-        assertEquals(updatedId, jdbcLectureDao.getById(lectureId).getCourse().getId());
-        assertEquals(updatedId, jdbcLectureDao.getById(lectureId).getTeacher().getId());
-        assertEquals(updatedId, jdbcLectureDao.getById(lectureId).getAudience().getId());
+        lectureRepository.update(lecture);
+        assertEquals(updatedId, lectureRepository.getById(lectureId).getCourse().getId());
+        assertEquals(updatedId, lectureRepository.getById(lectureId).getTeacher().getId());
+        assertEquals(updatedId, lectureRepository.getById(lectureId).getAudience().getId());
     }
     
     @Test
@@ -142,25 +139,25 @@ class JdbcLectureDaoTest {
         int lectureId = 1;
         int presentId = 1;
         int updatedId = 2;
-        Lecture lecture = jdbcLectureDao.getById(lectureId);
+        Lecture lecture = lectureRepository.getById(lectureId);
         assertEquals(presentId, lecture.getCourse().getId());
         assertEquals(presentId, lecture.getTeacher().getId());
         assertEquals(presentId, lecture.getAudience().getId());
         lecture.getCourse().setId(updatedId);
         lecture.setTeacher(null);
         lecture.setAudience(null);
-        jdbcLectureDao.update(lecture);
-        assertEquals(updatedId, jdbcLectureDao.getById(lectureId).getCourse().getId());
-        assertNull(jdbcLectureDao.getById(lectureId).getTeacher());
-        assertNull(jdbcLectureDao.getById(lectureId).getAudience());
+        lectureRepository.update(lecture);
+        assertEquals(updatedId, lectureRepository.getById(lectureId).getCourse().getId());
+        assertNull(lectureRepository.getById(lectureId).getTeacher());
+        assertNull(lectureRepository.getById(lectureId).getAudience());
     }
     
     @Test
     void deleteById_shouldDeleteWhenIdProvided() {
         int lectureId = 1;
-        TimetableEvent lecture = jdbcLectureDao.getById(lectureId);
-        jdbcLectureDao.deleteById(lecture.getId());
-        assertThrows(RepositoryException.class, () -> jdbcLectureDao.getById(lecture.getId()),
+        TimetableEvent lecture = lectureRepository.getById(lectureId);
+        lectureRepository.deleteById(lecture.getId());
+        assertThrows(RepositoryException.class, () -> lectureRepository.getById(lecture.getId()),
                 "No such id in database");
     }
     
@@ -171,8 +168,8 @@ class JdbcLectureDaoTest {
         List<Lecture> expected = new ArrayList<>();
         int expectedLectureId1 = 4;
         int expectedLectureId2 = 6;
-        expected.add(jdbcLectureDao.getById(expectedLectureId1));
-        expected.add(jdbcLectureDao.getById(expectedLectureId2));
+        expected.add(lectureRepository.getById(expectedLectureId1));
+        expected.add(lectureRepository.getById(expectedLectureId2));
         
         int teacherId = 2;
         Teacher teacher = new Teacher();
@@ -181,11 +178,11 @@ class JdbcLectureDaoTest {
         LocalDate start = LocalDate.of(2021, 6, 3);
         LocalDate finish = LocalDate.of(2021, 6, 5);
         
-        assertEquals(expected, jdbcLectureDao.getTeacherLecturesByTimePeriod(teacher, start, finish));
+        assertEquals(expected, lectureRepository.getTeacherLecturesByTimePeriod(teacher, start, finish));
     }
     
     @Test
-    void getStudentLecturesByTimePeriod_shouldWorckCorrectly() {
+    void getStudentLecturesByTimePeriod_shouldWorkCorrectly() {
         reinsertLectures();
         jdbcTemplate.execute(
                   "INSERT INTO lecture_group\r\n"
@@ -200,9 +197,9 @@ class JdbcLectureDaoTest {
         int expectedLectureId1 = 2;
         int expectedLectureId2 = 4;
         int expectedLectureId3 = 6;
-        expected.add(jdbcLectureDao.getById(expectedLectureId1));
-        expected.add(jdbcLectureDao.getById(expectedLectureId2));
-        expected.add(jdbcLectureDao.getById(expectedLectureId3));
+        expected.add(lectureRepository.getById(expectedLectureId1));
+        expected.add(lectureRepository.getById(expectedLectureId2));
+        expected.add(lectureRepository.getById(expectedLectureId3));
         
         
         int testStudentId = 2;
@@ -212,7 +209,7 @@ class JdbcLectureDaoTest {
         LocalDate start = LocalDate.of(2021, 6, 2);
         LocalDate finish = LocalDate.of(2021, 6, 5);
         
-        assertEquals(expected, jdbcLectureDao.getStudentLecturesByTimePeriod(testStudent, start, finish));
+        assertEquals(expected, lectureRepository.getStudentLecturesByTimePeriod(testStudent, start, finish));
     }
     
     private Lecture prepareExpected(int expectedId) {

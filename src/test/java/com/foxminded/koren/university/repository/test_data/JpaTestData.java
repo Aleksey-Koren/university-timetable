@@ -113,6 +113,13 @@ public class JpaTestData {
                         + "(9 , 1, NULL, 2, '2021-06-02 18:00:00', '2021-06-02 19:00:00');";
         query = entityManager.createNativeQuery(insertLectures);
         query.executeUpdate();
+
+        String addGroupsToLecture = """
+                INSERT INTO lecture_group (lecture_id, group_id)
+                VALUES
+                (1, 1),
+                (1, 2);""";
+        entityManager.createNativeQuery(addGroupsToLecture).executeUpdate();
         entityManager.getTransaction().commit();
         entityManager.close();
     }
