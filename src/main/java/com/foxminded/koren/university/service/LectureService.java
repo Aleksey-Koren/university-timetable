@@ -66,19 +66,19 @@ public class LectureService {
         return lectureRepository.getAll();
     }
 
-    public boolean removeGroup(int lectureId, int groupId) {
+    public void removeGroup(int lectureId, int groupId) {
         LOG.debug("Remove group id = {} from lecture id = {}", groupId, lectureId);
         try {
-            return lectureRepository.removeGroup(lectureId, groupId);
+            lectureRepository.removeGroup(lectureId, groupId);
         } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
 
-    public boolean addGroup(int lectureID, int groupId) {
+    public void addGroup(int lectureID, int groupId) {
         LOG.debug("Add group id = {} to lecture id = {}", groupId, lectureID);
         try {
-            return lectureRepository.addGroup(lectureID,groupId);
+            lectureRepository.addGroup(lectureID,groupId);
         } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }

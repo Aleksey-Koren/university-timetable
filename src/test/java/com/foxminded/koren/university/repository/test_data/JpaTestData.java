@@ -41,11 +41,11 @@ public class JpaTestData {
         var entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
         String insertCourses =
-                "INSERT INTO course (name, description)\n"
-                        + "VALUES\n"
-                        + "('name1', 'desc1'),\n"
-                        + "('name2', 'desc2'),\n"
-                        + "('name3', 'desc3'),\n"
+                "INSERT INTO course (name, description)\r\n"
+                        + "VALUES\r\n"
+                        + "('name1', 'desc1'),\r\n"
+                        + "('name2', 'desc2'),\r\n"
+                        + "('name3', 'desc3'),\r\n"
                         + "('name4', 'desc4');";
         var query = entityManager.createNativeQuery(insertCourses);
         query.executeUpdate();
@@ -53,19 +53,19 @@ public class JpaTestData {
         String insertGroups =
                 "INSERT INTO group_table (name, year)\n"
                         + "VALUES\n"
-                        + "('group name1', 'FIRST'),\n"
-                        + "('group name2', 'SECOND')," +
-                        "('group name3', 'THIRD');";
+                        + "('group name1', 'FIRST'),\r\n"
+                        + "('group name2', 'SECOND'),\r\n" +
+                        "('group name3', 'THIRD');\r\n";
         query = entityManager.createNativeQuery(insertGroups);
         query.executeUpdate();
 
         String addCoursesToGroup =
                 "INSERT INTO group_course (group_id, course_id)\r\n"
-                        + "VALUES\n"
-                        + "(1, 1),\n"
-                        + "(1, 2),\n"
-                        + "(2, 1),\n"
-                        + "(2, 2),\n"
+                        + "VALUES\r\n"
+                        + "(1, 1),\r\n"
+                        + "(1, 2),\r\n"
+                        + "(2, 1),\r\n"
+                        + "(2, 2),\r\n"
                         + "(2, 4)";
         query = entityManager.createNativeQuery(addCoursesToGroup);
         query.executeUpdate();

@@ -15,7 +15,7 @@ public class Teacher implements TimetablePerson {
     private String firstName;
     @Column(name = "last_name")
     private String lastName;
-    @OneToMany(mappedBy = "teacher", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY)
     private List<Lecture> lectures;
     
     public Teacher() {

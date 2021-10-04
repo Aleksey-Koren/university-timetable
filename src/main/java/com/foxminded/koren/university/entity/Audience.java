@@ -13,7 +13,7 @@ public class Audience {
     private int number;
     @Column(name = "capacity")
     private int capacity;
-    @OneToMany(mappedBy = "audience", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "audience", fetch = FetchType.LAZY)
     private List<Lecture> lectures;
     public Audience() {
 

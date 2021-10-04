@@ -66,7 +66,7 @@ public class GroupRepositoryImpl implements GroupRepository {
     public Group getById(Integer id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        LOG.trace("Getting audience with id = {}", id);
+        LOG.trace("Getting group with id = {}", id);
         Group group = entityManager.find(Group.class, id);
         if (group == null) {
             throw new RepositoryException(String

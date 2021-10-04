@@ -13,7 +13,7 @@ public interface LectureRepository extends CrudRepository<Integer, Lecture> {
 
     List<Lecture> getStudentLecturesByTimePeriod(Student student, LocalDate start, LocalDate finish);
 
-    boolean removeGroup(int lectureId, int groupId);
+    void removeGroup(int lectureId, int groupId);
 
-    boolean addGroup(int lectureId, int groupId);
+    void addGroup(int lectureId, int groupId);
 }

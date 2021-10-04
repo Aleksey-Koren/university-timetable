@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import com.foxminded.koren.university.entity.*;
 import com.foxminded.koren.university.repository.interfaces.LectureRepository;
 import com.foxminded.koren.university.repository.test_data.JpaTestData;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,13 +20,11 @@ import org.springframework.test.context.ContextConfiguration;
 
 import com.foxminded.koren.university.SpringConfigT;
 import com.foxminded.koren.university.repository.exceptions.RepositoryException;
-import com.foxminded.koren.university.entity.Audience;
-import com.foxminded.koren.university.entity.Course;
-import com.foxminded.koren.university.entity.Lecture;
-import com.foxminded.koren.university.entity.Student;
-import com.foxminded.koren.university.entity.Teacher;
 import com.foxminded.koren.university.entity.interfaces.TimetableEvent;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -41,6 +41,9 @@ class LectureRepositoryImplTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private EntityManagerFactory entityManagerFactory;
     
     @BeforeEach
     void createTables() throws DataAccessException, IOException {
@@ -53,23 +56,29 @@ class LectureRepositoryImplTest {
         int expectedId = 1;
         TimetableEvent expected = prepareExpected(expectedId);
         Lecture lecture = lectureRepository.getById(expectedId);
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" + lecture.getGroups().get(0).getLectures());
         assertEquals(expectedId, lecture.getId());
     }
-    
+
     @Test
     void getById_shouldGetById_whenTeacherOrAudienceIsNull() {
         int expectedId = 1;
-        TimetableEvent expected = prepareExpected(expectedId);
-        jdbcTemplate.execute("UPDATE lecture\r\n"
-                           + "SET teacher_id = NULL;");
-        
+        Lecture expected = prepareExpected(expectedId);
+
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        entityManager.createNativeQuery(String.format("UPDATE lecture\n"
+                        + "SET teacher_id = NULL\n" +
+                        "WHERE id = %s;", expectedId))
+                .executeUpdate();
+        entityManager.getTransaction().commit();
         expected.setTeacher(null);
         assertEquals(expected, lectureRepository.getById(expectedId));
-        
-        jdbcTemplate.execute("UPDATE lecture\r\n"
-                           + "SET audience_id = NULL;");
-        
+
+        entityManager.getTransaction().begin();
+        entityManager.createNativeQuery(String.format("UPDATE lecture\n"
+                + "SET audience_id = NULL\n" +
+                "WHERE id = %s;", expectedId)).executeUpdate();
+        entityManager.getTransaction().commit();
         expected.setAudience(null);
         assertEquals(expected, lectureRepository.getById(expectedId));
     }
@@ -90,30 +99,35 @@ class LectureRepositoryImplTest {
     }
     
     @Test
-    void save_shouldSaveAndGetGeneratedKey() {
-        int presentId = 1;
+    void save_shouldSaveAndAssignGeneratedKey() {
+        int presentId = 9;
         int savedId = 10;
-        Lecture lecture = lectureRepository.getById(presentId);
-        assertEquals(presentId, lecture.getId());
-        assertThrows(RepositoryException.class, () -> lectureRepository.getById(savedId), "No such id in database");
-        lectureRepository.save(lecture);
-        assertEquals(savedId, lecture.getId());
-        assertEquals(lecture, lectureRepository.getById(savedId));
+        Lecture presentLecture = lectureRepository.getById(presentId);
+        assertEquals(presentId, presentLecture.getId());
+        RepositoryException exception = assertThrows(RepositoryException.class, () -> lectureRepository.getById(savedId));
+        assertEquals(String
+                .format("Unable to get lecture with id = %s, cause: there is no lecture with such id in database", savedId),
+                exception.getMessage());
+        Lecture newLecture = prepareExpected(0);
+        lectureRepository.save(newLecture);
+        assertEquals(savedId, newLecture.getId());
+        assertEquals(newLecture, lectureRepository.getById(savedId));
     }
-    
+
     @Test
     void save_shouldSave_whenTeacherOrAudienceIsNull() {
-        int presentId = 1;
         int savedId = 10;
-        Lecture lecture = lectureRepository.getById(presentId);
-        assertEquals(presentId, lecture.getId());
-        assertThrows(RepositoryException.class, () -> lectureRepository.getById(savedId),
-                "No such id in database");
-        lecture.setTeacher(null);
-        lecture.setAudience(null);
-        lectureRepository.save(lecture);
-        assertEquals(savedId, lecture.getId());
-        assertEquals(lecture, lectureRepository.getById(savedId));
+        Lecture newLecture = prepareExpected(0);
+
+        RepositoryException exception = assertThrows(RepositoryException.class, () -> lectureRepository.getById(savedId));
+        assertEquals(String
+                        .format("Unable to get lecture with id = %s, cause: there is no lecture with such id in database", savedId),
+                exception.getMessage());
+        newLecture.setTeacher(null);
+        newLecture.setAudience(null);
+        lectureRepository.save(newLecture);
+        assertEquals(savedId, newLecture.getId());
+        assertEquals(newLecture, lectureRepository.getById(savedId));
     }
     
     @Test
@@ -155,16 +169,18 @@ class LectureRepositoryImplTest {
     @Test
     void deleteById_shouldDeleteWhenIdProvided() {
         int lectureId = 1;
-        TimetableEvent lecture = lectureRepository.getById(lectureId);
+        Lecture lecture = lectureRepository.getById(lectureId);
         lectureRepository.deleteById(lecture.getId());
-        assertThrows(RepositoryException.class, () -> lectureRepository.getById(lecture.getId()),
-                "No such id in database");
+        RepositoryException exception =
+                assertThrows(RepositoryException.class, () -> lectureRepository.getById(lecture.getId()));
+        assertEquals(String
+                .format("Unable to get lecture with id = %s, cause: there is no lecture with such id in database", lectureId),
+                exception.getMessage());
     }
     
     @Test
     void getTeacherLecturesByTimePeriod_shouldWorkCorrectly() {      
         reinsertLectures();
-        
         List<Lecture> expected = new ArrayList<>();
         int expectedLectureId1 = 4;
         int expectedLectureId2 = 6;
@@ -184,15 +200,7 @@ class LectureRepositoryImplTest {
     @Test
     void getStudentLecturesByTimePeriod_shouldWorkCorrectly() {
         reinsertLectures();
-        jdbcTemplate.execute(
-                  "INSERT INTO lecture_group\r\n"
-                + "(group_id, lecture_id)\r\n"
-                          
-                + "VALUES\r\n"
-                + "(2, 2),\r\n"
-                + "(2, 4),\r\n"
-                + "(2, 6);");
-        
+        addLecturesToGroups();
         List<Lecture> expected = new ArrayList<>();
         int expectedLectureId1 = 2;
         int expectedLectureId2 = 4;
@@ -210,6 +218,44 @@ class LectureRepositoryImplTest {
         LocalDate finish = LocalDate.of(2021, 6, 5);
         
         assertEquals(expected, lectureRepository.getStudentLecturesByTimePeriod(testStudent, start, finish));
+    }
+
+    private void addLecturesToGroups() {
+        String addLecturesToGroupsSQL =
+                "INSERT INTO lecture_group\r\n" +
+                    "(group_id, lecture_id)\r\n" +
+                "VALUES\r\n" +
+                    "(2, 2),\r\n" +
+                    "(2, 4),\r\n" +
+                    "(2, 6);";
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        entityManager.createNativeQuery(addLecturesToGroupsSQL).executeUpdate();
+        entityManager.getTransaction().commit();
+        entityManager.close();
+    }
+
+    @Test
+    void addGroup_shouldAddGroupToCourse() {
+        int lectureId = 1;
+        int groupToAddId = 3;
+        List<Group> groupsBefore = lectureRepository.getById(lectureId).getGroups();
+        lectureRepository.addGroup(lectureId, groupToAddId);
+        List<Group> groupsAfter = lectureRepository.getById(lectureId).getGroups();
+        assertFalse(groupsBefore.equals(groupsAfter));
+        groupsAfter.removeAll(groupsBefore);
+        assertTrue(groupsAfter.size() == 1 && groupsAfter.get(0).getId() == groupToAddId);
+    }
+
+    @Test
+    void removeGroup_shouldRemoveGroupFromLecture() {
+        int lectureId = 1;
+        int groupToRemoveId = 2;
+        List<Group> groupsBefore = lectureRepository.getById(lectureId).getGroups();
+        lectureRepository.removeGroup(lectureId, groupToRemoveId);
+        List<Group> groupsAfter = lectureRepository.getById(lectureId).getGroups();
+        groupsBefore.removeAll(groupsAfter);
+        assertTrue(groupsBefore.size() == 1 && groupsBefore.get(0).getId() == groupToRemoveId);
     }
     
     private Lecture prepareExpected(int expectedId) {
@@ -233,20 +279,24 @@ class LectureRepositoryImplTest {
     }
     
     private void reinsertLectures() {
-        jdbcTemplate.execute("DELETE FROM lecture;");
-
-        jdbcTemplate.execute(
-                  "INSERT INTO lecture \r\n"
-                + "(id, course_id, teacher_id, audience_id, start_time , end_time)\r\n"
-                + "VALUES\r\n"
-                + "(1 , 1, 1, 1, '2021-05-02 16:00:00', '2021-05-02 17:00:00'),\r\n"
-                + "(2 , 2, 2, 2, '2021-06-02 16:00:00', '2021-06-02 17:00:00'),\r\n"
-                + "(3 , 1, 1, 1, '2021-06-02 18:00:00', '2021-06-02 19:00:00'),\r\n"
-                + "(4 , 2, 2, 3, '2021-06-03 19:00:00', '2021-06-03 20:00:00'),\r\n"
-                + "(5 , 1, 1, 2, '2021-06-02 21:00:00', '2021-06-02 22:00:00'),\r\n"
-                + "(6 , 2, 2, 1, '2021-06-04 07:00:00', '2021-06-04 08:00:00'),\r\n"
-                + "(7 , 1, 2, 2, '2021-06-06 23:59:59', '2021-06-07 01:00:00'),\r\n"
-                + "(8 , 1, NULL, NULL, '2021-06-02 18:00:00', '2021-06-02 19:00:00'),\r\n"
-                + "(9 , 1, NULL, 2, '2021-06-02 18:00:00', '2021-06-02 19:00:00');");
+        String lecturesReinsertion =
+                "INSERT INTO lecture \r\n"
+                        + "(id, course_id, teacher_id, audience_id, start_time , end_time)\r\n"
+                        + "VALUES\r\n"
+                        + "(1 , 1, 1, 1, '2021-05-02 16:00:00', '2021-05-02 17:00:00'),\r\n"
+                        + "(2 , 2, 2, 2, '2021-06-02 16:00:00', '2021-06-02 17:00:00'),\r\n"
+                        + "(3 , 1, 1, 1, '2021-06-02 18:00:00', '2021-06-02 19:00:00'),\r\n"
+                        + "(4 , 2, 2, 3, '2021-06-03 19:00:00', '2021-06-03 20:00:00'),\r\n"
+                        + "(5 , 1, 1, 2, '2021-06-02 21:00:00', '2021-06-02 22:00:00'),\r\n"
+                        + "(6 , 2, 2, 1, '2021-06-04 07:00:00', '2021-06-04 08:00:00'),\r\n"
+                        + "(7 , 1, 2, 2, '2021-06-06 23:59:59', '2021-06-07 01:00:00'),\r\n"
+                        + "(8 , 1, NULL, NULL, '2021-06-02 18:00:00', '2021-06-02 19:00:00'),\r\n"
+                        + "(9 , 1, NULL, 2, '2021-06-02 18:00:00', '2021-06-02 19:00:00');";
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        entityManager.createNativeQuery("DELETE FROM lecture;").executeUpdate();
+        entityManager.createNativeQuery(lecturesReinsertion).executeUpdate();
+        entityManager.getTransaction().commit();
+        entityManager.close();
     }
 }

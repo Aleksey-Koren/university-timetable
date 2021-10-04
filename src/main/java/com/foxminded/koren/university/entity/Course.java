@@ -16,7 +16,7 @@ public class Course {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(mappedBy = "course", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     private List<Lecture> lectures;
 
     public Course() {

@@ -123,22 +123,22 @@ public class JdbcLectureDao implements LectureRepository {
     }
 
     @Override
-    public boolean removeGroup(int lectureId, int groupId) {
+    public void removeGroup(int lectureId, int groupId) {
         LOG.debug("Update to database. Remove group from lecture. SQL: {} lecture.id = {}, group.id = {}",
                 "\n" + REMOVE_GROUP,lectureId, groupId);
         try {
-            return jdbcTemplate.update(REMOVE_GROUP, lectureId, groupId) == 1;
+            jdbcTemplate.update(REMOVE_GROUP, lectureId, groupId);
         } catch (DataAccessException e) {
             throw new RepositoryException(e.getMessage(), e);
         }
     }
 
     @Override
-    public boolean addGroup(int lectureId, int groupId) {
+    public void addGroup(int lectureId, int groupId) {
         LOG.debug("Update to database. Add group to lecture. SQL: {} lecture.id = {}, group.id = {}",
                 "\n" + ADD_GROUP,lectureId, groupId);
         try {
-            return jdbcTemplate.update(ADD_GROUP, lectureId, groupId) == 1;
+            jdbcTemplate.update(ADD_GROUP, lectureId, groupId);
         } catch (DataAccessException e) {
             throw new RepositoryException(e.getMessage(), e);
         }

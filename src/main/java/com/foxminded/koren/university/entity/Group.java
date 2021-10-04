@@ -20,10 +20,10 @@ public class Group {
     @Enumerated(EnumType.STRING)
     private Year year;
 
-    @OneToMany(mappedBy = "group", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
     private Collection<Student> students;
 
-    @ManyToMany(mappedBy = "groups")
+    @ManyToMany(mappedBy = "groups", fetch = FetchType.EAGER)
     private List<Lecture> lectures;
 
     public Group() {
