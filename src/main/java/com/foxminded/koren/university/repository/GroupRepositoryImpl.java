@@ -17,7 +17,7 @@ public class GroupRepositoryImpl implements GroupRepository {
 
     EntityManagerFactory entityManagerFactory;
 
-    Logger LOG = LoggerFactory.getLogger(GroupRepositoryImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GroupRepositoryImpl.class);
 
     public GroupRepositoryImpl() {
 
@@ -59,7 +59,6 @@ public class GroupRepositoryImpl implements GroupRepository {
             throw new RepositoryException(String
                     .format("Unable to delete group with id = %s, cause: there is no group with such id in database", id));
         }
-
     }
 
     @Override

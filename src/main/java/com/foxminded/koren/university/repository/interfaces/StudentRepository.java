@@ -4,9 +4,7 @@ import com.foxminded.koren.university.entity.Student;
 
 import java.util.List;
 
-public interface StudentDao extends CrudRepository<Integer, Student> {
-    
-    void deleteByGroupId(int id);
+public interface StudentRepository extends CrudRepository<Integer, Student> {
 
     List<Student> getByGroupId(int id);
 

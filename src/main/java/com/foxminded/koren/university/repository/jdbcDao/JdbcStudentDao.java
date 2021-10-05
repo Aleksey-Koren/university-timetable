@@ -1,7 +1,7 @@
 package com.foxminded.koren.university.repository.jdbcDao;
 
 import com.foxminded.koren.university.repository.exceptions.RepositoryException;
-import com.foxminded.koren.university.repository.interfaces.StudentDao;
+import com.foxminded.koren.university.repository.interfaces.StudentRepository;
 import com.foxminded.koren.university.repository.mappers.StudentMapper;
 import com.foxminded.koren.university.entity.Student;
 
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static com.foxminded.koren.university.repository.sql.StudentSql.*;
 @Repository
-public class JdbcStudentDao implements StudentDao {
+public class JdbcStudentDao implements StudentRepository {
     
     private static final Logger LOG = LoggerFactory.getLogger(JdbcStudentDao.class);
     
@@ -92,15 +92,15 @@ public class JdbcStudentDao implements StudentDao {
         }
     }
 
-    @Override
-    public void deleteByGroupId(int id) {
-        LOG.debug("Update database SQL:\n {} group.id {}", DELETE_BY_GROUP_ID, id);
-        try {
-            jdbcTemplate.update(DELETE_BY_GROUP_ID, id);
-        } catch (DataAccessException e) {
-            throw new RepositoryException(e.getMessage(), e);
-        }
-    }
+//    @Override
+//    public void deleteByGroupId(int id) {
+//        LOG.debug("Update database SQL:\n {} group.id {}", DELETE_BY_GROUP_ID, id);
+//        try {
+//            jdbcTemplate.update(DELETE_BY_GROUP_ID, id);
+//        } catch (DataAccessException e) {
+//            throw new RepositoryException(e.getMessage(), e);
+//        }
+//    }
 
     @Override
     public List<Student> getAll() {

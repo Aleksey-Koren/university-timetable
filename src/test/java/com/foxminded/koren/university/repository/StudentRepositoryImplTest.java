@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.foxminded.koren.university.repository.jdbcDao.JdbcStudentDao;
+import com.foxminded.koren.university.repository.test_data.JpaTestData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,21 +25,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringJUnitWebConfig
 @ContextConfiguration(classes = {SpringConfigT.class})
-class JdbcStudentDaoTest {
+class StudentRepositoryImplTest {
 
     @Autowired
     private TablesCreation tablesCreation;
     @Autowired
     private JdbcStudentDao jdbcStudentDao;
     @Autowired
-    private TestData testData;
+    private JpaTestData testData;
     @Autowired
     private JdbcTemplate JdbcTemplate;
         
     @BeforeEach
     void createTables() throws DataAccessException, IOException {
-        tablesCreation.createTables();
-        testData.prepareTestData();
+        testData.createTables();
+        testData.loadTestData();
     }
     
     @Test
@@ -61,7 +62,7 @@ class JdbcStudentDaoTest {
     }
     
     @Test
-    void getAll_shouldWorkCorrectly_ifGroupIdIsNull() {
+    void getAll_shouldWorkCorrectly() {
         JdbcTemplate.execute("DELETE FROM student");
         JdbcTemplate.execute("INSERT INTO student (id, group_id, first_name, last_name)\n"
                            + "VALUES\n"

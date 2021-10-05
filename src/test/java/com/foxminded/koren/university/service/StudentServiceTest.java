@@ -15,7 +15,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 
 import com.foxminded.koren.university.SpringConfigT;
-import com.foxminded.koren.university.repository.interfaces.StudentDao;
+import com.foxminded.koren.university.repository.interfaces.StudentRepository;
 import com.foxminded.koren.university.repository.test_data.TablesCreation;
 import com.foxminded.koren.university.entity.Student;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
@@ -40,7 +40,7 @@ class StudentServiceTest {
     
     @Mock
     @Autowired
-    private StudentDao mockStudentDao;
+    private StudentRepository mockStudentDao;
     
     @InjectMocks
     @Autowired
