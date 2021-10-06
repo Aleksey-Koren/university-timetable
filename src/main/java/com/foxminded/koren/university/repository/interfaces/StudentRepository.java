@@ -10,7 +10,7 @@ public interface StudentRepository extends CrudRepository<Integer, Student> {
 
     List<Student> getAllWithoutGroup();
 
-    boolean addStudentToGroup(int studentId, int groupId);
+    void addStudentToGroup(int studentId, int groupId);
 
-    boolean removeStudentFromGroup(int studentId);
+    void removeStudentFromGroup(int studentId);
 }

@@ -72,7 +72,7 @@ class CourseRepositoryImplTest {
         courseDao.deleteById(course.getId());
         RepositoryException exception = assertThrows(RepositoryException.class, () -> courseDao.getById(course.getId()));
         String expectedMessage = String
-                .format("Unable to delete course with id = %s, cause: there is no course with such id in database",
+                .format("Unable to get course with id = %s, cause: there is no course with such id in database",
                         expectedId);
         assertEquals(expectedMessage, exception.getMessage());
     }

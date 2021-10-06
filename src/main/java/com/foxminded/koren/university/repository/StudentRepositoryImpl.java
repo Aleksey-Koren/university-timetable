@@ -1,5 +1,6 @@
 package com.foxminded.koren.university.repository;
 
+import com.foxminded.koren.university.entity.Group;
 import com.foxminded.koren.university.entity.Student;
 import com.foxminded.koren.university.repository.exceptions.RepositoryException;
 import com.foxminded.koren.university.repository.interfaces.StudentRepository;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -90,23 +92,42 @@ public class StudentRepositoryImpl implements StudentRepository {
     public List<Student> getByGroupId(int id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
+        Group group = entityManager.find(Group.class, id);
+        List<Student> studentsOfGroup = new ArrayList<>(group.getStudents());
         entityManager.getTransaction().commit();
         entityManager.close();
-        return null;
+        return studentsOfGroup;
     }
 
     @Override
     public List<Student> getAllWithoutGroup() {
-        return null;
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        List<Student> studentsWithoutGroup = entityManager
+                .createQuery("FROM Student s WHERE s.group is NULL", Student.class).getResultList();
+        entityManager.getTransaction().commit();
+        entityManager.close();
+        return studentsWithoutGroup;
     }
 
     @Override
-    public boolean addStudentToGroup(int studentId, int groupId) {
-        return false;
+    public void addStudentToGroup(int studentId, int groupId) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        Student studentToAdd = entityManager.find(Student.class, studentId);
+        Group group = entityManager.find(Group.class, groupId);
+        studentToAdd.setGroup(group);
+        entityManager.getTransaction().commit();
+        entityManager.close();
     }
 
     @Override
-    public boolean removeStudentFromGroup(int studentId) {
-        return false;
+    public void removeStudentFromGroup(int studentId) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        Student studentToAdd = entityManager.find(Student.class, studentId);
+        studentToAdd.setGroup(null);
+        entityManager.getTransaction().commit();
+        entityManager.close();
     }
 }

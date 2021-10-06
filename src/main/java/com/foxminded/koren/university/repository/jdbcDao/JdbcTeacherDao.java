@@ -14,7 +14,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.foxminded.koren.university.repository.exceptions.RepositoryException;
-import com.foxminded.koren.university.repository.interfaces.TeacherDao;
+import com.foxminded.koren.university.repository.interfaces.TeacherRepository;
 import com.foxminded.koren.university.entity.Teacher;
 
 import static com.foxminded.koren.university.repository.sql.TeacherSql.SAVE;
@@ -24,7 +24,7 @@ import static com.foxminded.koren.university.repository.sql.TeacherSql.GET_BY_ID
 import static com.foxminded.koren.university.repository.sql.TeacherSql.GET_ALL;
 
 @Repository
-public class JdbcTeacherDao implements TeacherDao {
+public class JdbcTeacherDao implements TeacherRepository {
     
     private static final Logger LOG = LoggerFactory.getLogger(JdbcTeacherDao.class);
 

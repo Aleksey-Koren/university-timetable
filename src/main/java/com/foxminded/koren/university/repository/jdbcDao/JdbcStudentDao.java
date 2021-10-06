@@ -133,20 +133,20 @@ public class JdbcStudentDao implements StudentRepository {
     }
 
     @Override
-    public boolean addStudentToGroup(int studentId, int groupId) {
+    public void addStudentToGroup(int studentId, int groupId) {
         LOG.debug("Query to database SQL:\n {}, studentId = {}, groupId = {}", ADD_STUDENT_TO_GROUP, studentId, groupId);
         try {
-            return jdbcTemplate.update(ADD_STUDENT_TO_GROUP, groupId, studentId) == 1;
+            jdbcTemplate.update(ADD_STUDENT_TO_GROUP, groupId, studentId);
         } catch (DataAccessException e) {
             throw new RepositoryException(e.getMessage(), e);
         }
     }
 
     @Override
-    public boolean removeStudentFromGroup(int studentId) {
+    public void removeStudentFromGroup(int studentId) {
         LOG.debug("Query to database SQL:\n {}, studentId = {}", REMOVE_STUDENT_FROM_GROUP, studentId);
         try {
-            return jdbcTemplate.update(REMOVE_STUDENT_FROM_GROUP, studentId) == 1;
+            jdbcTemplate.update(REMOVE_STUDENT_FROM_GROUP, studentId);
         } catch (DataAccessException e) {
             throw new RepositoryException(e.getMessage(), e);
         }

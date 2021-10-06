@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 
 import com.foxminded.koren.university.SpringConfigT;
@@ -33,25 +34,27 @@ class TimetableServiceTest {
     
     @Mock
     @Autowired
-    private LectureRepository mockLectureDao;
+    @Qualifier("lectureRepositoryImpl")
+    private LectureRepository mockLectureRepository;
     
     @Autowired
+
     @InjectMocks
     private TimetableService timetableService;
     
     
     @Test
     void getTeacherTimetableByPeriod_shouldReturnTimetableEntityWithTeacherAndHisEvents() {
-        List<Lecture> testLectures = retriveTestLectures();
+        List<Lecture> testLectures = retrieveTestLectures();
         Teacher testTeacher = new Teacher();
         LocalDate testDate = LocalDate.now();
         
-        Mockito.when(mockLectureDao.getTeacherLecturesByTimePeriod(Mockito.any(), Mockito.any(), Mockito.any()))
+        Mockito.when(mockLectureRepository.getTeacherLecturesByTimePeriod(Mockito.any(), Mockito.any(), Mockito.any()))
                .thenReturn(testLectures);
         
         Timetable timetable = timetableService.getTeacherTimetableByPeriod(testTeacher, testDate, testDate);
         
-        Mockito.verify(mockLectureDao, Mockito.times(1))
+        Mockito.verify(mockLectureRepository, Mockito.times(1))
                 .getTeacherLecturesByTimePeriod(testTeacher, testDate, testDate);
         
         List<TimetableEvent> expectedEvents = testLectures.stream()
@@ -65,16 +68,16 @@ class TimetableServiceTest {
     
     @Test
     void getStudentTimetableByPeriod_shouldReturnTimetableEntityWithStudentAndHisEvents() {
-        List<Lecture> testLectures = retriveTestLectures();
+        List<Lecture> testLectures = retrieveTestLectures();
         Student testStudent = new Student();
         LocalDate testDate = LocalDate.now();
         
-        Mockito.when(mockLectureDao.getStudentLecturesByTimePeriod(Mockito.any(), Mockito.any(), Mockito.any()))
+        Mockito.when(mockLectureRepository.getStudentLecturesByTimePeriod(Mockito.any(), Mockito.any(), Mockito.any()))
                .thenReturn(testLectures);
         
         Timetable timetable = timetableService.getStudentTimetableByPeriod(testStudent, testDate, testDate);
         
-        Mockito.verify(mockLectureDao, Mockito.times(1))
+        Mockito.verify(mockLectureRepository, Mockito.times(1))
                 .getStudentLecturesByTimePeriod(testStudent, testDate, testDate);
         
         List<TimetableEvent> expectedEvents = testLectures.stream()
@@ -86,7 +89,7 @@ class TimetableServiceTest {
         assertEquals(expected, timetable);
     }
     
-    private List<Lecture> retriveTestLectures() { 
+    private List<Lecture> retrieveTestLectures() {
         Lecture testLecture1 = new Lecture();
         testLecture1.setStartTime(LocalDate.now().atStartOfDay());
         testLecture1.setEndTime(LocalDate.now().atStartOfDay());

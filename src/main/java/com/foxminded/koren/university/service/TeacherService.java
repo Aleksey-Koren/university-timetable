@@ -5,10 +5,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.foxminded.koren.university.repository.exceptions.RepositoryException;
-import com.foxminded.koren.university.repository.interfaces.TeacherDao;
+import com.foxminded.koren.university.repository.interfaces.TeacherRepository;
 import com.foxminded.koren.university.entity.Teacher;
 import com.foxminded.koren.university.service.exceptions.ServiceException;
 
@@ -17,17 +18,17 @@ public class TeacherService {
     
     private static final Logger LOG = LoggerFactory.getLogger(TeacherService.class);
     
-    private TeacherDao teacherDao;
+    private TeacherRepository teacherRepository;
 
     @Autowired
-    public TeacherService(TeacherDao teacherDao) {
-        this.teacherDao = teacherDao;
+    public TeacherService(@Qualifier("teacherRepositoryImpl") TeacherRepository teacherRepository) {
+        this.teacherRepository = teacherRepository;
     }
 
     public Teacher createNew(Teacher teacher) {
         LOG.debug("Create new teacher: {}", teacher);
         try {
-            return teacherDao.save(teacher);
+            return teacherRepository.save(teacher);
         } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
@@ -36,7 +37,7 @@ public class TeacherService {
     public void update(Teacher teacher) {
         LOG.debug("Update teacher: {}", teacher);
         try {
-            teacherDao.update(teacher);
+            teacherRepository.update(teacher);
         } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
@@ -45,7 +46,7 @@ public class TeacherService {
     public void deleteById(int id) {
         LOG.debug("Delete teacher by id = {}", id);
         try {
-            teacherDao.deleteById(id);
+            teacherRepository.deleteById(id);
         } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
 
@@ -55,7 +56,7 @@ public class TeacherService {
     public Teacher getById(int id) {
         LOG.debug("Get teacher by id = {}", id);
         try {
-            return teacherDao.getById(id);
+            return teacherRepository.getById(id);
         } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
@@ -64,7 +65,7 @@ public class TeacherService {
     public List<Teacher> getAll() {
         LOG.debug("Get all teachers");
         try {
-            return teacherDao.getAll();
+            return teacherRepository.getAll();
         } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }

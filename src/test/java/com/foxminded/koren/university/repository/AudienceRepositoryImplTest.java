@@ -85,7 +85,7 @@ class AudienceRepositoryImplTest {
         audienceRepository.deleteById(expectedId);
         RepositoryException exception = assertThrows(RepositoryException.class, () -> audienceRepository.getById(audience.getId()));
         String expectedMessage = String
-                .format("Unable to delete audience with id = %s, cause: there is no audience with such id in database",
+                .format("Unable to get audience with id = %s, cause: there is no audience with such id in database",
                         expectedId);
         assertEquals(expectedMessage, exception.getMessage());
     }

@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -37,7 +38,8 @@ class LectureServiceTest {
     
     @Mock
     @Autowired
-    private LectureRepository mockLectureDao;
+    @Qualifier("lectureRepositoryImpl")
+    private LectureRepository mockLectureRepository;
     
     @Autowired
     @InjectMocks
@@ -47,33 +49,33 @@ class LectureServiceTest {
     void createNew_shouldInvokeSaveInLectureDao() {
        Lecture testLecture = new Lecture();
        lectureService.createNew(testLecture);
-       Mockito.verify(mockLectureDao, Mockito.times(1)).save(testLecture);
+       Mockito.verify(mockLectureRepository, Mockito.times(1)).save(testLecture);
     }
     
     @Test
     void update_shouldInvokeUpdateInLectureDao() {
         Lecture testLecture = new Lecture();
         lectureService.update(testLecture);
-        Mockito.verify(mockLectureDao, Mockito.times(1)).update(testLecture);
+        Mockito.verify(mockLectureRepository, Mockito.times(1)).update(testLecture);
     }
     
     @Test
     void deleteById_shouldInvokeDeleteByIdInLectureDao() {
         int testId = 1;
         lectureService.deleteById(testId);
-        Mockito.verify(mockLectureDao, Mockito.times(1)).deleteById(testId);
+        Mockito.verify(mockLectureRepository, Mockito.times(1)).deleteById(testId);
     }
     
     @Test
     void getById_shouldInvokeGetByIdInLectureDao() {
         int testId = 1;
         lectureService.getById(testId);
-        Mockito.verify(mockLectureDao, Mockito.times(1)).getById(testId);
+        Mockito.verify(mockLectureRepository, Mockito.times(1)).getById(testId);
     }
     
     @Test
     void getAll_shouldInvokeGetAllInLectureDao() {
         lectureService.getAll();
-        Mockito.verify(mockLectureDao, Mockito.times(1)).getAll();
+        Mockito.verify(mockLectureRepository, Mockito.times(1)).getAll();
     }   
 }

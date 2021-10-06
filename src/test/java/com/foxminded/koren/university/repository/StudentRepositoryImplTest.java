@@ -3,19 +3,18 @@ package com.foxminded.koren.university.repository;
 import java.io.IOException;
 import java.util.List;
 
-import com.foxminded.koren.university.repository.jdbcDao.JdbcStudentDao;
+import com.foxminded.koren.university.repository.interfaces.StudentRepository;
 import com.foxminded.koren.university.repository.test_data.JpaTestData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 
 import com.foxminded.koren.university.SpringConfigT;
 import com.foxminded.koren.university.repository.exceptions.RepositoryException;
-import com.foxminded.koren.university.repository.test_data.TablesCreation;
-import com.foxminded.koren.university.repository.test_data.TestData;
 import com.foxminded.koren.university.entity.Group;
 import com.foxminded.koren.university.entity.Student;
 import com.foxminded.koren.university.entity.Year;
@@ -27,10 +26,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @ContextConfiguration(classes = {SpringConfigT.class})
 class StudentRepositoryImplTest {
 
+
     @Autowired
-    private TablesCreation tablesCreation;
-    @Autowired
-    private JdbcStudentDao jdbcStudentDao;
+    @Qualifier("studentRepositoryImpl")
+    private StudentRepository studentRepository;
     @Autowired
     private JpaTestData testData;
     @Autowired
@@ -49,7 +48,7 @@ class StudentRepositoryImplTest {
         group.setId(1);
         Student expected = new Student(group, "first name1", "last name1");
         expected.setId(expectedId);
-        assertEquals(expected, jdbcStudentDao.getById(expectedId));
+        assertEquals(expected, studentRepository.getById(expectedId));
     }
     
     @Test
@@ -58,7 +57,7 @@ class StudentRepositoryImplTest {
         Group group = null;
         Student expected = new Student(group, "first name4", "last name4");
         expected.setId(expectedId);
-        assertEquals(expected, jdbcStudentDao.getById(expectedId));
+        assertEquals(expected, studentRepository.getById(expectedId));
     }
     
     @Test
@@ -77,7 +76,7 @@ class StudentRepositoryImplTest {
         Student student2 = new Student(group2, "first name2", "last name2");
         student2.setId(2);
         List<Student> expected = List.of(student1, student2);
-        assertEquals(expected, jdbcStudentDao.getAll());
+        assertEquals(expected, studentRepository.getAll());
     }
     
     @Test
@@ -86,8 +85,8 @@ class StudentRepositoryImplTest {
         Group group = new Group("group name1", Year.FIRST);
         group.setId(1);
         Student expected = new Student(group, "test!!!", "test");
-        jdbcStudentDao.save(expected);
-        assertEquals(expected, jdbcStudentDao.getById(expectedId));
+        studentRepository.save(expected);
+        assertEquals(expected, studentRepository.getById(expectedId));
     }
     
     @Test
@@ -95,8 +94,8 @@ class StudentRepositoryImplTest {
         int expectedId = 5;
         Group group = null;
         Student expected = new Student(group, "test!!!", "test");
-        jdbcStudentDao.save(expected);
-        assertEquals(expected, jdbcStudentDao.getById(expectedId));
+        studentRepository.save(expected);
+        assertEquals(expected, studentRepository.getById(expectedId));
     }
     
     @Test
@@ -104,31 +103,31 @@ class StudentRepositoryImplTest {
         Group group = new Group("group name2", Year.SECOND);
         group.setId(2);
         int expectedId = 1;
-        Student expected = jdbcStudentDao.getById(expectedId);
+        Student expected = studentRepository.getById(expectedId);
         expected.setFirstName("changed name");
         expected.setLastName("changed name");
         expected.setGroup(group);
-        jdbcStudentDao.update(expected);
-        assertEquals(expected, jdbcStudentDao.getById(expectedId));
+        studentRepository.update(expected);
+        assertEquals(expected, studentRepository.getById(expectedId));
     }
     
     @Test
-    void update_shouldWorkCorrectly_ifGroupIdIsNull() {
+    void update_shouldWorkCorrectly_ifGroupIsNull() {
         int expectedId = 1;
-        Student expected = jdbcStudentDao.getById(expectedId);
+        Student expected = studentRepository.getById(expectedId);
         expected.setFirstName("changed name");
         expected.setLastName("changed name");
         expected.setGroup(null);
-        jdbcStudentDao.update(expected);
-        assertEquals(expected, jdbcStudentDao.getById(expectedId));
+        studentRepository.update(expected);
+        assertEquals(expected, studentRepository.getById(expectedId));
     }
     
     @Test
     void deleteById_shouldWorkCorrectly() {
         int expectedId = 1;
-        Student student = jdbcStudentDao.getById(expectedId);
-        jdbcStudentDao.deleteById(student.getId());
-        assertThrows(RepositoryException.class, () -> jdbcStudentDao.getById(student.getId()), "No such id in database");
+        Student student = studentRepository.getById(expectedId);
+        studentRepository.deleteById(student.getId());
+        assertThrows(RepositoryException.class, () -> studentRepository.getById(student.getId()), "No such id in database");
     }
 
     @Test
@@ -136,30 +135,30 @@ class StudentRepositoryImplTest {
         Student student1 = new Student(2, new Group(2, "group name2", Year.SECOND), "first name2", "last name2");
         Student student2 = new Student(3, new Group(2, "group name2", Year.SECOND), "first name3", "last name3");
         List<Student> expected = List.of(student1, student2);
-        assertEquals(expected, jdbcStudentDao.getByGroupId(2));
+        assertEquals(expected, studentRepository.getByGroupId(2));
     }
 
     @Test
     void getALLWithoutGroup_shouldReturnAllStudentsWhereGroupIdIsNull() {
-        List<Student> expected = List.of(jdbcStudentDao.getById(4));
-        assertEquals(expected, jdbcStudentDao.getAllWithoutGroup());
+        List<Student> expected = List.of(studentRepository.getById(4));
+        assertEquals(expected, studentRepository.getAllWithoutGroup());
     }
 
     @Test
     void addStudentToGroup_shouldSetArgsGroupIdToArgsStudent() {
         int studentId = 4;
         int groupId = 2;
-        assertNull(jdbcStudentDao.getById(studentId).getGroup());
-        jdbcStudentDao.addStudentToGroup(studentId, groupId);
-        assertNotNull(jdbcStudentDao.getById(studentId).getGroup());
-        assertTrue(jdbcStudentDao.getById(studentId).getGroup().getId() == groupId);
+        assertNull(studentRepository.getById(studentId).getGroup());
+        studentRepository.addStudentToGroup(studentId, groupId);
+        assertNotNull(studentRepository.getById(studentId).getGroup());
+        assertTrue(studentRepository.getById(studentId).getGroup().getId() == groupId);
     }
 
     @Test
     void removeStudentFromGroup_shouldSetGroupIdAsNullInArgumentStudent() {
         int testStudentId = 3;
-        assertNotNull(jdbcStudentDao.getById(testStudentId).getGroup());
-        assertTrue(jdbcStudentDao.removeStudentFromGroup(testStudentId));
-        assertNull(jdbcStudentDao.getById(testStudentId).getGroup());
+        assertNotNull(studentRepository.getById(testStudentId).getGroup());
+        studentRepository.removeStudentFromGroup(testStudentId);
+        assertNull(studentRepository.getById(testStudentId).getGroup());
     }
 }

@@ -1,7 +1,6 @@
 package com.foxminded.koren.university.entity;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,7 +20,7 @@ public class Group {
     private Year year;
 
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
-    private Collection<Student> students;
+    private List<Student> students;
 
     @ManyToMany(mappedBy = "groups", fetch = FetchType.EAGER)
     private List<Lecture> lectures;
@@ -69,11 +68,11 @@ public class Group {
         this.year = year;
     }
 
-    public Collection<Student> getStudents() {
+    public List<Student> getStudents() {
         return students;
     }
 
-    public void setStudents(Collection<Student> students) {
+    public void setStudents(List<Student> students) {
         this.students = students;
     }
 

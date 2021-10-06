@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.IOException;
 import java.util.List;
 
+import com.foxminded.koren.university.entity.Student;
 import com.foxminded.koren.university.repository.interfaces.GroupRepository;
 import com.foxminded.koren.university.entity.Year;
 import com.foxminded.koren.university.repository.test_data.JpaTestData;
@@ -52,7 +53,7 @@ class GroupRepositoryImplTest {
         expected.setId(expectedId);
         assertEquals(expected, groupRepository.getById(expectedId));
     }
-    
+
     @Test
     void getAll_shouldWorkCorrectly() {
         Group group1 = new Group("group name1", Year.FIRST);
@@ -88,7 +89,7 @@ class GroupRepositoryImplTest {
         int expectedId = 1;
         Group group = groupRepository.getById(expectedId);
         groupRepository.deleteById(group.getId());
-        assertThrows(RepositoryException.class, () -> groupRepository.getById(group.getId()), "No such id in database");
+        assertThrows(RepositoryException.class, () -> groupRepository.getById(expectedId));
     }
 
     @Test

@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -34,9 +35,10 @@ class AudienceServiceTest {
     void createTables() throws DataAccessException, IOException {
         tablesCreation.createTables();
     }
-    
-    @Autowired
+
     @Mock
+    @Autowired
+    @Qualifier("audienceRepositoryImpl")
     private AudienceRepository mockAudienceDao;
     
     @InjectMocks

@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -40,7 +41,8 @@ class StudentServiceTest {
     
     @Mock
     @Autowired
-    private StudentRepository mockStudentDao;
+    @Qualifier("studentRepositoryImpl")
+    private StudentRepository mockStudentRepository;
     
     @InjectMocks
     @Autowired
@@ -50,57 +52,57 @@ class StudentServiceTest {
     void createNew_shouldInvokeSaveInStudentDao() {
         Student testStudent = new Student();
         mockStudentService.createNew(testStudent);
-        verify(mockStudentDao, times(1)).save(testStudent);
+        verify(mockStudentRepository, times(1)).save(testStudent);
     }
     
     @Test
     void update_shouldInvokeUpdateInStudentDao() {
         Student testStudent = new Student();
         mockStudentService.update(testStudent);
-        verify(mockStudentDao, times(1)).update(testStudent);
+        verify(mockStudentRepository, times(1)).update(testStudent);
     }
     
     @Test
     void deleteById_shouldInvokeDeleteByIdInStudentDao() {
         int testId = 1;
         mockStudentService.deleteById(testId);
-        verify(mockStudentDao, times(1)).deleteById(testId);
+        verify(mockStudentRepository, times(1)).deleteById(testId);
     }
     
     @Test
     void getById_shouldInvokeGetByIdInStudentDao() {
         int testId = 1;
         mockStudentService.getById(testId);
-        verify(mockStudentDao, times(1)).getById(testId);
+        verify(mockStudentRepository, times(1)).getById(testId);
     }
     
     @Test
     void getAll_shouldInvokeGetAllInStudentDao() {
         mockStudentService.getAll();
-        verify(mockStudentDao, times(1)).getAll();
+        verify(mockStudentRepository, times(1)).getAll();
     }
 
     @Test
     void getByGroupId_shouldInvokeGetByGroupIdOfStudentDao() {
         mockStudentService.getByGroupId(1);
-        verify(mockStudentDao, times(1)).getByGroupId(1);
+        verify(mockStudentRepository, times(1)).getByGroupId(1);
     }
 
     @Test
     void getAllWithoutGroup_shouldInvokeGetAllWithoutStudentsOfStudentDao() {
         mockStudentService.getAllWithoutGroup();
-        verify(mockStudentDao, times(1)).getAllWithoutGroup();
+        verify(mockStudentRepository, times(1)).getAllWithoutGroup();
     }
 
     @Test
     void addStudentToGroup_shouldInvokeAddStudentToGroupOfStudentDao() {
         mockStudentService.addStudentToGroup(1, 2);
-        verify(mockStudentDao, times(1)).addStudentToGroup(1, 2);
+        verify(mockStudentRepository, times(1)).addStudentToGroup(1, 2);
     }
 
     @Test
     void removeStudentFromGroup_shouldInvokeRemoveStudentFromGroupOfStudentDao() {
         mockStudentService.removeStudentFromGroup(1);
-        verify(mockStudentDao, times(1)).removeStudentFromGroup(1);
+        verify(mockStudentRepository, times(1)).removeStudentFromGroup(1);
     }
 }

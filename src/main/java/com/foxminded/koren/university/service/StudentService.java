@@ -88,23 +88,22 @@ public class StudentService {
         }
     }
 
-    public boolean addStudentToGroup(int studentId, int groupId) {
+    public void addStudentToGroup(int studentId, int groupId) {
         LOG.debug("Add student id = {} to group id = {}", studentId, groupId);
         try {
 
-            return studentRepository.addStudentToGroup(studentId, groupId);
+            studentRepository.addStudentToGroup(studentId, groupId);
         } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
 
-    public boolean removeStudentFromGroup(int studentId) {
+    public void removeStudentFromGroup(int studentId) {
         LOG.debug("Remove student id = {} from group", studentId);
         try {
-            return studentRepository.removeStudentFromGroup(studentId);
+            studentRepository.removeStudentFromGroup(studentId);
         } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
-
 }

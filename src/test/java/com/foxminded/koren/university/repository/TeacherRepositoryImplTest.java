@@ -6,35 +6,35 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.IOException;
 import java.util.List;
 
-import com.foxminded.koren.university.repository.jdbcDao.JdbcTeacherDao;
+import com.foxminded.koren.university.repository.interfaces.TeacherRepository;
+import com.foxminded.koren.university.repository.test_data.JpaTestData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 
 import com.foxminded.koren.university.SpringConfigT;
 import com.foxminded.koren.university.repository.exceptions.RepositoryException;
-import com.foxminded.koren.university.repository.test_data.TablesCreation;
-import com.foxminded.koren.university.repository.test_data.TestData;
 import com.foxminded.koren.university.entity.Teacher;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
 @SpringJUnitWebConfig
 @ContextConfiguration(classes = {SpringConfigT.class})
-class JdbcTeacherDaoTest {
+class TeacherRepositoryImplTest {
     
+
     @Autowired
-    private TablesCreation tablesCreation;
+    @Qualifier("teacherRepositoryImpl")
+    private TeacherRepository teacherRepository;
     @Autowired
-    private JdbcTeacherDao jdbcTeacherDao;
-    @Autowired
-    private TestData testData;
+    private JpaTestData testData;
 
     @BeforeEach
     void createTables() throws DataAccessException, IOException {
-        tablesCreation.createTables();
-        testData.prepareTestData();
+        testData.createTables();
+        testData.loadTestData();
     }
     
     @Test
@@ -42,7 +42,7 @@ class JdbcTeacherDaoTest {
         int expectedId = 1;
         Teacher expected = new Teacher("first name1", "last name1");
         expected.setId(expectedId);
-        assertEquals(expected, jdbcTeacherDao.getById(expectedId));
+        assertEquals(expected, teacherRepository.getById(expectedId));
     }
     
     @Test
@@ -52,35 +52,37 @@ class JdbcTeacherDaoTest {
         Teacher teacher2 = new Teacher("first name2", "last name2");
         teacher2.setId(2);
         List<Teacher> expected = List.of(teacher1, teacher2);
-        assertEquals(expected, jdbcTeacherDao.getAll());
+        assertEquals(expected, teacherRepository.getAll());
     }
     
     @Test
     void save_shouldWorkCorrectly() {
         int expectedId = 3;
-        assertThrows(RepositoryException.class, () -> jdbcTeacherDao.getById(expectedId), "No such id in database");
+        assertThrows(RepositoryException.class, () -> teacherRepository.getById(expectedId), "No such id in database");
         Teacher expected = new Teacher("first name", "last name");  
-        jdbcTeacherDao.save(expected);
+        teacherRepository.save(expected);
         expected.setId(expectedId);
-        assertEquals(expected, jdbcTeacherDao.getById(expectedId));
+        assertEquals(expected, teacherRepository.getById(expectedId));
     }
     
     @Test
     void update_shouldWorkCorrectly() {
         int expectedId = 1;
-        Teacher expected = jdbcTeacherDao.getById(expectedId);
+        Teacher expected = teacherRepository.getById(expectedId);
         expected.setFirstName("changed");
         expected.setLastName("changed");
-        jdbcTeacherDao.update(expected);
-        assertEquals(expected, jdbcTeacherDao.getById(expectedId));
+        teacherRepository.update(expected);
+        assertEquals(expected, teacherRepository.getById(expectedId));
     }
     
     @Test
     void deleteById_shouldWorkCorrectly() {
         int expectedId = 1;
-        Teacher teacher = jdbcTeacherDao.getById(expectedId);
-        jdbcTeacherDao.deleteById(teacher.getId());
-        assertThrows(RepositoryException.class, () -> jdbcTeacherDao.getById(teacher.getId()), "No such id in database");
-
+        Teacher teacher = teacherRepository.getById(expectedId);
+        teacherRepository.deleteById(teacher.getId());
+        RepositoryException exception = assertThrows(RepositoryException.class, () -> teacherRepository.getById(expectedId));
+        assertEquals(String
+                .format("Unable to get teacher with id = %s, cause: there is no teacher with such id in database", expectedId),
+                exception.getMessage());
     }
 }
