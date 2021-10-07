@@ -5,26 +5,31 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.foxminded.koren.university.dao.exceptions.DAOException;
-import com.foxminded.koren.university.dao.interfaces.GroupDao;
+import com.foxminded.koren.university.repository.exceptions.RepositoryException;
+import com.foxminded.koren.university.repository.interfaces.GroupRepository;
 import com.foxminded.koren.university.entity.Group;
 import com.foxminded.koren.university.service.exceptions.ServiceException;
 
 @Service
 public class GroupService {
+
+    private GroupRepository groupRepository;
     
     private static final Logger LOG = LoggerFactory.getLogger(GroupService.class);
-    
+
     @Autowired
-    private GroupDao groupDao;
-        
+    public GroupService(@Qualifier("groupRepositoryImpl")GroupRepository groupRepository) {
+        this.groupRepository = groupRepository;
+    }
+
     public Group createNew(Group group) {
         try {
             LOG.debug("Save new group: {}", group);
-            return groupDao.save(group);
-        } catch (DAOException e) {
+            return groupRepository.save(group);
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
@@ -32,17 +37,17 @@ public class GroupService {
     public void update(Group group) {
         try {
             LOG.debug("Update group: {}", group);
-            groupDao.update(group);
-        } catch (DAOException e) {
+            groupRepository.update(group);
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
     
-    public boolean deleteById(int id) {
+    public void deleteById(int id) {
         LOG.debug("Delete group by id = {}", id);
         try {
-            return groupDao.deleteById(id);
-        } catch (DAOException e) {
+            groupRepository.deleteById(id);
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
@@ -50,32 +55,32 @@ public class GroupService {
     public Group getById(int id) {
         try {
             LOG.debug("Get group by id = {}", id);
-            return groupDao.getById(id);
-        } catch (DAOException e) {
+            return groupRepository.getById(id);
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
     
     public List<Group> getAll(){
         LOG.debug("Get all groups");
-        return groupDao.getAll();
+        return groupRepository.getAll();
     }
     
     public void releaseGroup(Group group) {
         LOG.debug("Release group. {}", group);
-        groupDao.deleteById(group.getId());
+        groupRepository.deleteById(group.getId());
     }
 
     public List<Group> getGroupsByLectureId(Integer id) {
         LOG.debug("Retrieve groups by lecture id = {}", id);
-        return groupDao.getGroupsByLectureId(id);
+        return groupRepository.getGroupsByLectureId(id);
     }
 
     public List<Group> getAllExceptAddedToLecture(int lectureId) {
         LOG.debug("Get all groups except added to lecture id ={}", lectureId);
         try {
-            return groupDao.getAllGroupsExceptAddedToLecture(lectureId);
-        } catch (DAOException e) {
+            return groupRepository.getAllGroupsExceptAddedToLecture(lectureId);
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }

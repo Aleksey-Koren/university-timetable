@@ -1,12 +1,29 @@
 package com.foxminded.koren.university.entity;
 
+import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
+@Entity
+@Table(name = "group_table")
 public class Group {
-    
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "year")
+    @Enumerated(EnumType.STRING)
     private Year year;
+
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    private List<Student> students;
+
+    @ManyToMany(mappedBy = "groups", fetch = FetchType.EAGER)
+    private List<Lecture> lectures;
 
     public Group() {
         
@@ -51,17 +68,33 @@ public class Group {
         this.year = year;
     }
 
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
+    }
+
+    public List<Lecture> getLectures() {
+        return lectures;
+    }
+
+    public void setLectures(List<Lecture> lectures) {
+        this.lectures = lectures;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Group group = (Group) o;
-        return id == group.id && Objects.equals(name, group.name) && year == group.year;
+        return id == group.id && Objects.equals(name, group.name) && year == group.year /* && Objects.equals(students, group.students)*/;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, year);
+        return Objects.hash(id, name, year, students);
     }
 
     @Override

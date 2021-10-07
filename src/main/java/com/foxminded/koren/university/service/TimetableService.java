@@ -8,29 +8,32 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.foxminded.koren.university.dao.interfaces.LectureDao;
+import com.foxminded.koren.university.repository.interfaces.LectureRepository;
 import com.foxminded.koren.university.entity.Lecture;
 import com.foxminded.koren.university.entity.Student;
 import com.foxminded.koren.university.entity.Teacher;
 import com.foxminded.koren.university.entity.Timetable;
 import com.foxminded.koren.university.entity.interfaces.TimetableEvent;
-import com.foxminded.koren.university.entity.interfaces.TimetablePerson;
 import com.foxminded.koren.university.service.comporators.TimetableStartTimeComparator;
-import com.foxminded.koren.university.service.exceptions.ServiceException;
 
 @Service
 public class
 TimetableService {
     
     private static final Logger LOG = LoggerFactory.getLogger(TimetableService.class);
-    
+
+    private LectureRepository lectureRepository;
+
     @Autowired
-    private LectureDao lectureDao;
-        
+    public TimetableService(@Qualifier("lectureRepositoryImpl")LectureRepository lectureRepository) {
+        this.lectureRepository = lectureRepository;
+    }
+
     public Timetable getTeacherTimetableByPeriod(Teacher teacher, LocalDate start, LocalDate finish) {
-        List<Lecture> lectures = lectureDao.getTeacherLecturesByTimePeriod(teacher, start, finish);
+        List<Lecture> lectures = lectureRepository.getTeacherLecturesByTimePeriod(teacher, start, finish);
         
         LOG.debug("List of lectutes for teacher.id = {}, start = {}, finish = {}",
                 teacher.getId(), start, finish);
@@ -41,7 +44,7 @@ TimetableService {
     }
     
     public Timetable getStudentTimetableByPeriod(Student student, LocalDate start, LocalDate finish) {
-        List<Lecture> lectures = lectureDao.getStudentLecturesByTimePeriod(student, start, finish);
+        List<Lecture> lectures = lectureRepository.getStudentLecturesByTimePeriod(student, start, finish);
         
         LOG.debug("List of lectutes for student.id = {}, start = {}, finish = {}",
                 student.getId(), start, finish);

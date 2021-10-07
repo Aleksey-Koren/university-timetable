@@ -2,11 +2,21 @@ package com.foxminded.koren.university.entity;
 
 import com.foxminded.koren.university.entity.interfaces.TimetablePerson;
 
+import javax.persistence.*;
+import java.util.List;
+
+@Entity
+@Table(name = "teacher")
 public class Teacher implements TimetablePerson {
-    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name = "first_name")
     private String firstName;
+    @Column(name = "last_name")
     private String lastName;
+    @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY)
+    private List<Lecture> lectures;
     
     public Teacher() {
         
@@ -49,6 +59,14 @@ public class Teacher implements TimetablePerson {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public List<Lecture> getLectures() {
+        return lectures;
+    }
+
+    public void setLectures(List<Lecture> lectures) {
+        this.lectures = lectures;
     }
 
     @Override

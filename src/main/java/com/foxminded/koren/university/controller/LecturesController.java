@@ -60,8 +60,7 @@ public class LecturesController extends BaseController {
     private List<LectureGetDTO> generateLectureDTO(List<Lecture> lectures) {
         List<LectureGetDTO> dtos = new ArrayList<>();
         for(Lecture lecture : lectures) {
-            List<Group> groups = groupService.getGroupsByLectureId(lecture.getId());
-            dtos.add(new LectureGetDTO.Builder().lecture(lecture).groups(groups).build());
+            dtos.add(new LectureGetDTO.Builder().lecture(lecture).groups(lecture.getGroups()).build());
         }
         return  dtos;
     }
@@ -98,9 +97,12 @@ public class LecturesController extends BaseController {
     @GetMapping("/{id}/edit")
     public String edit(Model model, @PathVariable("id") Integer id) {
         LOG.trace("Request for form to update lecture id = {}", id);
+        Lecture lecture = lectureService.getById(id);
         LectureGetDTO dto = new LectureGetDTO.Builder()
-                .lecture(lectureService.getById(id))
-                .groups(groupService.getGroupsByLectureId(id))
+//                .lecture(lectureService.getById(id))
+//                .groups(groupService.getGroupsByLectureId(id))
+                .lecture(lecture)
+                .groups(lecture.getGroups())
                 .allCourses(courseService.getAll())
                 .allAudiences(audienceService.getAll())
                 .allTeachers(teacherService.getAll())
@@ -120,12 +122,13 @@ public class LecturesController extends BaseController {
     @PostMapping("/{id}/edit-update")
     public String update(@ModelAttribute("formDTO") LecturePostDTO formDTO, @PathVariable("id") int id) {
         LOG.trace("Updating lecture id = {}", id);
-        Lecture lecture = new Lecture(id,
-                                      new Audience(formDTO.getAudienceId()),
-                                      new Teacher(formDTO.getTeacherId()),
-                                      new Course(formDTO.getCourseId()),
-                                      formDTO.getStartTime(),
-                                      formDTO.getEndTime());
+        Lecture lecture = lectureService.getById(id);
+        lecture.getAudience().setId(formDTO.getAudienceId());
+        lecture.getTeacher().setId(formDTO.getTeacherId());
+        lecture.getCourse().setId(formDTO.getCourseId());
+        lecture.setStartTime(formDTO.getStartTime());
+        lecture.setEndTime(formDTO.getEndTime());
+
         try {
             lectureService.update(lecture);
         } catch (ServiceException e) {

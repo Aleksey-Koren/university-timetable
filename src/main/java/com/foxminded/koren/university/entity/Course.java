@@ -1,11 +1,24 @@
 package com.foxminded.koren.university.entity;
 
+import javax.persistence.*;
+import java.util.List;
+
+@Entity
+@Table(name = "course")
 public class Course {
-    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "description")
     private String description;
-    
+
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    private List<Lecture> lectures;
+
     public Course() {
         
     }
@@ -47,6 +60,14 @@ public class Course {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<Lecture> getLectures() {
+        return lectures;
+    }
+
+    public void setLectures(List<Lecture> lecturse) {
+        this.lectures = lecturse;
     }
 
     @Override

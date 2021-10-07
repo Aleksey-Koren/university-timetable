@@ -7,9 +7,14 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
+import java.util.Properties;
 
 @Configuration
 @ComponentScan("com.foxminded.koren.university")
@@ -34,5 +39,29 @@ public class SpringConfigT {
         dataSource.setInitialPoolSize(5);
         dataSource.setMaxPoolSize(20);
         return dataSource;
+    }
+
+    @Bean
+    Properties additionalProperties() {
+        Properties properties = new Properties();
+//        properties.setProperty("hibernate.hbm2ddl.auto", "create");
+        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+//        properties.setProperty("hibernate.show_sql", "true");
+        properties.setProperty("hibernate.format_sql", "true");
+        properties.setProperty("hibernate.use_sql_comments", "true");
+        return properties;
+    }
+
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory() throws NamingException, PropertyVetoException {
+        LocalContainerEntityManagerFactoryBean entityManagerFactory
+                = new LocalContainerEntityManagerFactoryBean();
+        entityManagerFactory.setDataSource(dataSource());
+        entityManagerFactory.setPackagesToScan(new String[] { "com.foxminded.koren.university.entity" });
+
+        JpaVendorAdapter hibernateVendorAdapter = new HibernateJpaVendorAdapter();
+        entityManagerFactory.setJpaVendorAdapter(hibernateVendorAdapter);
+        entityManagerFactory.setJpaProperties(additionalProperties());
+        return entityManagerFactory;
     }
 }

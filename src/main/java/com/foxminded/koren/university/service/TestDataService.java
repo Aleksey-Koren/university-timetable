@@ -1,6 +1,6 @@
 package com.foxminded.koren.university.service;
 
-import com.foxminded.koren.university.dao.interfaces.TestDataDao;
+import com.foxminded.koren.university.repository.interfaces.TestDataDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

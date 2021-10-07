@@ -5,10 +5,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.foxminded.koren.university.dao.exceptions.DAOException;
-import com.foxminded.koren.university.dao.interfaces.CourseDao;
+import com.foxminded.koren.university.repository.exceptions.RepositoryException;
+import com.foxminded.koren.university.repository.interfaces.CourseRepository;
 import com.foxminded.koren.university.entity.Course;
 import com.foxminded.koren.university.service.exceptions.ServiceException;
 
@@ -16,15 +17,19 @@ import com.foxminded.koren.university.service.exceptions.ServiceException;
 public class CourseService {
     
     private static final Logger LOG = LoggerFactory.getLogger(CourseService.class);
-    
+
+    private CourseRepository courseRepository;
+
     @Autowired
-    private CourseDao courseDao;
-    
+    public CourseService(@Qualifier("courseRepositoryImpl") CourseRepository courseRepository) {
+        this.courseRepository = courseRepository;
+    }
+
     public Course createNew(Course course) {
         try {
             LOG.debug("Save new course: {}", course);
-            return courseDao.save(course);
-        } catch (DAOException e) {
+            return courseRepository.save(course);
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(),e);
         }
     }
@@ -32,17 +37,17 @@ public class CourseService {
     public void update(Course course) {
         try {
             LOG.debug("Update course: {}", course);
-            courseDao.update(course);
-        } catch (DAOException e) {
+            courseRepository.update(course);
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
     
-    public boolean deleteById(int id) {
+    public void deleteById(int id) {
         LOG.debug("Delete course by id = {}", id);
         try {
-            return courseDao.deleteById(id);
-        } catch (DAOException e) {
+            courseRepository.deleteById(id);
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
@@ -50,8 +55,8 @@ public class CourseService {
     public Course getById(int id) {
         try {
             LOG.debug("Get course by id = {}", id);
-            return courseDao.getById(id);
-        } catch (DAOException e) {
+            return courseRepository.getById(id);
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
@@ -59,8 +64,8 @@ public class CourseService {
     public List<Course> getAll() {
         LOG.debug("Get all courses");
         try {
-            return courseDao.getAll();
-        } catch (DAOException e) {
+            return courseRepository.getAll();
+        } catch (RepositoryException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }

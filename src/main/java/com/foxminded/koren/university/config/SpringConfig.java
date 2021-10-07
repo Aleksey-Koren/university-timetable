@@ -9,11 +9,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
+import java.util.Properties;
 
 @Configuration
 @ComponentScan("com.foxminded.koren.university")
@@ -32,6 +36,30 @@ public class SpringConfig {
         InitialContext context = new InitialContext();
         DataSource result = (DataSource) context.lookup("java:/comp/env/jdbc/datasource");
         return result;
+    }
+
+    @Bean
+    Properties additionalProperties() {
+        Properties properties = new Properties();
+        properties.setProperty("hibernate.hbm2ddl.auto", "validate");
+        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL10Dialect");
+//        properties.setProperty("hibernate.show_sql", "true");
+        properties.setProperty("hibernate.format_sql", "true");
+        properties.setProperty("hibernate.use_sql_comments", "true");
+        return properties;
+    }
+
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory() throws NamingException {
+        LocalContainerEntityManagerFactoryBean entityManagerFactory
+                = new LocalContainerEntityManagerFactoryBean();
+        entityManagerFactory.setDataSource(dataSource());
+        entityManagerFactory.setPackagesToScan(new String[] { "com.foxminded.koren.university.entity" });
+
+        JpaVendorAdapter hibernateVendorAdapter = new HibernateJpaVendorAdapter();
+        entityManagerFactory.setJpaVendorAdapter(hibernateVendorAdapter);
+        entityManagerFactory.setJpaProperties(additionalProperties());
+        return entityManagerFactory;
     }
 
     @Bean

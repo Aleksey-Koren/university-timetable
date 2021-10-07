@@ -12,13 +12,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.foxminded.koren.university.SpringConfigT;
-import com.foxminded.koren.university.dao.interfaces.TeacherDao;
-import com.foxminded.koren.university.dao.test_data.TablesCreation;
+import com.foxminded.koren.university.repository.interfaces.TeacherRepository;
+import com.foxminded.koren.university.repository.test_data.TablesCreation;
 import com.foxminded.koren.university.entity.Teacher;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
@@ -38,7 +38,8 @@ class TeacherServiceTest {
     
     @Mock
     @Autowired
-    private TeacherDao mockTeacherDao;
+    @Qualifier("teacherRepositoryImpl")
+    private TeacherRepository mockTeacherRepository;
     
     @Autowired
     @InjectMocks
@@ -48,33 +49,33 @@ class TeacherServiceTest {
     void createNew_shouldInvokeSaveInTeacherDao() {
         Teacher testTeacher = new Teacher();
         teacherService.createNew(testTeacher);
-        Mockito.verify(mockTeacherDao, Mockito.times(1)).save(testTeacher);
+        Mockito.verify(mockTeacherRepository, Mockito.times(1)).save(testTeacher);
     }
     
     @Test
     void update_shouldInvokeUpdateInTeacherDao() {
         Teacher testTeacher = new Teacher ();
         teacherService.update(testTeacher);
-        Mockito.verify(mockTeacherDao, Mockito.times(1)).update(testTeacher);
+        Mockito.verify(mockTeacherRepository, Mockito.times(1)).update(testTeacher);
     }
     
     @Test
     void deleteById_shouldInvokeDeleteByIdInTeacherDao() {
         int testId = 1;
         teacherService.deleteById(testId);
-        Mockito.verify(mockTeacherDao, Mockito.times(1)).deleteById(testId);
+        Mockito.verify(mockTeacherRepository, Mockito.times(1)).deleteById(testId);
     }
     
     @Test
     void getById_shouldInvokeGetByIdInTeacherDao() {
         int testId = 1;
         teacherService.getById(testId);
-        Mockito.verify(mockTeacherDao, Mockito.times(1)).getById(testId);
+        Mockito.verify(mockTeacherRepository, Mockito.times(1)).getById(testId);
     }
     
     @Test
     void getAll_shouldInvokeGetAllInTeacherDao() {
         teacherService.getAll();
-        Mockito.verify(mockTeacherDao, Mockito.times(1)).getAll();
+        Mockito.verify(mockTeacherRepository, Mockito.times(1)).getAll();
     }
 }

@@ -6,15 +6,40 @@ import java.util.Objects;
 
 import com.foxminded.koren.university.entity.interfaces.TimetableEvent;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "lecture")
 public class Lecture implements TimetableEvent {
-    
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "audience_id")
     private Audience audience;
+
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "teacher_id")
     private Teacher teacher;
+
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "course_id")
     private Course course;
+
+    @Column(name = "start_time")
     private LocalDateTime startTime;
+
+    @Column(name = "end_time")
     private LocalDateTime endTime;
-    
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "lecture_group",
+               joinColumns = @JoinColumn(name = "lecture_id"),
+               inverseJoinColumns = @JoinColumn(name = "group_id"))
+    private List<Group> groups;
+
     public Lecture() {
         
     }
@@ -85,7 +110,12 @@ public class Lecture implements TimetableEvent {
     public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
-
+    public List<Group> getGroups() {
+        return groups;
+    }
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
+    }
 
     @Override
     public boolean equals(Object o) {
