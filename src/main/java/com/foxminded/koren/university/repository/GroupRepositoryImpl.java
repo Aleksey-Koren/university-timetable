@@ -1,6 +1,7 @@
 package com.foxminded.koren.university.repository;
 
 import com.foxminded.koren.university.entity.Group;
+import com.foxminded.koren.university.entity.Lecture;
 import com.foxminded.koren.university.repository.exceptions.RepositoryException;
 import com.foxminded.koren.university.repository.interfaces.GroupRepository;
 import org.slf4j.Logger;
@@ -97,6 +98,20 @@ public class GroupRepositoryImpl implements GroupRepository {
 
     @Override
     public List<Group> getAllGroupsExceptAddedToLecture(int lectureId) {
-        return null;
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        LOG.trace("Getting all groups except added to lecture id = {}", lectureId);
+        entityManager.getTransaction().begin();
+        List<Group> groups = entityManager
+                .createQuery("FROM Group order by name", Group.class).getResultList();
+        List<Group> groupsOfLecture = entityManager.find(Lecture.class, lectureId).getGroups();
+        groups.removeAll(groupsOfLecture);
+//        List<Group> groupsExceptAdded = entityManager
+//                .createQuery("SELECT g FROM Group g " +
+//                        "WHERE g NOT IN (SELECT l.groups FROM Lecture l WHERE l.id = :id) ", Group.class)
+//                .setParameter("id", lectureId)
+//                .getResultList();
+        entityManager.getTransaction().commit();
+        entityManager.close();
+        return groups;
     }
 }

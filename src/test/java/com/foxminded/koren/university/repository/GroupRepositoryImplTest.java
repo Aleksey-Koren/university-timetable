@@ -93,6 +93,17 @@ class GroupRepositoryImplTest {
     }
 
     @Test
+    void getGroupsExceptAdded_shouldGetGroupsExceptAddedToLecture() {
+        int lectureId = 1;
+        List<Group> allGroups = groupRepository.getAll();
+        List<Group> groupAddedToLecture = List.of(new Group(1,"group name1", Year.FIRST),
+                new Group(2, "group name2", Year.SECOND));
+        allGroups.removeAll(groupAddedToLecture);
+        assertEquals(allGroups, groupRepository.getAllGroupsExceptAddedToLecture(lectureId));
+    }
+
+
+    @Test
     @Disabled
     void getGroupsByLectureIdShouldGetGroupsReliedToCurrentLecture() {
         String sql = "INSERT INTO lecture_group(lecture_id, group_id)\n" +

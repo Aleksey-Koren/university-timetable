@@ -26,15 +26,6 @@ public class GroupSql {
             "SELECT id group_id, name group_name, year group_year\r\n"
             + "FROM group_table\r\n"
             + "ORDER BY id;";
-      
-//    public static final String ADD_COURSE =
-//            "INSERT INTO group_course (group_id, course_id)\r\n"
-//          + "VALUES (?, ?);";
-//
-//    public static final String REMOVE_COURSE =
-//            "DELETE FROM group_course\r\n"
-//          + "WHERE group_id = ?\r\n"
-//          + "AND course_id = ?;";
 
     public static final String GET_BY_LECTURE_ID =
             "SELECT id group_id , name group_name, year group_year\n" +
