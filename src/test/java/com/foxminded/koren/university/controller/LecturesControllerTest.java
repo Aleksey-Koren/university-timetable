@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -68,7 +69,6 @@ class LecturesControllerTest {
     void index_shouldAddExpectedListIntoModelAndSendItToRightView() throws Exception {
         List<Lecture> testLectures = retrieveTestLectures();
         when(mockedLectureService.getAll()).thenReturn(testLectures);
-        when(mockedGroupService.getGroupsByLectureId(any())).thenReturn(List.of(new Group(), new Group(), new Group()));
         List<LectureGetDTO> testDtos = retrieveTestLectureDTOs(testLectures);
         MvcResult mvcResult = mockMvc.perform(get("/lectures"))
                 .andExpect(model().attributeHasNoErrors())
@@ -80,10 +80,9 @@ class LecturesControllerTest {
     @Test
     void index_shouldCallGetAllMethodOfService() throws Exception {
         when(mockedLectureService.getAll()).thenReturn(retrieveTestLectures());
-        InOrder inOrder = inOrder(mockedLectureService, mockedGroupService);
+        InOrder inOrder = inOrder(mockedLectureService);
         mockMvc.perform(get("/lectures"));
         inOrder.verify(mockedLectureService, times(1)).getAll();
-        inOrder.verify(mockedGroupService, times(retrieveTestLectures().size())).getGroupsByLectureId(any());
         inOrder.verifyNoMoreInteractions();
     }
 
@@ -126,7 +125,6 @@ class LecturesControllerTest {
         LectureGetDTO dto = retrieveGetDTO();
         LecturePostDTO formDTO = retrievePostDTO(dto);
         when(mockedLectureService.getById(testId)).thenReturn(dto.getLecture());
-        when(mockedGroupService.getGroupsByLectureId(testId)).thenReturn(dto.getGroups());
         when(mockedCourseService.getAll()).thenReturn(dto.getAllCourses());
         when(mockedAudienceService.getAll()).thenReturn(dto.getAllAudiences());
         when(mockedTeacherService.getAll()).thenReturn(dto.getAllTeachers());
@@ -138,7 +136,6 @@ class LecturesControllerTest {
         assertEquals("lectures/edit", modelAndView
                 .getViewName());
         verify(mockedLectureService).getById(testId);
-        verify(mockedGroupService).getGroupsByLectureId(testId);
         verify(mockedCourseService).getAll();
         verify(mockedAudienceService).getAll();
         verify(mockedTeacherService).getAll();
@@ -150,7 +147,7 @@ class LecturesControllerTest {
     }
 
     @Test
-    void update_shouldInvokeUpdateMethodOfServiceWithCorrectModelArgsAndRedirectToExpectedUrl() throws Exception {
+    void update_shouldInvokeGetLectureByIdAndUpdateItsFieldsFromDTOAndInvokeUpdateWithItAndRedirectToExpectedUrl() throws Exception {
         int testId = 2;
         LecturePostDTO formDTO = retrievePostDTO(retrieveGetDTO());
         MockHttpServletRequestBuilder request = post("/lectures/{id}/edit-update", testId)
@@ -159,19 +156,27 @@ class LecturesControllerTest {
                 .param("teacherId", formDTO.getTeacherId().toString())
                 .param("startTime", formDTO.getStartTime().toString())
                 .param("endTime", formDTO.getEndTime().toString());
+        Lecture lectureFromDatabase = retrieveTestLecture(testId);
+        when(mockedLectureService.getById(testId)).thenReturn(lectureFromDatabase);
         MvcResult result = mockMvc.perform(request)
                 .andExpect(model().attributeHasNoErrors())
                 .andExpect(redirectedUrl("/lectures"))
                 .andReturn();
         ModelAndView modelAndView = result.getModelAndView();
-        assertEquals(formDTO, modelAndView
-                .getModel().get("formDTO"));
-        verify(mockedLectureService).update(new Lecture(testId,
-                new Audience(formDTO.getAudienceId()),
-                new Teacher(formDTO.getTeacherId()),
-                new Course(formDTO.getCourseId()),
-                formDTO.getStartTime(),
-                formDTO.getEndTime()));
+        assertEquals(formDTO, modelAndView.getModel().get("formDTO"));
+        verify(mockedLectureService).update(lectureFromDatabase);
+        assertTrue(lectureFromDatabase.getAudience().getId() == formDTO.getAudienceId() &&
+                lectureFromDatabase.getTeacher().getId() == formDTO.getTeacherId() &&
+                lectureFromDatabase.getCourse().getId() == formDTO.getCourseId() &&
+                lectureFromDatabase.getAudience().getId() == formDTO.getAudienceId() &&
+                lectureFromDatabase.getStartTime().equals(formDTO.getStartTime()) &&
+                lectureFromDatabase.getEndTime().equals(formDTO.getEndTime()));
+    }
+
+    private Lecture retrieveTestLecture(int id) {
+        Lecture lecture = new Lecture(id, new Audience(), new Teacher(), new Course(), LocalDateTime.now(), LocalDateTime.now());
+        lecture.setGroups(List.of(new Group(1, "name", Year.FIRST)));
+        return lecture;
     }
 
     @Test
@@ -220,13 +225,16 @@ class LecturesControllerTest {
 
     private LectureGetDTO retrieveGetDTO() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-        return new LectureGetDTO.Builder().lecture(new Lecture(2,
-                                                               new Audience(1, 20, 20),
-                                                               new Teacher(1, "fName1", "lName1"),
-                                                               new Course(1, "name", "description"),
-                                                                LocalDateTime.parse("2021-09-02T13:48", formatter),
-                                                                LocalDateTime.parse("2021-09-02T14:48", formatter)))
-                                          .groups(List.of(new Group(1, "name", Year.FIRST)))
+        Lecture lecture = new Lecture(2,
+                new Audience(1, 20, 20),
+                new Teacher(1, "fName1", "lName1"),
+                new Course(1, "name", "description"),
+                LocalDateTime.parse("2021-09-02T13:48", formatter),
+                LocalDateTime.parse("2021-09-02T14:48", formatter));
+        lecture.setGroups(List.of(new Group(1, "name", Year.FIRST)));
+
+        return new LectureGetDTO.Builder().lecture(lecture)
+                                          .groups(lecture.getGroups())
                                           .allCourses(List.of(new Course(1, "name", "description")))
                                           .allAudiences(List.of(new Audience(1, 20, 20)))
                                           .allTeachers(List.of(new Teacher(1, "fName1", "lName1")))
@@ -243,18 +251,22 @@ class LecturesControllerTest {
     }
 
     private List<Lecture> retrieveTestLectures() {
+        List<Group> groups = List.of(new Group(1, "name", Year.FIRST));
         Lecture lecture1 = new Lecture();
         lecture1.setId(1);
+        lecture1.setGroups(groups);
         Lecture lecture2 = new Lecture();
         lecture1.setId(2);
+        lecture2.setGroups(groups);
         Lecture lecture3 = new Lecture();
         lecture1.setId(3);
+        lecture3.setGroups(groups);
         return List.of(lecture1, lecture2, lecture3);
     }
 
     private List<LectureGetDTO> retrieveTestLectureDTOs(List<Lecture> lectures) {
         return lectures.stream()
-                .map(s -> new LectureGetDTO.Builder().lecture(s).groups(List.of(new Group(), new Group(), new Group()))
+                .map(s -> new LectureGetDTO.Builder().lecture(s).groups(s.getGroups())
                         .build()).collect(Collectors.toList());
     }
 }

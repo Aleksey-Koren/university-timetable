@@ -105,11 +105,6 @@ public class GroupRepositoryImpl implements GroupRepository {
                 .createQuery("FROM Group order by name", Group.class).getResultList();
         List<Group> groupsOfLecture = entityManager.find(Lecture.class, lectureId).getGroups();
         groups.removeAll(groupsOfLecture);
-//        List<Group> groupsExceptAdded = entityManager
-//                .createQuery("SELECT g FROM Group g " +
-//                        "WHERE g NOT IN (SELECT l.groups FROM Lecture l WHERE l.id = :id) ", Group.class)
-//                .setParameter("id", lectureId)
-//                .getResultList();
         entityManager.getTransaction().commit();
         entityManager.close();
         return groups;

@@ -26,11 +26,6 @@ public class CourseRepositoryImpl implements CourseRepository {
     }
 
     @Override
-    public List<Course> getByGroup(Group group) {
-        return null;
-    }
-
-    @Override
     public Course save(Course entity) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();

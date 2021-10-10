@@ -99,8 +99,6 @@ public class LecturesController extends BaseController {
         LOG.trace("Request for form to update lecture id = {}", id);
         Lecture lecture = lectureService.getById(id);
         LectureGetDTO dto = new LectureGetDTO.Builder()
-//                .lecture(lectureService.getById(id))
-//                .groups(groupService.getGroupsByLectureId(id))
                 .lecture(lecture)
                 .groups(lecture.getGroups())
                 .allCourses(courseService.getAll())

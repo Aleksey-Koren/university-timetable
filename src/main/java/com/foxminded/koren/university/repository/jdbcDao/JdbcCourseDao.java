@@ -87,17 +87,6 @@ public class JdbcCourseDao implements CourseRepository {
                     e);
         }
     }
-    
-    @Override
-    public List<Course> getByGroup(Group group) {
-        LOG.debug("Query to database. Get courses by group. SQL {} group.id = {}",
-                GET_BY_GROUP_ID, group.getId());
-        try {
-            return jdbcTemplate.query(GET_BY_GROUP_ID, new CourseMapper(), group.getId());
-        } catch (DataAccessException e) {
-            throw new RepositoryException(e.getMessage(), e);
-        }
-    }
 
     @Override
     public List<Course> getAll() {
