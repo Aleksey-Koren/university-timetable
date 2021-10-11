@@ -20,7 +20,7 @@ import java.util.Properties;
 @ComponentScan("com.foxminded.koren.university")
 @PropertySource("classpath:application.properties")
 public class SpringConfigT {
-    
+
     @Autowired
     private Environment env;
 
