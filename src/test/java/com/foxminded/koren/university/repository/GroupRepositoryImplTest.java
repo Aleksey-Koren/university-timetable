@@ -1,15 +1,10 @@
 package com.foxminded.koren.university.repository;
 
-import static java.util.stream.Collectors.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.IOException;
-import java.util.List;
-
-import com.foxminded.koren.university.entity.Student;
-import com.foxminded.koren.university.repository.interfaces.GroupRepository;
+import com.foxminded.koren.university.Application;
+import com.foxminded.koren.university.entity.Group;
 import com.foxminded.koren.university.entity.Year;
+import com.foxminded.koren.university.repository.exceptions.RepositoryException;
+import com.foxminded.koren.university.repository.interfaces.GroupRepository;
 import com.foxminded.koren.university.repository.test_data.JpaTestData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -17,19 +12,23 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-
-import com.foxminded.koren.university.SpringConfigT;
-import com.foxminded.koren.university.repository.exceptions.RepositoryException;
-import com.foxminded.koren.university.entity.Group;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
+import java.io.IOException;
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringJUnitWebConfig
-@ContextConfiguration(classes = {SpringConfigT.class})
+@ContextConfiguration(classes = {Application.class})
+@ActiveProfiles("test")
 class GroupRepositoryImplTest {
 
     @Autowired
@@ -38,7 +37,7 @@ class GroupRepositoryImplTest {
     @Autowired
     private JpaTestData testData;
     @Autowired
-    EntityManagerFactory entityManagerFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     @BeforeEach
     void createTables() throws DataAccessException, IOException {

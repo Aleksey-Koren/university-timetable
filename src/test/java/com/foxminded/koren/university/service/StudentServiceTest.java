@@ -1,7 +1,9 @@
 package com.foxminded.koren.university.service;
 
-import java.io.IOException;
-
+import com.foxminded.koren.university.Application;
+import com.foxminded.koren.university.entity.Student;
+import com.foxminded.koren.university.repository.interfaces.StudentRepository;
+import com.foxminded.koren.university.repository.test_data.TablesCreation;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -13,32 +15,22 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-
-import com.foxminded.koren.university.SpringConfigT;
-import com.foxminded.koren.university.repository.interfaces.StudentRepository;
-import com.foxminded.koren.university.repository.test_data.TablesCreation;
-import com.foxminded.koren.university.entity.Student;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
-import static org.mockito.ArgumentMatchers.any;
+import java.io.IOException;
+
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @SpringJUnitWebConfig
-@ContextConfiguration(classes = {SpringConfigT.class})
+@ContextConfiguration(classes = {Application.class})
+@ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 @TestInstance(Lifecycle.PER_CLASS)
 class StudentServiceTest {
 
-    @Autowired
-    private TablesCreation tablesCreation;
-    
-    @BeforeAll
-    void createTables() throws DataAccessException, IOException {
-        tablesCreation.createTables();
-    }
-    
     @Mock
     @Autowired
     @Qualifier("studentRepositoryImpl")

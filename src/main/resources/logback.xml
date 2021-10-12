@@ -7,18 +7,18 @@
   </appender>
   
   <logger name="com.foxminded.koren.university"
-          level="trace">
+          level="info">
   </logger>
 
-  <logger name="org.hibernate.SQL"
-          level="debug">
-  </logger>
+<!--  <logger name="org.hibernate.SQL"-->
+<!--          level="debug">-->
+<!--  </logger>-->
 
-  <logger name="org.hibernate.type.descriptor.sql.BasicBinder"
-          level="debug">
-  </logger>
+<!--  <logger name="org.hibernate.type.descriptor.sql.BasicBinder"-->
+<!--          level="debug">-->
+<!--  </logger>-->
   
-  <root level="debug">
+  <root level="off">
     <appender-ref ref="ConsoleCommonLog"/>
   </root>
 </configuration>

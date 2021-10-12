@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.IOException;
 import java.util.List;
 
+import com.foxminded.koren.university.Application;
 import com.foxminded.koren.university.repository.interfaces.TeacherRepository;
 import com.foxminded.koren.university.repository.test_data.JpaTestData;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,15 +14,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
-import com.foxminded.koren.university.SpringConfigT;
 import com.foxminded.koren.university.repository.exceptions.RepositoryException;
 import com.foxminded.koren.university.entity.Teacher;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
 @SpringJUnitWebConfig
-@ContextConfiguration(classes = {SpringConfigT.class})
+@ContextConfiguration(classes = {Application.class})
+@ActiveProfiles("test")
 class TeacherRepositoryImplTest {
     
 

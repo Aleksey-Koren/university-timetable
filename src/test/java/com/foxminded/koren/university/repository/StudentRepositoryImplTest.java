@@ -1,8 +1,10 @@
 package com.foxminded.koren.university.repository;
 
-import java.io.IOException;
-import java.util.List;
-
+import com.foxminded.koren.university.Application;
+import com.foxminded.koren.university.entity.Group;
+import com.foxminded.koren.university.entity.Student;
+import com.foxminded.koren.university.entity.Year;
+import com.foxminded.koren.university.repository.exceptions.RepositoryException;
 import com.foxminded.koren.university.repository.interfaces.StudentRepository;
 import com.foxminded.koren.university.repository.test_data.JpaTestData;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,20 +12,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-
-import com.foxminded.koren.university.SpringConfigT;
-import com.foxminded.koren.university.repository.exceptions.RepositoryException;
-import com.foxminded.koren.university.entity.Group;
-import com.foxminded.koren.university.entity.Student;
-import com.foxminded.koren.university.entity.Year;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import java.io.IOException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringJUnitWebConfig
-@ContextConfiguration(classes = {SpringConfigT.class})
+@ContextConfiguration(classes = {Application.class})
+@ActiveProfiles("test")
 class StudentRepositoryImplTest {
 
 
@@ -32,15 +34,16 @@ class StudentRepositoryImplTest {
     private StudentRepository studentRepository;
     @Autowired
     private JpaTestData testData;
+
     @Autowired
-    private JdbcTemplate JdbcTemplate;
-        
+    private EntityManagerFactory entityManagerFactory;
+
     @BeforeEach
     void createTables() throws DataAccessException, IOException {
         testData.createTables();
         testData.loadTestData();
     }
-    
+
     @Test
     void getById_shouldWorkCorrectly() {
         int expectedId = 1;
@@ -50,7 +53,7 @@ class StudentRepositoryImplTest {
         expected.setId(expectedId);
         assertEquals(expected, studentRepository.getById(expectedId));
     }
-    
+
     @Test
     void getById_shouldWorkCorrectly_ifGroupIdIsNull() {
         int expectedId = 4;
@@ -59,14 +62,19 @@ class StudentRepositoryImplTest {
         expected.setId(expectedId);
         assertEquals(expected, studentRepository.getById(expectedId));
     }
-    
+
     @Test
     void getAll_shouldWorkCorrectly() {
-        JdbcTemplate.execute("DELETE FROM student");
-        JdbcTemplate.execute("INSERT INTO student (id, group_id, first_name, last_name)\n"
-                           + "VALUES\n"
-                           + "(1, 1, 'first name1', 'last name1'),\r\n"
-                           + "(2, 2, 'first name2', 'last name2');");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        entityManager.createNativeQuery("DELETE FROM student").executeUpdate();
+        entityManager.createNativeQuery("INSERT INTO student (id, group_id, first_name, last_name)\n"
+                        + "VALUES\n"
+                        + "(1, 1, 'first name1', 'last name1'),\r\n"
+                        + "(2, 2, 'first name2', 'last name2');")
+                .executeUpdate();
+        entityManager.getTransaction().commit();
+        entityManager.close();
         Group group1 = new Group("group name1", Year.FIRST);
         group1.setId(1);
         Group group2 = new Group("group name2", Year.SECOND);
@@ -78,9 +86,9 @@ class StudentRepositoryImplTest {
         List<Student> expected = List.of(student1, student2);
         assertEquals(expected, studentRepository.getAll());
     }
-    
+
     @Test
-    void save_shouldWorkCorrectly() {        
+    void save_shouldWorkCorrectly() {
         int expectedId = 5;
         Group group = new Group("group name1", Year.FIRST);
         group.setId(1);
@@ -88,16 +96,16 @@ class StudentRepositoryImplTest {
         studentRepository.save(expected);
         assertEquals(expected, studentRepository.getById(expectedId));
     }
-    
+
     @Test
-    void save_shouldWorkCorrectly_ifGroupIdIsNull() {        
+    void save_shouldWorkCorrectly_ifGroupIdIsNull() {
         int expectedId = 5;
         Group group = null;
         Student expected = new Student(group, "test!!!", "test");
         studentRepository.save(expected);
         assertEquals(expected, studentRepository.getById(expectedId));
     }
-    
+
     @Test
     void update_shouldWorkCorrectly() {
         Group group = new Group("group name2", Year.SECOND);
@@ -110,7 +118,7 @@ class StudentRepositoryImplTest {
         studentRepository.update(expected);
         assertEquals(expected, studentRepository.getById(expectedId));
     }
-    
+
     @Test
     void update_shouldWorkCorrectly_ifGroupIsNull() {
         int expectedId = 1;
@@ -121,7 +129,7 @@ class StudentRepositoryImplTest {
         studentRepository.update(expected);
         assertEquals(expected, studentRepository.getById(expectedId));
     }
-    
+
     @Test
     void deleteById_shouldWorkCorrectly() {
         int expectedId = 1;

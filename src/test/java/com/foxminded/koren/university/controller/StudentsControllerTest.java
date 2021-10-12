@@ -1,6 +1,6 @@
 package com.foxminded.koren.university.controller;
 
-import com.foxminded.koren.university.SpringConfigT;
+import com.foxminded.koren.university.Application;
 import com.foxminded.koren.university.controller.dto.StudentGetDTO;
 import com.foxminded.koren.university.controller.dto.StudentPostDTO;
 import com.foxminded.koren.university.entity.Group;
@@ -16,6 +16,7 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,7 +34,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringJUnitWebConfig
-@ContextConfiguration(classes = {SpringConfigT.class})
+@ContextConfiguration(classes = {Application.class})
+@ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 public class StudentsControllerTest {
 

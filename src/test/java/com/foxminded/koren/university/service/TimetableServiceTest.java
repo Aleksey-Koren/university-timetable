@@ -1,13 +1,13 @@
 
 package com.foxminded.koren.university.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import com.foxminded.koren.university.Application;
+import com.foxminded.koren.university.entity.Lecture;
+import com.foxminded.koren.university.entity.Student;
+import com.foxminded.koren.university.entity.Teacher;
+import com.foxminded.koren.university.entity.Timetable;
+import com.foxminded.koren.university.entity.interfaces.TimetableEvent;
+import com.foxminded.koren.university.repository.interfaces.LectureRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,19 +16,20 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-
-import com.foxminded.koren.university.SpringConfigT;
-import com.foxminded.koren.university.repository.interfaces.LectureRepository;
-import com.foxminded.koren.university.entity.Lecture;
-import com.foxminded.koren.university.entity.Student;
-import com.foxminded.koren.university.entity.Teacher;
-import com.foxminded.koren.university.entity.Timetable;
-import com.foxminded.koren.university.entity.interfaces.TimetableEvent;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @SpringJUnitWebConfig
-@ContextConfiguration(classes = {SpringConfigT.class})
+@ContextConfiguration(classes = {Application.class})
+@ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 class TimetableServiceTest {
     
