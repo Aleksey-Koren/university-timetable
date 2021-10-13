@@ -1,7 +1,4 @@
 spring:
-  config:
-    activate:
-      on-profile: prod
   datasource:
     url: jdbc:postgresql://localhost:5432/university
     driver-class-name: org.postgresql.Driver
@@ -16,23 +13,21 @@ spring:
   jpa:
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQL10Dialect
         format_sql: true
         use_sql_comments: true
-        hbm2ddl:
-          auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+
 
 ---
 spring:
   config:
     activate:
       on-profile: test
-
   datasource:
     url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false
     driver-class-name: org.h2.Driver
-    username: postgres
-    password: 06021988abc
+    username: sa
+    password: sa
 
   thymeleaf:
     encoding: UTF-8
@@ -40,10 +35,13 @@ spring:
     suffix: .html
 
   jpa:
+    hibernate:
+      ddl-auto: none
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQL10Dialect
         format_sql: true
         use_sql_comments: true
-        hbm2ddl:
-          auto: validate
+    database-platform: org.hibernate.dialect.H2Dialect
+
+
+
