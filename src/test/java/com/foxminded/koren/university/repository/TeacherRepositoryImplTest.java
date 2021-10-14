@@ -10,6 +10,7 @@ import com.foxminded.koren.university.Application;
 import com.foxminded.koren.university.repository.interfaces.TeacherRepository;
 import com.foxminded.koren.university.repository.test_data.JpaTestData;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
