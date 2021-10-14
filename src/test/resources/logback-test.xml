@@ -18,7 +18,7 @@
           level="off">
   </logger>
   
-  <root level="debug">
+  <root level="off">
     <appender-ref ref="ConsoleCommonLog"/>
   </root>
 </configuration>
