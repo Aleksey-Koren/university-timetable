@@ -7,7 +7,7 @@
   </appender>
   
   <logger name="com.foxminded.koren.university"
-          level="info">
+          level="trace">
   </logger>
 
 <!--  <logger name="org.hibernate.SQL"-->
@@ -18,7 +18,7 @@
 <!--          level="debug">-->
 <!--  </logger>-->
   
-  <root level="debug">
+  <root level="info">
     <appender-ref ref="ConsoleCommonLog"/>
   </root>
 </configuration>
