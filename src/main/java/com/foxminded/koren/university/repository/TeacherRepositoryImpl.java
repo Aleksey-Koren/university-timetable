@@ -65,13 +65,11 @@ public class TeacherRepositoryImpl implements TeacherRepository {
     @Override
     public Teacher getById(Integer id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
         Teacher teacher = entityManager.find(Teacher.class, id);
         if (teacher == null) {
             throw new RepositoryException(String
                     .format("Unable to get teacher with id = %s, cause: there is no teacher with such id in database", id));
         }
-        entityManager.getTransaction().commit();
         entityManager.close();
         return teacher;
     }
@@ -79,10 +77,8 @@ public class TeacherRepositoryImpl implements TeacherRepository {
     @Override
     public List<Teacher> getAll() {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
         List<Teacher> teachers = entityManager
                 .createQuery("FROM Teacher order by lastName", Teacher.class).getResultList();
-        entityManager.getTransaction().commit();
         entityManager.close();
         return teachers;
     }

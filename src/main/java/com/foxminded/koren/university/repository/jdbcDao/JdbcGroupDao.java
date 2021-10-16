@@ -93,7 +93,6 @@ public class JdbcGroupDao implements GroupRepository {
         return jdbcTemplate.query(GET_ALL, new GroupMapper());
     }
 
-    @Override
     public List<Group> getGroupsByLectureId(Integer lectureId) {
         LOG.debug("Query to database. Get groups by lecture id = {}. SQL: {}", "\n" + lectureId, GET_BY_LECTURE_ID);
         return jdbcTemplate.query(GET_BY_LECTURE_ID, new GroupMapper(), lectureId);

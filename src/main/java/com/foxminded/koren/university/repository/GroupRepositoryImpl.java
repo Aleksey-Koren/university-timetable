@@ -38,6 +38,7 @@ public class GroupRepositoryImpl implements GroupRepository {
         entityManager.persist(entity);
         LOG.trace("Group has gotten id = {}", entity.getId());
         entityManager.getTransaction().commit();
+        entityManager.close();
         return entity;
     }
 
@@ -48,6 +49,7 @@ public class GroupRepositoryImpl implements GroupRepository {
         LOG.trace("Updating group {}", entity.toString());
         entityManager.merge(entity);
         entityManager.getTransaction().commit();
+        entityManager.close();
     }
 
     @Override
@@ -68,14 +70,12 @@ public class GroupRepositoryImpl implements GroupRepository {
     @Override
     public Group getById(Integer id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
         LOG.trace("Getting group with id = {}", id);
         Group group = entityManager.find(Group.class, id);
         if (group == null) {
             throw new RepositoryException(String
                     .format("Unable to get group with id = %s, cause: there is no group with such id in database", id));
         }
-        entityManager.getTransaction().commit();
         entityManager.close();
         return group;
     }
@@ -84,28 +84,19 @@ public class GroupRepositoryImpl implements GroupRepository {
     public List<Group> getAll() {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         LOG.trace("Getting all groups from database");
-        entityManager.getTransaction().begin();
         List<Group> groups = entityManager.createQuery("FROM Group order by name", Group.class).getResultList();
-        entityManager.getTransaction().commit();
         entityManager.close();
         return groups;
-    }
-
-    @Override
-    public List<Group> getGroupsByLectureId(Integer lectureId) {
-        return null;
     }
 
     @Override
     public List<Group> getAllGroupsExceptAddedToLecture(int lectureId) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         LOG.trace("Getting all groups except added to lecture id = {}", lectureId);
-        entityManager.getTransaction().begin();
         List<Group> groups = entityManager
                 .createQuery("FROM Group order by name", Group.class).getResultList();
         List<Group> groupsOfLecture = entityManager.find(Lecture.class, lectureId).getGroups();
         groups.removeAll(groupsOfLecture);
-        entityManager.getTransaction().commit();
         entityManager.close();
         return groups;
     }

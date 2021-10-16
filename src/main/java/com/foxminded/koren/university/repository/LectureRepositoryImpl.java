@@ -68,14 +68,12 @@ public class LectureRepositoryImpl implements LectureRepository {
     @Override
     public Lecture getById(Integer id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
         LOG.trace("Getting lecture by id = {}", id);
         Lecture lecture = entityManager.find(Lecture.class, id);
         if (lecture == null) {
             throw new RepositoryException(String
                     .format("Unable to get lecture with id = %s, cause: there is no lecture with such id in database", id));
         }
-        entityManager.getTransaction().commit();
         entityManager.close();
         return lecture;
     }
@@ -83,10 +81,8 @@ public class LectureRepositoryImpl implements LectureRepository {
     @Override
     public List<Lecture> getAll() {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
         LOG.trace("Getting all lectures");
         List<Lecture> lectures = entityManager.createQuery("FROM Lecture order by startTime", Lecture.class).getResultList();
-        entityManager.getTransaction().commit();
         entityManager.close();
         return lectures;
     }
@@ -94,7 +90,6 @@ public class LectureRepositoryImpl implements LectureRepository {
     @Override
     public List<Lecture> getTeacherLecturesByTimePeriod(Teacher teacher, LocalDate start, LocalDate finish) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
         LOG.trace("Start getting lectures by teacher id = {} and time period start = {} finish = {}",
                 teacher.getId(), start, finish);
         List<Lecture> lectures = entityManager.createQuery("SELECT l FROM Lecture l " +
@@ -105,7 +100,6 @@ public class LectureRepositoryImpl implements LectureRepository {
                         .setParameter("start", start.atTime(0,0))
                         .setParameter("finish", finish.atTime(23,59,59))
                         .getResultList();
-        entityManager.getTransaction().commit();
         entityManager.close();
         return lectures;
     }
@@ -113,7 +107,6 @@ public class LectureRepositoryImpl implements LectureRepository {
     @Override
     public List<Lecture> getStudentLecturesByTimePeriod(Student student, LocalDate start, LocalDate finish) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
         LOG.trace("Start getting lectures by student id = {} and time period start = {} finish = {}",
                 student.getId(), start, finish);
         List<Lecture> lectures = entityManager.createQuery("SELECT l FROM Lecture l " +
@@ -126,7 +119,6 @@ public class LectureRepositoryImpl implements LectureRepository {
                 .setParameter("start", start.atTime(0,0))
                 .setParameter("finish", finish.atTime(23,59,59))
                 .getResultList();
-        entityManager.getTransaction().commit();
         entityManager.close();
         return lectures;
     }

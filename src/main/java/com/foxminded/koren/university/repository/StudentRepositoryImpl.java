@@ -66,13 +66,11 @@ public class StudentRepositoryImpl implements StudentRepository {
     @Override
     public Student getById(Integer id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
         Student student = entityManager.find(Student.class, id);
         if (student == null) {
             throw new RepositoryException(String
                     .format("Unable to get student with id = %s, cause: there is no student with such id in database", id));
         }
-        entityManager.getTransaction().commit();
         entityManager.close();
         return student;
     }
@@ -80,10 +78,8 @@ public class StudentRepositoryImpl implements StudentRepository {
     @Override
     public List<Student> getAll() {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
         List<Student> students = entityManager
                 .createQuery("FROM Student order by lastName", Student.class).getResultList();
-        entityManager.getTransaction().commit();
         entityManager.close();
         return students;
     }
@@ -91,21 +87,16 @@ public class StudentRepositoryImpl implements StudentRepository {
     @Override
     public List<Student> getByGroupId(int id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
         Group group = entityManager.find(Group.class, id);
         List<Student> studentsOfGroup = new ArrayList<>(group.getStudents());
-        entityManager.getTransaction().commit();
-        entityManager.close();
         return studentsOfGroup;
     }
 
     @Override
     public List<Student> getAllWithoutGroup() {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
         List<Student> studentsWithoutGroup = entityManager
                 .createQuery("FROM Student s WHERE s.group is NULL", Student.class).getResultList();
-        entityManager.getTransaction().commit();
         entityManager.close();
         return studentsWithoutGroup;
     }

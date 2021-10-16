@@ -6,7 +6,5 @@ import java.util.List;
 
 public interface GroupRepository extends CrudRepository<Integer, Group> {
 
-    List<Group> getGroupsByLectureId(Integer lectureId);
-
     List<Group> getAllGroupsExceptAddedToLecture(int lectureId);
  }
