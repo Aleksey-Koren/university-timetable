@@ -53,7 +53,7 @@ public class Application {
         dataSource.setJdbcUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false");
         dataSource.setUser("sa");
         dataSource.setPassword("sa");
-        dataSource.setInitialPoolSize(5);
+        dataSource.setInitialPoolSize(10);
         dataSource.setMaxPoolSize(20);
         return dataSource;
     }
