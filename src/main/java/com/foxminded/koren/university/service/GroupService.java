@@ -71,11 +71,6 @@ public class GroupService {
         groupRepository.deleteById(group.getId());
     }
 
-    public List<Group> getGroupsByLectureId(Integer id) {
-        LOG.debug("Retrieve groups by lecture id = {}", id);
-        return groupRepository.getGroupsByLectureId(id);
-    }
-
     public List<Group> getAllExceptAddedToLecture(int lectureId) {
         LOG.debug("Get all groups except added to lecture id ={}", lectureId);
         try {

@@ -101,31 +101,4 @@ class GroupRepositoryImplTest {
         allGroups.removeAll(groupAddedToLecture);
         assertEquals(allGroups, groupRepository.getAllGroupsExceptAddedToLecture(lectureId));
     }
-
-
-    @Test
-    @Disabled
-    void getGroupsByLectureIdShouldGetGroupsReliedToCurrentLecture() {
-        String sql = "INSERT INTO lecture_group(lecture_id, group_id)\n" +
-                "VALUES\n" +
-                "    (1,2),\n" +
-                "    (2,3),\n" +
-                "    (4,2),\n" +
-                "    (3,2),\n" +
-                "    (3,3);";
-
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
-        Query query = entityManager.createNativeQuery(sql);
-        query.executeUpdate();
-        entityManager.getTransaction().commit();
-        entityManager.close();
-
-        List<Group> expected = List.of(new Group(3, "group name3", Year.THIRD),
-                new Group(2, "group name2", Year.SECOND));
-
-        expected = expected.stream().sorted((g1,g2) -> g1.getName().compareTo(g2.getName())).collect(toList());
-        System.out.println(expected);
-        assertEquals(expected, groupRepository.getGroupsByLectureId(3));
-    }
 }

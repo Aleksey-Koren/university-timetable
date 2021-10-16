@@ -68,6 +68,7 @@ public class AudienceRepositoryImpl implements AudienceRepository {
     @Override
     public Audience getById(Integer id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
         LOG.trace("Getting audience with id = {}", id);
         Audience audience = entityManager.find(Audience.class, id);
         if(audience == null) {
@@ -75,6 +76,7 @@ public class AudienceRepositoryImpl implements AudienceRepository {
                     .format("Unable to get audience with id = %s, cause: there is no audience with such id in database",
                     id));
         }
+        entityManager.getTransaction().commit();
         entityManager.close();
         return audience;
     }
@@ -82,9 +84,11 @@ public class AudienceRepositoryImpl implements AudienceRepository {
     @Override
     public List<Audience> getAll() {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
         LOG.trace("Starting to get all audiences from database");
         List<Audience> audiences = entityManager
                 .createQuery("FROM Audience order by number", Audience.class).getResultList();
+        entityManager.getTransaction().commit();
         entityManager.close();
         return audiences;
     }

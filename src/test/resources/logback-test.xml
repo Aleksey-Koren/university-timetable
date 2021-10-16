@@ -11,14 +11,14 @@
   </logger>
 
   <logger name="org.hibernate.SQL"
-          level="debug">
+          level="off">
   </logger>
 
   <logger name="org.hibernate.type.descriptor.sql.BasicBinder"
-          level="debug">
+          level="off">
   </logger>
   
-  <root level="OFF">
+  <root level="info">
     <appender-ref ref="ConsoleCommonLog"/>
   </root>
 </configuration>
