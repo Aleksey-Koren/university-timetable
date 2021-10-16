@@ -208,15 +208,15 @@ class LectureRepositoryImplTest {
         expected.add(lectureRepository.getById(expectedLectureId1));
         expected.add(lectureRepository.getById(expectedLectureId2));
         expected.add(lectureRepository.getById(expectedLectureId3));
-        
-        
+
+
         int testStudentId = 2;
         Student testStudent = new Student();
         testStudent.setId(testStudentId);
-        
+
         LocalDate start = LocalDate.of(2021, 6, 2);
         LocalDate finish = LocalDate.of(2021, 6, 5);
-        
+
         assertEquals(expected, lectureRepository.getStudentLecturesByTimePeriod(testStudent, start, finish));
     }
 
