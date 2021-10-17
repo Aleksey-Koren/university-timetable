@@ -3,13 +3,10 @@ package com.foxminded.koren.university;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -20,29 +17,16 @@ import java.beans.PropertyVetoException;
 import java.util.Properties;
 
 @SpringBootApplication
-@PropertySource("classpath:application.properties")
 public class Application {
 
-    private Environment env;
-
-    @Autowired
-    public Application(Environment env) {
-        this.env = env;
-    }
-
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        SpringApplication app = new SpringApplication(Application.class);
+        app.run(args);
     }
 
     @Bean
     public Logger rootLogger() {
         return LoggerFactory.getLogger("root");
-    }
-
-    @Bean
-    @Profile("test")
-    public String tablesCreationUrl() {
-        return env.getProperty("tables.creation.url");
     }
 
     @Bean
@@ -54,7 +38,7 @@ public class Application {
         dataSource.setUser("sa");
         dataSource.setPassword("sa");
         dataSource.setInitialPoolSize(10);
-        dataSource.setMaxPoolSize(20);
+        dataSource.setMaxPoolSize(50);
         return dataSource;
     }
 
