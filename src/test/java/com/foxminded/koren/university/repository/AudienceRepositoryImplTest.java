@@ -1,7 +1,6 @@
 package com.foxminded.koren.university.repository;
 
 import com.foxminded.koren.university.Application;
-
 import com.foxminded.koren.university.entity.Audience;
 import com.foxminded.koren.university.repository.exceptions.RepositoryException;
 import com.foxminded.koren.university.repository.interfaces.AudienceRepository;
