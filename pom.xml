@@ -5,23 +5,16 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/x
   <artifactId>university-timetable</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>university-timetable</name>
-<!--  <packaging>jar</packaging>-->
+  <packaging>jar</packaging>
 
   
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>15</java.version>
-        <junit.jupiter.version>5.7.0</junit.jupiter.version>
         <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
         <maven.compiler.version>3.8.1</maven.compiler.version>
-        <mockito.jupiter.version>3.8.0</mockito.jupiter.version>
-        <mockito.core.version>3.8.0</mockito.core.version>
         <postgresql.version>42.2.18</postgresql.version>
         <h2.version>1.4.200</h2.version>
-        <spring.version>5.3.8</spring.version>
-        <slf4j-api.version>1.7.30</slf4j-api.version>
-        <logback.version>1.2.3</logback.version>
-        <failOnMissingWebXml>false</failOnMissingWebXml>
     </properties>
 
     <parent>
@@ -83,147 +76,16 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/x
         </dependency>
 
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit.jupiter.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-junit-jupiter</artifactId>
-            <version>${mockito.jupiter.version}</version>
-            <scope>test</scope>
-        </dependency>        
-     
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>${mockito.core.version}</version>
-            <scope>test</scope>
-        </dependency>
-        
-        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${postgresql.version}</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/com.mchange/c3p0 -->
-        <dependency>
-            <groupId>com.mchange</groupId>
-            <artifactId>c3p0</artifactId>
-            <version>0.9.5.5</version>
-        </dependency>
-
 
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>${h2.version}</version>
         </dependency>
-        
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework</groupId>-->
-<!--            <artifactId>spring-core</artifactId>-->
-<!--            <version>${spring.version}</version>-->
-<!--        </dependency>-->
-        
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework</groupId>-->
-<!--            <artifactId>spring-context</artifactId>-->
-<!--            <version>${spring.version}</version>-->
-<!--        </dependency>-->
-        
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework</groupId>-->
-<!--            <artifactId>spring-jdbc</artifactId>-->
-<!--            <version>${spring.version}</version>-->
-<!--        </dependency>-->
-
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-orm -->
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-orm -->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework</groupId>-->
-<!--            <artifactId>spring-orm</artifactId>-->
-<!--            <version>${spring.version}</version>-->
-<!--        </dependency>-->
-
-
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework</groupId>-->
-<!--            <artifactId>spring-web</artifactId>-->
-<!--            <version>${spring.version}</version>-->
-<!--        </dependency>-->
-        
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc -->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework</groupId>-->
-<!--            <artifactId>spring-webmvc</artifactId>-->
-<!--            <version>${spring.version}</version>-->
-<!--        </dependency>-->
-        
-        <!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework</groupId>-->
-<!--            <artifactId>spring-test</artifactId>-->
-<!--            <version>${spring.version}</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
-        
-        <!-- https://mvnrepository.com/artifact/org.thymeleaf/thymeleaf-spring5 -->
-<!--        <dependency>-->
-<!--            <groupId>org.thymeleaf</groupId>-->
-<!--            <artifactId>thymeleaf-spring5</artifactId>-->
-<!--            <version>3.0.12.RELEASE</version>-->
-<!--        </dependency>-->
-
-        <!-- https://mvnrepository.com/artifact/org.thymeleaf.extras/thymeleaf-extras-java8time -->
-<!--        <dependency>-->
-<!--            <groupId>org.thymeleaf.extras</groupId>-->
-<!--            <artifactId>thymeleaf-extras-java8time</artifactId>-->
-<!--            <version>3.0.4.RELEASE</version>-->
-<!--        </dependency>-->
-
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
-<!--        <dependency>-->
-<!--            <groupId>org.slf4j</groupId>-->
-<!--            <artifactId>slf4j-api</artifactId>-->
-<!--            <version>${slf4j-api.version}</version>-->
-<!--        </dependency>-->
-        
-        <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
-<!--        <dependency>-->
-<!--            <groupId>ch.qos.logback</groupId>-->
-<!--            <artifactId>logback-classic</artifactId>-->
-<!--            <version>${logback.version}</version>-->
-<!--        </dependency>-->
-        
-        <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-core -->
-<!--        <dependency>-->
-<!--            <groupId>ch.qos.logback</groupId>-->
-<!--            <artifactId>logback-core</artifactId>-->
-<!--            <version>${logback.version}</version>-->
-<!--        </dependency>-->
-        
-                <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
-<!--        <dependency>-->
-<!--            <groupId>javax.servlet</groupId>-->
-<!--            <artifactId>javax.servlet-api</artifactId>-->
-<!--            <version>4.0.1</version>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
-
-        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
-<!--        <dependency>-->
-<!--            <groupId>org.hibernate</groupId>-->
-<!--            <artifactId>hibernate-core</artifactId>-->
-<!--            <version>5.4.32.Final</version>-->
-<!--        </dependency>-->
 
     </dependencies>
 </project>

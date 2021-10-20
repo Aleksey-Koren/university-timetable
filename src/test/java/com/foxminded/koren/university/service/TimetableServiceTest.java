@@ -16,9 +16,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -27,8 +26,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringJUnitWebConfig
-@ContextConfiguration(classes = {Application.class})
+@SpringBootTest(classes = {Application.class})
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 class TimetableServiceTest {

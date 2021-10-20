@@ -1,28 +1,25 @@
 package com.foxminded.koren.university.repository;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.IOException;
-import java.util.List;
-
 import com.foxminded.koren.university.Application;
+import com.foxminded.koren.university.entity.Teacher;
+import com.foxminded.koren.university.repository.exceptions.RepositoryException;
 import com.foxminded.koren.university.repository.interfaces.TeacherRepository;
 import com.foxminded.koren.university.repository.test_data.JpaTestData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 
-import com.foxminded.koren.university.repository.exceptions.RepositoryException;
-import com.foxminded.koren.university.entity.Teacher;
-import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
+import java.io.IOException;
+import java.util.List;
 
-@SpringJUnitWebConfig
-@ContextConfiguration(classes = {Application.class})
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+@SpringBootTest(classes = {Application.class})
 @ActiveProfiles("test")
 class TeacherRepositoryImplTest {
     

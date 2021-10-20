@@ -14,11 +14,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @Component
+@Profile("test")
 public class JpaTestData {
 
     private final EntityManagerFactory entityManagerFactory;
 
-    @Value("${tables.creation-url:src\\test\\resources\\TablesCreation.sql}")
+    @Value("${tables.creation-url}")
     private String tablesCreationUrl;
 
     @Autowired
