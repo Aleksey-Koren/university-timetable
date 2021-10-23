@@ -1,6 +1,8 @@
 package com.foxminded.koren.university.repository.test_data;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
@@ -12,16 +14,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 @Component
+@Profile("test")
 public class JpaTestData {
 
     private final EntityManagerFactory entityManagerFactory;
 
-    private final String tablesCreationUrl;
+    @Value("${tables.creation-url}")
+    private String tablesCreationUrl;
 
     @Autowired
-    public JpaTestData(EntityManagerFactory entityManagerFactory, String tablesCreationUrl) {
+    public JpaTestData(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
-        this.tablesCreationUrl = tablesCreationUrl;
     }
 
     public void createTables() throws IOException {

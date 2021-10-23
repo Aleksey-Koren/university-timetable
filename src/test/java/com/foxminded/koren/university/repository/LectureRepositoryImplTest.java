@@ -1,35 +1,31 @@
 package com.foxminded.koren.university.repository;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
+import com.foxminded.koren.university.Application;
 import com.foxminded.koren.university.entity.*;
+import com.foxminded.koren.university.entity.interfaces.TimetableEvent;
+import com.foxminded.koren.university.repository.exceptions.RepositoryException;
 import com.foxminded.koren.university.repository.interfaces.LectureRepository;
 import com.foxminded.koren.university.repository.test_data.JpaTestData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ContextConfiguration;
-
-import com.foxminded.koren.university.SpringConfigT;
-import com.foxminded.koren.university.repository.exceptions.RepositoryException;
-import com.foxminded.koren.university.entity.interfaces.TimetableEvent;
-import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
+import org.springframework.test.context.ActiveProfiles;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringJUnitWebConfig
-@ContextConfiguration(classes = {SpringConfigT.class})
+@SpringBootTest(classes = {Application.class})
+@ActiveProfiles("test")
 class LectureRepositoryImplTest {
 
     @Autowired
@@ -40,11 +36,8 @@ class LectureRepositoryImplTest {
     private JpaTestData testData;
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @Autowired
     private EntityManagerFactory entityManagerFactory;
-    
+
     @BeforeEach
     void createTables() throws DataAccessException, IOException {
         testData.createTables();
@@ -85,12 +78,17 @@ class LectureRepositoryImplTest {
     
     @Test
     void getAll_shouldGetAll_whenTeacherOrAudienceIsNull() {
-        jdbcTemplate.execute("DELETE FROM lecture;");
-        jdbcTemplate.execute("INSERT INTO lecture \r\n"
-                           + "(id, course_id, teacher_id, audience_id, start_time , end_time)\r\n"
-                           + "VALUES\r\n"
-                           + "(1 , 1, 1, 1, '2021-05-02 16:00:00', '2021-05-02 17:00:00'),\r\n"
-                           + "(2 , 1, 1, 1, '2021-05-02 16:00:00', '2021-05-02 17:00:00');");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        entityManager.createNativeQuery("DELETE FROM lecture;").executeUpdate();
+        entityManager.createNativeQuery("INSERT INTO lecture \r\n"
+                + "(id, course_id, teacher_id, audience_id, start_time , end_time)\r\n"
+                + "VALUES\r\n"
+                + "(1 , 1, 1, 1, '2021-05-02 16:00:00', '2021-05-02 17:00:00'),\r\n"
+                + "(2 , 1, 1, 1, '2021-05-02 16:00:00', '2021-05-02 17:00:00');")
+                .executeUpdate();
+        entityManager.getTransaction().commit();
+        entityManager.close();
         
         Lecture lecture1 = prepareExpected(1);
         Lecture lecture2 = prepareExpected(2);
@@ -208,15 +206,15 @@ class LectureRepositoryImplTest {
         expected.add(lectureRepository.getById(expectedLectureId1));
         expected.add(lectureRepository.getById(expectedLectureId2));
         expected.add(lectureRepository.getById(expectedLectureId3));
-        
-        
+
+
         int testStudentId = 2;
         Student testStudent = new Student();
         testStudent.setId(testStudentId);
-        
+
         LocalDate start = LocalDate.of(2021, 6, 2);
         LocalDate finish = LocalDate.of(2021, 6, 5);
-        
+
         assertEquals(expected, lectureRepository.getStudentLecturesByTimePeriod(testStudent, start, finish));
     }
 

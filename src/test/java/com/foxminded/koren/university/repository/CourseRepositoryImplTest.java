@@ -1,19 +1,17 @@
 package com.foxminded.koren.university.repository;
 
-import com.foxminded.koren.university.SpringConfigT;
+import com.foxminded.koren.university.Application;
 import com.foxminded.koren.university.entity.Course;
 import com.foxminded.koren.university.repository.exceptions.RepositoryException;
 import com.foxminded.koren.university.repository.interfaces.CourseRepository;
 import com.foxminded.koren.university.repository.test_data.JpaTestData;
-import com.foxminded.koren.university.repository.test_data.TablesCreation;
-import com.foxminded.koren.university.repository.test_data.TestData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataAccessException;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,13 +19,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringJUnitWebConfig
-@ContextConfiguration(classes = {SpringConfigT.class})
+@SpringBootTest(classes = {Application.class})
+@ActiveProfiles("test")
 class CourseRepositoryImplTest {
 
     @Autowired
     @Qualifier("courseRepositoryImpl")
-    private CourseRepository courseDao;
+    private CourseRepository courseRepository;
     @Autowired
     private JpaTestData testData;
 
@@ -43,34 +41,34 @@ class CourseRepositoryImplTest {
         Course expected = new Course("name4", "desc4");
         int expectedId = 4;
         expected.setId(expectedId);
-        assertEquals(expected, courseDao.getById(expectedId));
+        assertEquals(expected, courseRepository.getById(expectedId));
     }
 
     @Test
     void save_shouldWorkCorrectly() {
         int expectedId = 5;
         Course expected = new Course("name", "description");
-        courseDao.save(expected);
+        courseRepository.save(expected);
         expected.setId(expectedId);
-        assertEquals(expected, courseDao.getById(expectedId));
+        assertEquals(expected, courseRepository.getById(expectedId));
     }
 
     @Test
     void update_shouldWorkCorrectly() {
         int expectedId = 1;
-        Course expected = courseDao.getById(expectedId);
+        Course expected = courseRepository.getById(expectedId);
         expected.setName("changed");
         expected.setDescription("changed");
-        courseDao.update(expected);
-        assertEquals(expected, courseDao.getById(expectedId));
+        courseRepository.update(expected);
+        assertEquals(expected, courseRepository.getById(expectedId));
     }
 
     @Test
     void deleteById_shouldWorkCorrectly() {
         int expectedId = 3;
-        Course course = courseDao.getById(expectedId);
-        courseDao.deleteById(course.getId());
-        RepositoryException exception = assertThrows(RepositoryException.class, () -> courseDao.getById(course.getId()));
+        Course course = courseRepository.getById(expectedId);
+        courseRepository.deleteById(course.getId());
+        RepositoryException exception = assertThrows(RepositoryException.class, () -> courseRepository.getById(course.getId()));
         String expectedMessage = String
                 .format("Unable to get course with id = %s, cause: there is no course with such id in database",
                         expectedId);
@@ -88,6 +86,6 @@ class CourseRepositoryImplTest {
         Course course4 = new Course("name4", "desc4");
         course4.setId(4);
         List<Course> expected = List.of(course1, course2, course3, course4);
-        assertEquals(expected, courseDao.getAll());
+        assertEquals(expected, courseRepository.getAll());
     }
 }

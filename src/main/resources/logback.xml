@@ -10,15 +10,15 @@
           level="trace">
   </logger>
 
-  <logger name="org.hibernate.SQL"
-          level="debug">
-  </logger>
+<!--  <logger name="org.hibernate.SQL"-->
+<!--          level="debug">-->
+<!--  </logger>-->
 
-  <logger name="org.hibernate.type.descriptor.sql.BasicBinder"
-          level="debug">
-  </logger>
+<!--  <logger name="org.hibernate.type.descriptor.sql.BasicBinder"-->
+<!--          level="debug">-->
+<!--  </logger>-->
   
-  <root level="OFF">
+  <root level="info">
     <appender-ref ref="ConsoleCommonLog"/>
   </root>
 </configuration>
