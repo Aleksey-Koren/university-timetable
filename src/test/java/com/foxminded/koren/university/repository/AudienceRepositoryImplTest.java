@@ -9,9 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,7 +18,6 @@ import static java.util.Comparator.comparingInt;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = {Application.class})
-@ActiveProfiles("test")
 class AudienceRepositoryImplTest {
 
     @Autowired
